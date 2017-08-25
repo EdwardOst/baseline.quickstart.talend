@@ -11,12 +11,8 @@ export LICENSE_ENV_FLAG=1
 
 function license_env() {
 
-    # export TALEND_FACTORY_LICENSE_BUCKET=license.talend.com
-    # export TALEND_FACTORY_LICENSE_REGION=us-east-1
-    # export TALEND_FACTORY_LICENSE_OWNER=talend
-
-    local license_bucket="license.talend.com"
-    local license_region="us-east-1"
+    local license_bucket="${license_bucket:-${TALEND_FACTORY_LICENSE_BUCKET:-license.quickstart.talend}}"
+    local license_region="${license_region:-${TALEND_FACTORY_LICENSE_REGION:-us-east-1}}"
     local license_owner="talend"
 
     local bucket="${license_bucket}"

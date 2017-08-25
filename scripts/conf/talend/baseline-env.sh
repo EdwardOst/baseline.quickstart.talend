@@ -11,8 +11,8 @@ export BASELINE_ENV_FLAG=1
 
 function baseline_env() {
 
-    local baseline_bucket="baseline.aws.talend.com"
-    local baseline_region="us-east-1"
+    local baseline_bucket="${baseline_bucket:-${TALEND_FACTORY_BASELINE_BUCKET:-baseline.quickstart.talend}}"
+    local baseline_region="${baseline_region:-${TALEND_FACTORY_BASELINE_REGION:-us-east-1}}"
 
     local bucket="${baseline_bucket}"
     local region="${baseline_region}"

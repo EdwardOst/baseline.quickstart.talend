@@ -27,7 +27,7 @@ function factory_env() {
     repo_env=repo_env
     java_env=java_env
 
-    local region=us-east-1
+    local region="us-east-1"
 
     local license_path="license"
 

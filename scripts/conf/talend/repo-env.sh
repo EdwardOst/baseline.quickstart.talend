@@ -10,10 +10,10 @@ export REPO_ENV_FLAG=1
 
 function repo_env() {
 
-    local repo_bucket=talend-quickstart-repo
-    local repo_region=us-east-1
-    local repo_path=/
-    local repo_mount_dir=/opt/repo
+    local repo_bucket="${repo_bucket:-${TALEND_FACTORY_REPO_BUCKET:-repo-quickstart-talend}}"
+    local repo_region="${repo_region:-${TALEND_FACTORY_REPO_REGION:-us-east-1}}"
+    local repo_path="/"
+    local repo_mount_dir="/opt/repo"
 
     local bucket="${repo_bucket}"
     local region="${repo_region}"
