@@ -65,6 +65,12 @@
             "Description": "Talend Server subnet id.",
             "Type": "AWS::EC2::Subnet::Id"
 		},
+		"IsPrivateSubnet": {
+            "Description": "Is this is a private subnet.",
+            "Type": "String",
+			"Default": "private",
+            "AllowedValues": [ "private", "public" ]
+		},
 		"SecurityGroupIds": {
             "Description": "Talend Server Security Group.",
             "Type": "CommaDelimitedList"
@@ -433,6 +439,17 @@
                 "HVMG2": "NOT_SUPPORTED"
             }
         }
+    },
+	"Conditions": {
+        "PrivateSubnetCondition": {
+            "Fn::Equals": [
+                { "Ref": "IsPrivateSubnet" },
+                "private"
+            ]
+        },
+		"PublicSubnetCondition": {
+			"Fn::Not": [ { "Condition": "PrivateSubnetCondition" } ]
+		}
     },
     "Resources": {
         "TalendServerInstance": {
@@ -1176,6 +1193,7 @@
 			}
         },
         "publicDnsName": {
+			"Condition": "PublicSubnetCondition",
             "Value": {
                 "Fn::GetAtt": [
                     "TalendServerInstance",

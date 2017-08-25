@@ -1,6 +1,56 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
+        "PublicSubnet": {
+        	"Description": "Public Subnet",
+        	"Type": "AWS::EC2::Subnet::Id"
+        },
+        "PrivateSubnet": {
+        	"Description": "Private Subnet",
+        	"Type": "AWS::EC2::Subnet::Id"
+        },
+        "QSS3BucketName": {
+        	"AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-.]*[0-9a-zA-Z])*$",
+        	"ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, periods (.), and hyphens (-). It cannot start or end with a hyphen (-).",
+        	"Default": "quickstart-reference",
+        	"Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+        	"Type": "String"
+        },
+        "QSS3KeyPrefix": {
+        	"AllowedPattern": "^[0-9a-zA-Z-]+(/[0-9a-zA-Z-]+)*$",
+        	"ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with forward slash (/) because they are automatically appended.",
+        	"Default": "oodle-accelerator",
+        	"Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with forward slash (/) because they are automatically appended.",
+        	"Type": "String"
+        },
+        "nexusTemplateUrl": {
+            "Type": "String",
+            "Description": "Nexus Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_nexus.template.json"
+        },
+        "logserverTemplateUrl": {
+            "Type": "String",
+            "Description": "Logserver Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_logserver.template.json"
+        },
+        "tacTemplateUrl": {
+            "Type": "String",
+            "Description": "TAC Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_tac.template.json"
+        },
+        "jobserverTemplateUrl": {
+            "Type": "String",
+            "Description": "Jobserver Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
+        },
+        "TacSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Description": "TAC Security Group"
+        },
+        "JobserverSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Description": "Jobserver Security Group"
+        },
         "TacInstanceType": {
             "Description": "TAC EC2 instance type",
             "Type": "String",
@@ -299,12 +349,6 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "createNetworkStack": {
-            "Description": "Create network stack.",
-            "Type": "String",
-			"Default": "true",
-            "AllowedValues": [ "true", "false" ]
-        },
         "createNexusStack": {
             "Description": "Create Nexus stack.",
             "Type": "String",
@@ -333,7 +377,6 @@
     "Mappings": {
         "Talend": {
             "templates": {
-				"networkTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_network.template.json",
                 "nexusTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_nexus.template.json",
                 "logserverTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_logserver.template.json",
 				"tacTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_tac.template.json",
@@ -342,12 +385,6 @@
         }
     },
     "Conditions": {
-        "CreateNetworkStackCondition": {
-            "Fn::Equals": [
-                { "Ref": "createNetworkStack" },
-                "true"
-            ]
-        },
         "CreateNexusStackCondition": {
             "Fn::Equals": [
                 { "Ref": "createNexusStack" },
@@ -374,28 +411,18 @@
         }
     },
     "Resources": {
-		"NetworkStack": {
-			"Type" : "AWS::CloudFormation::Stack",
-            "Condition" : "CreateNetworkStackCondition",
-			"Properties" : {
-				"Parameters" : {
-					"SSHLocation": { "Ref": "SSHLocation" }
-				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "networkTemplateUrl"] },
-				"TimeoutInMinutes" : "5"
-			}
-		},
+
+    
 		"NexusStack": {
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateNexusStackCondition",
-			"DependsOn": [ "NetworkStack" ],
 			"Properties" : {
 				"Parameters" : {
 					"InstanceType": { "Ref": "NexusInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
+					"SubnetId": { "Ref": "PublicSubnet" },
                     "IsPrivateSubnet": "public",
-					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup" ] },
+					"SecurityGroupIds": { "Ref": "TacSecurityGroup" },
 					"TalendProfile": "nexus",
 					"TalendProfileInstanceId": "1",
 					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
@@ -413,14 +440,13 @@
 		"LogserverStack": {
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateLogserverStackCondition",
-			"DependsOn": [ "NetworkStack" ],
 			"Properties" : {
 				"Parameters" : {
 					"InstanceType": { "Ref": "LogserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
+					"SubnetId": { "Ref": "PublicSubnet" },
                     "IsPrivateSubnet": "public",
-					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup" ] },
+					"SecurityGroupIds": { "Ref": "TacSecurityGroup" },
 					"TalendProfile": "logserver",
 					"TalendProfileInstanceId": "1",
 					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
@@ -438,14 +464,14 @@
 		"TacStack": {
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateTacStackCondition",
-			"DependsOn": [ "NetworkStack", "NexusStack", "LogserverStack" ],
+			"DependsOn": [ "NexusStack", "LogserverStack" ],
 			"Properties" : {
 				"Parameters" : {
 					"InstanceType": { "Ref": "TacInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
+					"SubnetId": { "Ref": "PublicSubnet" },
                     "IsPrivateSubnet": "public",
-					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup" ] },
+					"SecurityGroupIds": { "Ref": "TacSecurityGroup" },
 					"TalendProfile": "tacamc",
 					"TalendProfileInstanceId": "1",
 					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
@@ -474,14 +500,14 @@
 		"JobServerStack": {
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateJobserverStackCondition",
-			"DependsOn": [ "NetworkStack", "TacStack", "LogserverStack" ],
+			"DependsOn": [ "TacStack", "LogserverStack" ],
 			"Properties" : {
 				"Parameters" : {
 					"InstanceType": { "Ref": "JobserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.privateSubnet" ] },
+					"SubnetId": { "Ref": "PrivateSubnet" },
                     "IsPrivateSubnet": "private",
-					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.jobserverSecurityGroup" ] },
+					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
 					"TalendProfile": "jobserver",
 					"TalendProfileInstanceId": "1",
 					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
