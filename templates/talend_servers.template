@@ -44,11 +44,11 @@
             "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
         },
         "TacSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Type": "AWS::EC2::SecurityGroup::Id",
             "Description": "TAC Security Group"
         },
         "JobserverSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Type": "AWS::EC2::SecurityGroup::Id",
             "Description": "Jobserver Security Group"
         },
         "TacInstanceType": {
