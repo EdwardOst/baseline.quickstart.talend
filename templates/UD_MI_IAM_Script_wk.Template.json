@@ -1,0 +1,284 @@
+{
+	"AWSTemplateFormatVersion" : "2010-09-09",
+	"Mappings" : {
+		"RegionMap" : {
+			"us-east-1" : {
+				"AMI" : "ami-1ecae776"
+			},
+			"us-west-1" : {
+				"AMI" : "ami-e7527ed7"
+			},
+			"eu-west-1" : {
+				"AMI" : "ami-d114f295"
+			},
+			"ap-northeast-1" : {
+				"AMI" : "ami-cbf90ecb"
+			},
+			"ap-southeast-1" : {
+				"AMI" : "ami-68d8e93a"
+			}
+		}
+	},
+	"Parameters" : {
+		"InstanceType" : {
+			"Description" : "Server EC2 instance type",
+			"Type" : "String",
+			"Default" : "t2.micro",
+			"AllowedValues" : [
+				"t1.micro",
+				"t2.micro",
+				"t2.small",
+				"t2.medium"
+			],
+			"ConstraintDescription" : "must be a valid EC2 instance type."
+		},
+		"KeyName" : {
+			"Description" : "Name of an EC2 KeyPair to enable SSH access to the instance.",
+			"Type" : "AWS::EC2::KeyPair::KeyName",
+			"ConstraintDescription" : "must be the name of an existing EC2 KeyPair."
+		},
+		"BucketURL" : {
+			"Description" : "License object url",
+			"Type" : "String",
+			"ConstraintDescription" : "The url of the S3 object with the license file.  e.g https://s3.amazonaws.com/test755/mytext.txt"
+		},
+		"BucketOwner" : {
+			"Description" : "Bucket owner",
+			"Type" : "String",
+			"ConstraintDescription" : "Bucket owner"
+		},
+		"BucketName" : {
+			"Description" : "Bucket name for instance metadata",
+			"Type" : "String",
+			"ConstraintDescription" : "The name of the bucket referenced in the object url"
+		},
+
+		"VpcId" : {
+			"Description" : "Name of an VPC to create the instance.",
+			"Type" : "String",
+			"Default" : "vpc-ebea3c92",
+			"MinLength" : "1",
+			"MaxLength" : "41",
+			"AllowedPattern" : "[-_ a-zA-Z0-9]*",
+			"ConstraintDescription" : "must be the name of an existing VPC"
+		}
+	},
+	"Resources" : {
+		"InstanceRole" : {
+			"Type" : "AWS::IAM::Role",
+			"Properties" : {
+				"AssumeRolePolicyDocument" : {
+					"Version" : "2012-10-17",
+					"Statement" : [
+                        {
+						"Effect" : "Allow",
+						"Principal" : { "Service" : [ "ec2.amazonaws.com" ] },
+						"Action" : [ "sts:AssumeRole" ]
+						}
+					]
+				},
+				"Path" : "/"
+			}
+		},
+		"RolePolicies" : {
+			"Type" : "AWS::IAM::Policy",
+			"Properties" : {
+				"PolicyName" : "root",
+				"PolicyDocument" : {
+					"Version" : "2012-10-17",
+					"Statement" : [
+                        {
+							"Effect" : "Allow",
+							"Action" : [
+								"s3:GetObject",
+								"s3:ListObject"
+							],
+							"Resource" : "*"
+						}
+					]
+				},
+				"Roles" : [
+                    {
+						"Ref" : "InstanceRole"
+					}
+				]
+			}
+		},
+		"InstanceProfile" : {
+			"Type" : "AWS::IAM::InstanceProfile",
+			"Properties" : {
+				"Path" : "/",
+				"Roles" : [{
+						"Ref" : "InstanceRole"
+					}
+				]
+			}
+		},
+		"Ec2SecurityGroup" : {
+			"Type" : "AWS::EC2::SecurityGroup",
+			"Properties" : {
+				"GroupDescription" : "Allow TCP to client host",
+				"SecurityGroupIngress" : [{
+						"IpProtocol" : "tcp",
+						"FromPort" : "22",
+						"ToPort" : "22",
+						"CidrIp" : "0.0.0.0/0"
+					}, {
+						"IpProtocol" : "tcp",
+						"FromPort" : "80",
+						"ToPort" : "80",
+						"CidrIp" : "0.0.0.0/0"
+					},
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "443",
+						"ToPort" : "443",
+						"CidrIp" : "0.0.0.0/0"
+					}
+				]
+
+			}
+		},
+		"MyInstance" : {
+			"Type" : "AWS::EC2::Instance",
+			"Metadata" : {
+				"AWS::CloudFormation::Authentication" : {
+					"S3AccessCreds" : {
+						"type" : "S3",
+						"roleName" : {
+							"Ref" : "InstanceRole"
+						},
+						"buckets" : {
+							"Ref" : "BucketName"
+						}
+					}
+				},
+				"AWS::CloudFormation::Init" : {
+					"configSets" : {
+						"test1" : ["1"],
+						"test2" : ["2"]
+					},
+					"1" : {
+						"packages" : {
+							"yum" : {
+								"httpd" : []
+							}
+						},
+						"commands" : {
+							"test" : {
+								"command" : "echo \"$MAGIC\" > /var/test.txt",
+								"env" : {
+									"MAGIC" : "I come from the environment!"
+								},
+								"cwd" : "~"
+							}
+						}
+					},
+
+					"2" : {
+						"commands" : {
+							"test" : {
+								"command" : "echo \"$VPCID\" >> /var/mytestVPCid.txt",
+								"env" : {
+									"VPCID" : {
+										"Ref" : "VpcId"
+									}
+								},
+								"cwd" : "~"
+							}
+						}
+					},
+					"files" : {
+						"/var/indexnew.html" : {
+							"content" : {
+								"Fn::Join" : ["", [
+										"<HTML>\n",
+										"  <HEAD>\n",
+										"    <TITLE> AWS CLOUDFORMATION TEMPLATE</TITLE>\n",
+										"  </HEAD>\n",
+										"  <BODY>\n",
+										"     <H1>Welcome to the AWS CloudFormation By test</H1>\n",
+										"  </BODY>\n",
+										"</HTML>\n"
+									]]
+							}
+						},
+						"/var/myinput.txt" : {
+							"content" : {
+								"Fn::Join" : ["", [
+										"Instance Type ", {
+											"Ref" : "InstanceType"
+										}, ";\n",
+										"VpcId ", {
+											"Ref" : "VpcId"
+										}, ";\n"
+									]]
+							}
+						},
+						"/var/mytext.txt" : {
+							"source" : {
+								"Ref" : "BucketURL"
+							},
+							"mode" : "000644",
+							"owner" : {
+								"Ref" : "BucketOwner"
+							},
+							"group" : "root",
+							"authentication" : "S3AccessCreds"
+
+						}
+					}
+				}
+			},
+			"Properties" : {
+				"IamInstanceProfile" : {
+					"Ref" : "InstanceProfile"
+				},
+				"ImageId" : {
+					"Fn::FindInMap" : [
+						"RegionMap", {
+							"Ref" : "AWS::Region"
+						},
+						"AMI"
+					]
+				},
+				"KeyName" : {
+					"Ref" : "KeyName"
+				},
+				"InstanceType" : {
+					"Ref" : "InstanceType"
+				},
+				"SecurityGroups" : [{
+						"Ref" : "Ec2SecurityGroup"
+					}
+				],
+				"UserData" : {
+					"Fn::Base64" : {
+						"Fn::Join" : ["", [
+								"#!/bin/bash -xe\n",
+								"yum install -y aws-cfn-bootstrap\n",
+								"yum install httpd -y\n",
+								"yum update -y \n",
+								"service httpd start\n",
+								"chkconfig httpd on\n",
+								"echo $1 $2 $3 > /var/paramfile.txt\n"
+
+							]
+						]
+					}
+				}
+			}
+		}
+	},
+	"Outputs" : {
+		"webadd" : {
+			"Description" : "URL for newly created LAMP stack",
+			"Value" : {
+				"Fn::Join" : ["", ["http://", {
+							"Fn::GetAtt" : ["MyInstance", "PublicDnsName"]
+						}
+					]]
+			}
+		}
+	}
+}

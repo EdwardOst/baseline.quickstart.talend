@@ -1,0 +1,502 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "TacInstanceType": {
+            "Description": "TAC EC2 instance type",
+            "Type": "String",
+            "Default": "t2.medium",
+            "AllowedValues": [
+                "t1.micro",
+                "t2.micro",
+                "t2.small",
+                "t2.medium",
+                "m1.small",
+                "m1.medium",
+                "m1.large",
+                "m1.xlarge",
+                "m2.xlarge",
+                "m2.2xlarge",
+                "m2.4xlarge",
+                "m3.medium",
+                "m3.large",
+                "m3.xlarge",
+                "m3.2xlarge",
+                "c1.medium",
+                "c1.xlarge",
+                "c3.large",
+                "c3.xlarge",
+                "c3.2xlarge",
+                "c3.4xlarge",
+                "c3.8xlarge",
+                "c4.large",
+                "c4.xlarge",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "g2.2xlarge",
+                "r3.large",
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge",
+                "r3.8xlarge",
+                "i2.xlarge",
+                "i2.2xlarge",
+                "i2.4xlarge",
+                "i2.8xlarge",
+                "d2.xlarge",
+                "d2.2xlarge",
+                "d2.4xlarge",
+                "d2.8xlarge",
+                "hi1.4xlarge",
+                "hs1.8xlarge",
+                "cr1.8xlarge",
+                "cc2.8xlarge",
+                "cg1.4xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type."
+        },
+        "NexusInstanceType": {
+            "Description": "Nexus EC2 instance type",
+            "Type": "String",
+            "Default": "t2.small",
+            "AllowedValues": [
+                "t1.micro",
+                "t2.micro",
+                "t2.small",
+                "t2.medium",
+                "m1.small",
+                "m1.medium",
+                "m1.large",
+                "m1.xlarge",
+                "m2.xlarge",
+                "m2.2xlarge",
+                "m2.4xlarge",
+                "m3.medium",
+                "m3.large",
+                "m3.xlarge",
+                "m3.2xlarge",
+                "c1.medium",
+                "c1.xlarge",
+                "c3.large",
+                "c3.xlarge",
+                "c3.2xlarge",
+                "c3.4xlarge",
+                "c3.8xlarge",
+                "c4.large",
+                "c4.xlarge",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "g2.2xlarge",
+                "r3.large",
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge",
+                "r3.8xlarge",
+                "i2.xlarge",
+                "i2.2xlarge",
+                "i2.4xlarge",
+                "i2.8xlarge",
+                "d2.xlarge",
+                "d2.2xlarge",
+                "d2.4xlarge",
+                "d2.8xlarge",
+                "hi1.4xlarge",
+                "hs1.8xlarge",
+                "cr1.8xlarge",
+                "cc2.8xlarge",
+                "cg1.4xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type."
+        },
+        "LogserverInstanceType": {
+            "Description": "Logserver EC2 instance type",
+            "Type": "String",
+            "Default": "t2.small",
+            "AllowedValues": [
+                "t1.micro",
+                "t2.micro",
+                "t2.small",
+                "t2.medium",
+                "m1.small",
+                "m1.medium",
+                "m1.large",
+                "m1.xlarge",
+                "m2.xlarge",
+                "m2.2xlarge",
+                "m2.4xlarge",
+                "m3.medium",
+                "m3.large",
+                "m3.xlarge",
+                "m3.2xlarge",
+                "c1.medium",
+                "c1.xlarge",
+                "c3.large",
+                "c3.xlarge",
+                "c3.2xlarge",
+                "c3.4xlarge",
+                "c3.8xlarge",
+                "c4.large",
+                "c4.xlarge",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "g2.2xlarge",
+                "r3.large",
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge",
+                "r3.8xlarge",
+                "i2.xlarge",
+                "i2.2xlarge",
+                "i2.4xlarge",
+                "i2.8xlarge",
+                "d2.xlarge",
+                "d2.2xlarge",
+                "d2.4xlarge",
+                "d2.8xlarge",
+                "hi1.4xlarge",
+                "hs1.8xlarge",
+                "cr1.8xlarge",
+                "cc2.8xlarge",
+                "cg1.4xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type."
+        },
+        "JobserverInstanceType": {
+            "Description": "Jobserver EC2 instance type",
+            "Type": "String",
+            "Default": "t2.micro",
+            "AllowedValues": [
+                "t1.micro",
+                "t2.micro",
+                "t2.small",
+                "t2.medium",
+                "m1.small",
+                "m1.medium",
+                "m1.large",
+                "m1.xlarge",
+                "m2.xlarge",
+                "m2.2xlarge",
+                "m2.4xlarge",
+                "m3.medium",
+                "m3.large",
+                "m3.xlarge",
+                "m3.2xlarge",
+                "c1.medium",
+                "c1.xlarge",
+                "c3.large",
+                "c3.xlarge",
+                "c3.2xlarge",
+                "c3.4xlarge",
+                "c3.8xlarge",
+                "c4.large",
+                "c4.xlarge",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "g2.2xlarge",
+                "r3.large",
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge",
+                "r3.8xlarge",
+                "i2.xlarge",
+                "i2.2xlarge",
+                "i2.4xlarge",
+                "i2.8xlarge",
+                "d2.xlarge",
+                "d2.2xlarge",
+                "d2.4xlarge",
+                "d2.8xlarge",
+                "hi1.4xlarge",
+                "hs1.8xlarge",
+                "cr1.8xlarge",
+                "cc2.8xlarge",
+                "cg1.4xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type."
+        },
+        "KeyName": {
+            "Description": "Name of an EC2 KeyPair to enable SSH access to the TAC instance.",
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "ConstraintDescription": "must be the name of an existing EC2 KeyPair.",
+            "Default": "eost-aws-quickstart"
+        },
+        "SSHLocation": {
+            "Description": " The IP address range that can be used to access the TAC server using SSH.",
+            "Type": "String",
+            "MinLength": "9",
+            "MaxLength": "18",
+            "Default": "71.120.28.163/32",
+            "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+            "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+        },
+        "TalendLicenseUser": {
+            "Description": "The Talend License User is included in the email you received with your eval license.",
+            "Type": "String",
+            "Default": "eost"
+        },
+        "TalendLicensePassword": {
+            "Description": "The Talend License Password is included in the email you received with your eval license.",
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "TalendLicenseUrl": {
+            "Description": "Url to license file received in email.",
+            "Type": "String",
+            "Default": "https://s3.amazonaws.com/license.talend.com/license"
+        },
+        "TalendResourceBucket": {
+            "Description": "Talend S3 resources bucket.",
+            "Type": "String",
+            "Default": "eost-aws-quickstart"
+        },  
+        "TalendResourceBucketRepoPath": {
+            "Description": "Path to binary repository in Talend S3 resources bucket.",
+            "Type": "String",
+            "Default": "/"
+        },  
+        "TalendResourceBucketAccessKey": {
+            "Description": "Access Key for Talend S3 resources bucket.",
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "TalendResourceBucketSecret": {
+            "Description": "Secret for Talend S3 resources bucket.",
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "talendTacDbHost": {
+            "Description": "TAC database hostname.",
+            "Type": "String",
+            "Default": "eost-rds-mysql-2.cfcij7o8rjxs.us-east-1.rds.amazonaws.com"
+        },
+        "talendGitHost": {
+            "Description": "Git host.",
+            "Type": "String",
+            "Default": "github.com"
+        },
+        "talendGitPort": {
+            "Description": "Git port.",
+            "Type": "Number",
+            "Default": "443",
+            "MinValue": "1",
+            "MaxValue": "65535"
+        },
+        "talendGitRepo": {
+            "Description": "Git repository.",
+            "Type": "String",
+            "Default": "EdwardOst/quickstart-repo"
+        },
+        "talendGitUser": {
+            "Description": "Git user.",
+            "Type": "String",
+            "Default": "EdwardOst"
+        },
+        "talendGitPassword": {
+            "Description": "Git password.",
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "createNetworkStack": {
+            "Description": "Create network stack.",
+            "Type": "String",
+			"Default": "true",
+            "AllowedValues": [ "true", "false" ]
+        },
+        "createNexusStack": {
+            "Description": "Create Nexus stack.",
+            "Type": "String",
+			"Default": "true",
+            "AllowedValues": [ "true", "false" ]
+        },
+        "createLogserverStack": {
+            "Description": "Create Logserver stack.",
+            "Type": "String",
+			"Default": "false",
+            "AllowedValues": [ "true", "false" ]
+        },
+        "createTacStack": {
+            "Description": "Create TAC stack.",
+            "Type": "String",
+			"Default": "false",
+            "AllowedValues": [ "true", "false" ]
+        },
+        "createJobserverStack": {
+            "Description": "Create Jobserver stack.",
+            "Type": "String",
+			"Default": "false",
+            "AllowedValues": [ "true", "false" ]
+        }
+    },
+    "Mappings": {
+        "Talend": {
+            "templates": {
+				"networkTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_network.template.json",
+                "nexusTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_nexus.template.json",
+                "logserverTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_logserver.template.json",
+				"tacTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_tac.template.json",
+				"jobserverTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_jobserver.template.json"
+            }
+        }
+    },
+    "Conditions": {
+        "CreateNetworkStackCondition": {
+            "Fn::Equals": [
+                { "Ref": "createNetworkStack" },
+                "true"
+            ]
+        },
+        "CreateNexusStackCondition": {
+            "Fn::Equals": [
+                { "Ref": "createNexusStack" },
+                "true"
+            ]
+        },
+        "CreateLogserverStackCondition": {
+            "Fn::Equals": [
+                { "Ref": "createLogserverStack" },
+                "true"
+            ]
+        },
+        "CreateTacStackCondition": {
+            "Fn::Equals": [
+                { "Ref": "createTacStack" },
+                "true"
+            ]
+        },
+        "CreateJobserverStackCondition": {
+            "Fn::Equals": [
+                { "Ref": "createJobserverStack" },
+                "true"
+            ]
+        }
+    },
+    "Resources": {
+		"NetworkStack": {
+			"Type" : "AWS::CloudFormation::Stack",
+            "Condition" : "CreateNetworkStackCondition",
+			"Properties" : {
+				"Parameters" : {
+					"SSHLocation": { "Ref": "SSHLocation" }
+				},
+				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "networkTemplateUrl"] },
+				"TimeoutInMinutes" : "5"
+			}
+		},
+		"NexusStack": {
+			"Type" : "AWS::CloudFormation::Stack",
+            "Condition" : "CreateNexusStackCondition",
+			"DependsOn": [ "NetworkStack" ],
+			"Properties" : {
+				"Parameters" : {
+					"InstanceType": { "Ref": "NexusInstanceType" },
+					"KeyName": { "Ref": "KeyName" },
+					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
+                    "IsPrivateSubnet": "public",
+					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup" ] },
+					"TalendProfile": "nexus",
+					"TalendProfileInstanceId": "1",
+					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
+					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
+					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
+                    "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
+                    "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
+                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
+                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" }
+				},
+				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "nexusTemplateUrl"] },
+				"TimeoutInMinutes" : "10"
+			}
+		},
+		"LogserverStack": {
+			"Type" : "AWS::CloudFormation::Stack",
+            "Condition" : "CreateLogserverStackCondition",
+			"DependsOn": [ "NetworkStack" ],
+			"Properties" : {
+				"Parameters" : {
+					"InstanceType": { "Ref": "LogserverInstanceType" },
+					"KeyName": { "Ref": "KeyName" },
+					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
+                    "IsPrivateSubnet": "public",
+					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup" ] },
+					"TalendProfile": "logserver",
+					"TalendProfileInstanceId": "1",
+					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
+					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
+					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
+                    "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
+                    "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
+                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
+                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" }
+				},
+				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "logserverTemplateUrl"] },
+				"TimeoutInMinutes" : "10"
+			}
+		},
+		"TacStack": {
+			"Type" : "AWS::CloudFormation::Stack",
+            "Condition" : "CreateTacStackCondition",
+			"DependsOn": [ "NetworkStack", "NexusStack", "LogserverStack" ],
+			"Properties" : {
+				"Parameters" : {
+					"InstanceType": { "Ref": "TacInstanceType" },
+					"KeyName": { "Ref": "KeyName" },
+					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
+					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup" ] },
+					"TalendProfile": "tacamc",
+					"TalendProfileInstanceId": "1",
+					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
+					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
+					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
+                    "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
+                    "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
+                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
+                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
+                    "tacDbHost": { "Ref": "talendTacDbHost" },
+                    "talendNexusHost": { "Fn::GetAtt": [ "NexusStack", "Outputs.privateDnsName" ] },
+                    "talendNexusPort": { "Fn::GetAtt": [ "NexusStack", "Outputs.nexusPort" ] },
+                    "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.publicDnsName" ] },
+                    "talendLogstashTacPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashTacPort" ] },
+                    "talendLogstashKibanaPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashKibanaPort" ] },
+                    "talendGitHost": { "Ref": "talendGitHost" },
+                    "talendGitPort": { "Ref": "talendGitPort" },
+                    "talendGitRepo": { "Ref": "talendGitRepo" },
+                    "talendGitUser": { "Ref": "talendGitUser" },
+                    "talendGitPassword": { "Ref": "talendGitPassword" }
+				},
+				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "tacTemplateUrl"] },
+				"TimeoutInMinutes" : "10"
+			}
+		},
+		"JobServerStack": {
+			"Type" : "AWS::CloudFormation::Stack",
+            "Condition" : "CreateJobserverStackCondition",
+			"DependsOn": [ "NetworkStack", "TacStack", "LogserverStack" ],
+			"Properties" : {
+				"Parameters" : {
+					"InstanceType": { "Ref": "JobserverInstanceType" },
+					"KeyName": { "Ref": "KeyName" },
+					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.privateSubnet" ] },
+                    "IsPrivateSubnet": "private",
+					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.jobserverSecurityGroup" ] },
+					"TalendProfile": "jobserver",
+					"TalendProfileInstanceId": "1",
+					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
+					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
+					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
+                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
+                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
+					"tacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.publicDnsName" ] },
+                    "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
+                    "talendLogstashJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashJobserverPort" ] }
+				},
+				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "jobserverTemplateUrl"] },
+				"TimeoutInMinutes" : "10"
+			}
+		}
+    },
+    "Outputs": {
+    }
+}

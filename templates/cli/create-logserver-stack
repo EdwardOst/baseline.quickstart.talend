@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+set -u
+
+source cfn-util.sh
+
+
+function create-logserver() {
+
+    local network_stack="${1:-eost-quickstart-network}"
+    local template_url="${2:-https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_logserver.template.json}"
+    local stack_name="${3:-eost-quickstart-logserver}"
+    local profile="${4:-logserver}"
+
+    aws cloudformation describe-stacks \
+        --stack-name "${network_stack}" \
+        > "${network_stack}.json"
+
+    local publicSubnet
+    getOutput "${network_stack}.json" "publicSubnet"
+
+    local tacSecurityGroup
+    getOutput "${network_stack}.json" "tacSecurityGroup"
+
+    aws cloudformation create-stack \
+        --stack-name "${stack_name}" \
+        --template-url "${template_url}" \
+        --parameters \
+            ParameterKey=InstanceType,ParameterValue=t2.small \
+            ParameterKey=KeyName,ParameterValue= \
+            ParameterKey=SubnetId,ParameterValue="${publicSubnet}" \
+            ParameterKey=IsPrivateSubnet,ParameterValue=public \
+            ParameterKey=SecurityGroupIds,ParameterValue="${tacSecurityGroup}" \
+            ParameterKey=TalendProfile,ParameterValue="${profile}" \
+            ParameterKey=TalendProfileInstanceId,ParameterValue=1 \
+            ParameterKey=TalendLicenseUser,ParameterValue= \
+            ParameterKey=TalendLicensePassword,ParameterValue= \
+            ParameterKey=TalendLicenseUrl,ParameterValue= \
+            ParameterKey=TalendResourceBucket,ParameterValue= \
+            ParameterKey=TalendResourceBucketRepoPath,ParameterValue=/ \
+            ParameterKey=TalendResourceBucketAccessKey,ParameterValue= \
+            ParameterKey=TalendResourceBucketSecret,ParameterValue= \
+            ParameterKey=TalendLogstashTacPort,ParameterValue=8050 \
+            ParameterKey=TalendLogstashJobserverPort,ParameterValue=8055 \
+            ParameterKey=TalendLogstashCmdlinePort,ParameterValue=8056 \
+            ParameterKey=TalendLogstashElasticSearchPort,ParameterValue=9200 \
+            ParameterKey=TalendLogstashKibanaPort,ParameterValue=5601 \
+        --disable-rollback \
+        --tags Key=Name,Value="${stack_name}"
+
+}
+
+create-logserver "${@}"

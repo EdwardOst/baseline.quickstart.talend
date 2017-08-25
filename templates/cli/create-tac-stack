@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+set -u
+
+source cfn-util.sh
+
+
+function create-tac() {
+
+    local network_stack="${1:-eost-quickstart-network}"
+    local nexus_stack="${2:-eost-quickstart-nexus}"
+    local logserver_stack="${3:-eost-quickstart-logserver}"
+    local template_url="${4:-https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_tac.template.json}"
+    local stack_name="${5:-eost-quickstart-tac}"
+    local profile="${6:-tacamc}"
+
+    # network stack dependencies
+    aws cloudformation describe-stacks \
+        --stack-name "${network_stack}" \
+        > "${network_stack}.json"
+
+    local publicSubnet
+    getOutput "${network_stack}.json" "publicSubnet"
+
+    local tacSecurityGroup
+    getOutput "${network_stack}.json" "tacSecurityGroup"
+
+    # nexus stack dependencies
+    aws cloudformation describe-stacks \
+        --stack-name "${nexus_stack}" \
+        > "${nexus_stack}.json"
+
+    local nexus_privateDnsName
+    getOutput "${nexus_stack}.json" "privateDnsName" "nexus_privateDnsName"
+
+    # logserver stack dependencies
+    aws cloudformation describe-stacks \
+        --stack-name "${logserver_stack}" \
+        > "${logserver_stack}.json"
+
+    local logserver_privateDnsName
+    getOutput "${logserver_stack}.json" "privateDnsName" "logserver_privateDnsName"
+
+    aws cloudformation create-stack \
+        --stack-name "${stack_name}" \
+        --template-url "${template_url}" \
+        --parameters \
+            ParameterKey=InstanceType,ParameterValue=t2.small \
+            ParameterKey=KeyName,ParameterValue= \
+            ParameterKey=SubnetId,ParameterValue="${publicSubnet}" \
+            ParameterKey=SecurityGroupIds,ParameterValue="${tacSecurityGroup}" \
+            ParameterKey=TalendProfile,ParameterValue="${profile}" \
+            ParameterKey=TalendProfileInstanceId,ParameterValue=1 \
+            ParameterKey=TalendLicenseUser,ParameterValue= \
+            ParameterKey=TalendLicensePassword,ParameterValue= \
+            ParameterKey=TalendLicenseUrl,ParameterValue= \
+            ParameterKey=TalendResourceBucket,ParameterValue= \
+            ParameterKey=TalendResourceBucketRepoPath,ParameterValue=/ \
+            ParameterKey=TalendResourceBucketAccessKey,ParameterValue= \
+            ParameterKey=TalendResourceBucketSecret,ParameterValue= \
+            ParameterKey=tacDbHost,ParameterValue= \
+            ParameterKey=tacDbPort,ParameterValue=3306 \
+            ParameterKey=tacDbSchema,ParameterValue= \
+            ParameterKey=tacDbUser,ParameterValue= \
+            ParameterKey=tacDbPassword,ParameterValue= \
+            ParameterKey=amcDbHost,ParameterValue= \
+            ParameterKey=amcDbPort,ParameterValue=3306 \
+            ParameterKey=amcDbSchema,ParameterValue=amc \
+            ParameterKey=amcDbUser,ParameterValue= \
+            ParameterKey=amcDbPassword,ParameterValue= \
+            ParameterKey=talendNexusHost,ParameterValue="${nexus_privateDnsName}" \
+            ParameterKey=talendNexusPort,ParameterValue=8081 \
+            ParameterKey=talendLoggingHost,ParameterValue="${logserver_privateDnsName}" \
+            ParameterKey=talendLogstashTacPort,ParameterValue=8050 \
+            ParameterKey=talendLogstashKibanaPort,ParameterValue=5601 \
+            ParameterKey=talendGitHost,ParameterValue=github.com \
+            ParameterKey=talendGitPort,ParameterValue=443 \
+            ParameterKey=talendGitRepo,ParameterValue= \
+            ParameterKey=talendGitUser,ParameterValue= \
+            ParameterKey=talendGitPassword,ParameterValue= \
+        --disable-rollback \
+        --tags Key=Name,Value="${stack_name}"
+
+}
+
+create-tac "${@}"
