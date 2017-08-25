@@ -101,8 +101,8 @@ function s3_sync() {
 
     required git_deploy_dir s3_bucket 
 
-    local -a grantcmd
-    [ -n "${s3_grant}" ] && grantcmd=( "--grant" "${s3_grant}" )
+    local -a grantcmd=()
+    [ -n "${s3_grant}" ] && grantcmd+=( "--grant" "${s3_grant}" )
 
     debugLog aws s3 sync "${git_deploy_dir}" "s3://${s3_bucket}${s3_path}" --delete --exclude '.git/*' "${grantcmd[@]}"
     aws s3 sync "${git_deploy_dir}" "s3://${s3_bucket}${s3_path}" --delete --exclude '.git/*' "${grantcmd[@]}"
