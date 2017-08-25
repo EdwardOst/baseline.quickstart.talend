@@ -245,12 +245,12 @@
         "TalendLicenseUrl": {
             "Description": "Url to license file received in email.",
             "Type": "String",
-            "Default": "https://s3.amazonaws.com/license.talend.com/license"
+            "Default": "https://s3.amazonaws.com/license.quickstart.talend/license"
         },
         "TalendResourceBucket": {
             "Description": "Talend S3 resources bucket.",
             "Type": "String",
-            "Default": "eost-aws-quickstart"
+            "Default": "repo-quickstart-talend"
         },  
         "TalendResourceBucketRepoPath": {
             "Description": "Path to binary repository in Talend S3 resources bucket.",
@@ -333,11 +333,11 @@
     "Mappings": {
         "Talend": {
             "templates": {
-				"networkTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_network.template.json",
-                "nexusTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_nexus.template.json",
-                "logserverTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_logserver.template.json",
-				"tacTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_tac.template.json",
-				"jobserverTemplateUrl": "https://s3.amazonaws.com/baseline.aws.talend.com/templates/talend_jobserver.template.json"
+				"networkTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_network.template.json",
+                "nexusTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_nexus.template.json",
+                "logserverTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_logserver.template.json",
+				"tacTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_tac.template.json",
+				"jobserverTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
             }
         }
     },

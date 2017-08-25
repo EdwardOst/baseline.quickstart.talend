@@ -97,7 +97,7 @@
         "TalendResourceBucket": {
             "Description": "Talend S3 resources bucket.",
             "Type": "String",
-            "Default": "eost-aws-quickstart"
+            "Default": "repo-quickstart-talend"
         },  
         "TalendResourceBucketRepoPath": {
             "Description": "Path to binary repository in Talend S3 resources bucket.",
@@ -233,10 +233,10 @@
     "Mappings": {
         "Talend": {
             "tui": {
-                "tuiUrl": "https://s3.amazonaws.com/talend-quickstart-repo/tui/TUI-4.5.2.tar",
+                "tuiUrl": "https://s3.amazonaws.com/repo-quickstart-talend/tui/TUI-4.5.2.tar",
                 "tuiTarget": "/home/ec2-user/TUI-4.5.2",
-                "baselineUrl": "https://github.com/EdwardOst/baseline.aws.talend.com/archive/0.0.2.tar.gz",
-                "baselineTarget": "/home/ec2-user/baseline.aws.talend.com-0.0.2",
+                "baselineUrl": "https://github.com/EdwardOst/baseline.quickstart.talend/archive/0.0.2.tar.gz",
+                "baselineTarget": "/home/ec2-user/baseline.quickstart.talend-0.0.2",
                 "licenseTarget": "/home/ec2-user/TUI-4.5.2/licenses/6.3.1",
                 "s3fsUrl": "https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.82.tar.gz",
                 "s3fsTarget": "/home/ec2-user/s3fs-fuse-1.82",
@@ -471,9 +471,9 @@
                                 "#!/bin/bash -xe\n",
                                 "yum install -y aws-cfn-bootstrap\n",
 								"#fix ec2 hostname resolution\n",
-                                "wget https://s3.amazonaws.com/baseline.aws.talend.com/bootstrap/ec2-metadata\n",
+                                "wget https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/ec2-metadata\n",
 								"chmod +x ec2-metadata\n",
-                                "wget https://s3.amazonaws.com/baseline.aws.talend.com/bootstrap/update_hosts.sh\n",
+                                "wget https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/update_hosts.sh\n",
 								"chmod +x update_hosts.sh\n",
                                 "./update_hosts.sh\n",
                                 "# Install the files and packages from the metadata\n",
