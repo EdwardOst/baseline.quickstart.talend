@@ -1,6 +1,56 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
+        "PublicSubnet": {
+        	"Description": "Public Subnet, leave blank if using NetworkStack",
+        	"Type": "AWS::EC2::Subnet::Id"
+        },
+        "PrivateSubnet": {
+        	"Description": "Private Subnet, leave blank if using NetworkStack",
+        	"Type": "AWS::EC2::Subnet::Id"
+        },
+		"IsPrivateSubnet": {
+            "Description": "Deploy servers to private or public subnet.",
+            "Type": "String",
+			"Default": "public",
+            "AllowedValues": [ "private", "public" ]
+		},
+        "nexusTemplateUrl": {
+            "Type": "String",
+            "Description": "Nexus Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_nexus.template.json"
+        },
+        "logserverTemplateUrl": {
+            "Type": "String",
+            "Description": "Logserver Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_logserver.template.json"
+        },
+        "tacTemplateUrl": {
+            "Type": "String",
+            "Description": "TAC Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_tac.template.json"
+        },
+        "jobserverTemplateUrl": {
+            "Type": "String",
+            "Description": "Jobserver Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
+        },
+        "NexusSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup::Id",
+            "Description": "Nexus Security Group"
+        },
+        "LogserverSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup::Id",
+            "Description": "Logserver Security Group"
+        },
+        "TacSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup::Id",
+            "Description": "TAC Security Group"
+        },
+        "JobserverSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup::Id",
+            "Description": "Jobserver Security Group"
+        },
         "TacInstanceType": {
             "Description": "TAC EC2 instance type",
             "Type": "String",
@@ -299,12 +349,6 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "createNetworkStack": {
-            "Description": "Create network stack.",
-            "Type": "String",
-			"Default": "true",
-            "AllowedValues": [ "true", "false" ]
-        },
         "createNexusStack": {
             "Description": "Create Nexus stack.",
             "Type": "String",
@@ -328,18 +372,15 @@
             "Type": "String",
 			"Default": "false",
             "AllowedValues": [ "true", "false" ]
+        },
+        "createNetworkStack": {
+            "Description": "Create network stack.",
+            "Type": "String",
+			"Default": "true",
+            "AllowedValues": [ "true", "false" ]
         }
     },
     "Mappings": {
-        "Talend": {
-            "templates": {
-				"networkTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_network.template.json",
-                "nexusTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_nexus.template.json",
-                "logserverTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_logserver.template.json",
-				"tacTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_tac.template.json",
-				"jobserverTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
-            }
-        }
     },
     "Conditions": {
         "CreateNetworkStackCondition": {
@@ -381,123 +422,115 @@
 				"Parameters" : {
 					"SSHLocation": { "Ref": "SSHLocation" }
 				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "networkTemplateUrl"] },
+				"TemplateURL" : { "Ref": "networkTemplateUrl" },
 				"TimeoutInMinutes" : "5"
 			}
 		},
-		"NexusStack": {
+        "ServersStack": {
 			"Type" : "AWS::CloudFormation::Stack",
-            "Condition" : "CreateNexusStackCondition",
 			"DependsOn": [ "NetworkStack" ],
 			"Properties" : {
+				"TemplateURL" : { "Ref": "nexusTemplateUrl" },
+				"TimeoutInMinutes" : "10",
 				"Parameters" : {
-					"InstanceType": { "Ref": "NexusInstanceType" },
-					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
-                    "IsPrivateSubnet": "public",
-					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup" ] },
-					"TalendProfile": "nexus",
-					"TalendProfileInstanceId": "1",
-					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
-					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
-					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
-                    "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
-                    "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" }
-				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "nexusTemplateUrl"] },
-				"TimeoutInMinutes" : "10"
-			}
-		},
-		"LogserverStack": {
-			"Type" : "AWS::CloudFormation::Stack",
-            "Condition" : "CreateLogserverStackCondition",
-			"DependsOn": [ "NetworkStack" ],
-			"Properties" : {
-				"Parameters" : {
-					"InstanceType": { "Ref": "LogserverInstanceType" },
-					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
-                    "IsPrivateSubnet": "public",
-					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup" ] },
-					"TalendProfile": "logserver",
-					"TalendProfileInstanceId": "1",
-					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
-					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
-					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
-                    "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
-                    "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" }
-				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "logserverTemplateUrl"] },
-				"TimeoutInMinutes" : "10"
-			}
-		},
-		"TacStack": {
-			"Type" : "AWS::CloudFormation::Stack",
-            "Condition" : "CreateTacStackCondition",
-			"DependsOn": [ "NetworkStack", "NexusStack", "LogserverStack" ],
-			"Properties" : {
-				"Parameters" : {
-					"InstanceType": { "Ref": "TacInstanceType" },
-					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
-                    "IsPrivateSubnet": "public",
-					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup" ] },
-					"TalendProfile": "tacamc",
-					"TalendProfileInstanceId": "1",
-					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
-					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
-					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
+                    "PublicSubnet": { 
+                        "Fn::If": [
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
+                            { "Ref": "PublicSubnet"  }
+                        ]
+                    },
+                    "PrivateSubnet": { 
+                        "Fn::If": [
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.privateSubnet" ] },
+                            { "Ref": "PrivateSubnet" }
+                        ]
+                    },
+                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
+                    "nexusTemplateUrl": { "Ref": "nexusTemplateUrl" },
+                    "logserverTemplateUrl": { "Ref": "logserverTemplateUrl" },
+                    "tacTemplateUrl": { "Ref": "tacTemplateUrl" },
+                    "jobserverTemplateUrl": { "Ref": "jobserverTemplateUrl" },
+                    "NexusSecurityGroup": { "Ref": "NexusSecurityGroup" },
+                    "LogserverSecurityGroup": { "Ref": "LogserverSecurityGroup" },
+                    "TacSecurityGroup": { "Ref": "TacSecurityGroup" },
+                    "JobserverSecurityGroup": { "Ref": "JobserverSecurityGroup" },
+                    "NexusInstanceType": { "Ref": "NexusInstanceType" },
+                    "LogserverInstanceType": { "Ref": "LogserverInstanceType" },
+                    "TacInstanceType": { "Ref": "TacInstanceType" },
+                    "JobserverInstanceType": { "Ref": "JobserverInstanceType" },
+                    "KeyName": { "Ref": "KeyName" },
+                    "SSHLocation": { "Ref": "SSHLocation" },
+                    "TalendLicenseUser": { "Ref": "TalendLicenseUser" },
+                    "TalendLicensePassword": { "Ref": "TalendLicensePassword" },
+                    "TalendLicenseUrl": { "Ref": "TalendLicenseUrl" },
                     "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
                     "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
                     "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
                     "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
-                    "tacDbHost": { "Ref": "talendTacDbHost" },
-                    "talendNexusHost": { "Fn::GetAtt": [ "NexusStack", "Outputs.privateDnsName" ] },
-                    "talendNexusPort": { "Fn::GetAtt": [ "NexusStack", "Outputs.nexusPort" ] },
-                    "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.publicDnsName" ] },
-                    "talendLogstashTacPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashTacPort" ] },
-                    "talendLogstashKibanaPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashKibanaPort" ] },
+                    "talendTacDbHost": { "Ref": "talendTacDbHost" },
                     "talendGitHost": { "Ref": "talendGitHost" },
                     "talendGitPort": { "Ref": "talendGitPort" },
                     "talendGitRepo": { "Ref": "talendGitRepo" },
                     "talendGitUser": { "Ref": "talendGitUser" },
-                    "talendGitPassword": { "Ref": "talendGitPassword" }
-				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "tacTemplateUrl"] },
-				"TimeoutInMinutes" : "10"
-			}
-		},
-		"JobServerStack": {
-			"Type" : "AWS::CloudFormation::Stack",
-            "Condition" : "CreateJobserverStackCondition",
-			"DependsOn": [ "NetworkStack", "TacStack", "LogserverStack" ],
-			"Properties" : {
-				"Parameters" : {
-					"InstanceType": { "Ref": "JobserverInstanceType" },
-					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.privateSubnet" ] },
-                    "IsPrivateSubnet": "private",
-					"SecurityGroupIds": { "Fn::GetAtt": [ "NetworkStack", "Outputs.jobserverSecurityGroup" ] },
-					"TalendProfile": "jobserver",
-					"TalendProfileInstanceId": "1",
-					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
-					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
-					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
-					"tacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.publicDnsName" ] },
-                    "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
-                    "talendLogstashJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashJobserverPort" ] }
-				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "jobserverTemplateUrl"] },
-				"TimeoutInMinutes" : "10"
-			}
-		}
+                    "talendGitPassword": { "Ref": "talendGitPassword" },
+                    "createNexusStack": { "Ref": "createNexusStack" },
+                    "createLogserverStack": { "Ref": "createLogserverStack" },
+                    "createTacStack": { "Ref": "createTacStack" },
+                    "createJobserverStack": { "Ref": "createJobserverStack" }
+                }
+            }
+        }
     },
     "Outputs": {
+        "NetworkStack": {
+            "Condition": "CreateNetworkStackCondition",
+            "Value": { "Ref": "NetworkStack" },
+            "Description": "Nested network stack",
+			"Export": {
+				"Name": {
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "NetworkStack" ] ] 
+				} 
+			}
+        },
+        "NexusStack": {
+            "Condition": "CreateNexusStackCondition",
+            "Value": { "Ref": "NexusStack" },
+            "Description": "Nested Nexus stack",
+			"Export": {
+				"Name": {
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "NexusStack" ] ] 
+				} 
+			}
+        },
+        "LogserverStack": {
+            "Condition": "CreateLogserverStackCondition",
+            "Value": { "Ref": "LogserverStack" },
+            "Description": "Nested Logserver stack",
+			"Export": {
+				"Name": {
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "LogserverStack" ] ] 
+				} 
+			}
+        },
+        "TacStack": {
+            "Condition": "CreateTacStackCondition",
+            "Value": { "Ref": "TacStack" },
+            "Description": "Nested TAC stack",
+			"Export": {
+				"Name": {
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "TacStack" ] ] 
+				} 
+			}
+        },
+        "JobserverStack": {
+            "Condition": "CreateJobserverStackCondition",
+            "Value": { "Ref": "JobserverStack" },
+            "Description": "Nested Jobserver stack",
+			"Export": {
+				"Name": {
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "JobserverStack" ] ] 
+				} 
+			}
+        }
     }
 }

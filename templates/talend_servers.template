@@ -9,6 +9,12 @@
         	"Description": "Private Subnet",
         	"Type": "AWS::EC2::Subnet::Id"
         },
+		"IsPrivateSubnet": {
+            "Description": "Deploy servers to private or public subnet.",
+            "Type": "String",
+			"Default": "private",
+            "AllowedValues": [ "private", "public" ]
+		},
         "nexusTemplateUrl": {
             "Type": "String",
             "Description": "Nexus Template URL",
@@ -28,6 +34,14 @@
             "Type": "String",
             "Description": "Jobserver Template URL",
             "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
+        },
+        "NexusSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup::Id",
+            "Description": "Nexus Security Group"
+        },
+        "LogserverSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup::Id",
+            "Description": "Logserver Security Group"
         },
         "TacSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup::Id",
@@ -400,8 +414,8 @@
 					"InstanceType": { "Ref": "NexusInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
 					"SubnetId": { "Ref": "PublicSubnet" },
-                    "IsPrivateSubnet": "private",
-					"SecurityGroupIds": { "Ref": "TacSecurityGroup" },
+                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
+					"SecurityGroupIds": { "Ref": "NexusSecurityGroup" },
 					"TalendProfile": "nexus",
 					"TalendProfileInstanceId": "1",
 					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
@@ -424,8 +438,8 @@
 					"InstanceType": { "Ref": "LogserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
 					"SubnetId": { "Ref": "PublicSubnet" },
-                    "IsPrivateSubnet": "private",
-					"SecurityGroupIds": { "Ref": "TacSecurityGroup" },
+                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
+					"SecurityGroupIds": { "Ref": "LogserverSecurityGroup" },
 					"TalendProfile": "logserver",
 					"TalendProfileInstanceId": "1",
 					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
@@ -449,7 +463,7 @@
 					"InstanceType": { "Ref": "TacInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
 					"SubnetId": { "Ref": "PublicSubnet" },
-                    "IsPrivateSubnet": "private",
+                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
 					"SecurityGroupIds": { "Ref": "TacSecurityGroup" },
 					"TalendProfile": "tacamc",
 					"TalendProfileInstanceId": "1",
@@ -475,7 +489,7 @@
 				"TimeoutInMinutes" : "10"
 			}
 		},
-		"JobServerStack": {
+		"JobserverStack": {
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateJobserverStackCondition",
 			"DependsOn": [ "TacStack", "LogserverStack" ],
@@ -485,7 +499,7 @@
 					"InstanceType": { "Ref": "JobserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
 					"SubnetId": { "Ref": "PrivateSubnet" },
-                    "IsPrivateSubnet": "private",
+                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
 					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
 					"TalendProfile": "jobserver",
 					"TalendProfileInstanceId": "1",
