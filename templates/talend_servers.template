@@ -419,25 +419,25 @@
                 "true"
             ]
         },
-        "isNexusPrivateCondition": {
+        "isNexusPrivate": {
             "Fn::Equals": [
                 { "Ref": "privateNexus" },
                 "private"
             ]
         },
-        "isLogserverPrivateCondition": {
+        "isLogserverPrivate": {
             "Fn::Equals": [
                 { "Ref": "privateLogserver" },
                 "private"
             ]
         },
-        "isTacPrivateCondition": {
+        "isTacPrivate": {
             "Fn::Equals": [
                 { "Ref": "privateTac" },
                 "private"
             ]
         },
-        "isJobserverPrivateCondition": {
+        "isJobserverPrivate": {
             "Fn::Equals": [
                 { "Ref": "privateJobserver" },
                 "private"
@@ -455,7 +455,7 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "NexusInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::If": [ "isPrivateNexus", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
+					"SubnetId": { "Fn::If": [ "isNexusPrivate", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
                     "IsPrivateSubnet": { "Ref": "privateNexus" },
 					"SecurityGroupIds": { "Ref": "NexusSecurityGroup" },
 					"TalendProfile": "nexus",
@@ -479,7 +479,7 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "LogserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::If": [ "isPrivateLogserver", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
+					"SubnetId": { "Fn::If": [ "isLogserverPrivate", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
                     "IsPrivateSubnet": { "Ref": "privateLogserver" },
 					"SecurityGroupIds": { "Ref": "LogserverSecurityGroup" },
 					"TalendProfile": "logserver",
@@ -504,7 +504,7 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "TacInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::If": [ "isPrivateTac", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
+					"SubnetId": { "Fn::If": [ "isTacPrivate", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
                     "IsPrivateSubnet": { "Ref": "privateTac" },
 					"SecurityGroupIds": { "Ref": "TacSecurityGroup" },
 					"TalendProfile": "tacamc",
@@ -540,7 +540,7 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "JobserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::If": [ "isPrivateTac", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
+					"SubnetId": { "Fn::If": [ "isJobserverPrivate", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
                     "IsPrivateSubnet": { "Ref": "privateJobserver" },
 					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
 					"TalendProfile": "jobserver",
