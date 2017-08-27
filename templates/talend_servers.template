@@ -1,20 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
-        "PublicSubnet": {
-        	"Description": "Public Subnet",
-        	"Type": "AWS::EC2::Subnet::Id"
-        },
-        "PrivateSubnet": {
-        	"Description": "Private Subnet",
-        	"Type": "AWS::EC2::Subnet::Id"
-        },
-		"IsPrivateSubnet": {
-            "Description": "Deploy servers to private or public subnet.",
-            "Type": "String",
-			"Default": "private",
-            "AllowedValues": [ "private", "public" ]
-		},
         "nexusTemplateUrl": {
             "Type": "String",
             "Description": "Nexus Template URL",
@@ -35,6 +21,38 @@
             "Description": "Jobserver Template URL",
             "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
         },
+        "PublicSubnet": {
+        	"Description": "Public Subnet",
+        	"Type": "AWS::EC2::Subnet::Id"
+        },
+        "PrivateSubnet": {
+        	"Description": "Private Subnet",
+        	"Type": "AWS::EC2::Subnet::Id"
+        },
+		"privateNexus": {
+            "Description": "Deploy Nexus to private or public subnet.",
+            "Type": "String",
+			"Default": "public",
+            "AllowedValues": [ "private", "public" ]
+		},
+		"privateLogserver": {
+            "Description": "Deploy Logserver to private or public subnet.",
+            "Type": "String",
+			"Default": "public",
+            "AllowedValues": [ "private", "public" ]
+		},
+		"privateTac": {
+            "Description": "Deploy TAC to private or public subnet.",
+            "Type": "String",
+			"Default": "public",
+            "AllowedValues": [ "private", "public" ]
+		},
+		"privateJobserver": {
+            "Description": "Deploy Jobserver to private or public subnet.",
+            "Type": "String",
+			"Default": "private",
+            "AllowedValues": [ "private", "public" ]
+		},
         "NexusSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup::Id",
             "Description": "Nexus Security Group"
@@ -358,19 +376,19 @@
         "createLogserverStack": {
             "Description": "Create Logserver stack.",
             "Type": "String",
-			"Default": "false",
+			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
         "createTacStack": {
             "Description": "Create TAC stack.",
             "Type": "String",
-			"Default": "false",
+			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
         "createJobserverStack": {
             "Description": "Create Jobserver stack.",
             "Type": "String",
-			"Default": "false",
+			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         }
     },
@@ -400,6 +418,30 @@
                 { "Ref": "createJobserverStack" },
                 "true"
             ]
+        },
+        "isNexusPrivateCondition": {
+            "Fn::Equals": [
+                { "Ref": "privateNexus" },
+                "private"
+            ]
+        },
+        "isLogserverPrivateCondition": {
+            "Fn::Equals": [
+                { "Ref": "privateLogserver" },
+                "private"
+            ]
+        },
+        "isTacPrivateCondition": {
+            "Fn::Equals": [
+                { "Ref": "privateTac" },
+                "private"
+            ]
+        },
+        "isJobserverPrivateCondition": {
+            "Fn::Equals": [
+                { "Ref": "privateJobserver" },
+                "private"
+            ]
         }
     },
     "Resources": {
@@ -413,8 +455,8 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "NexusInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Ref": "PublicSubnet" },
-                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
+					"SubnetId": { "Fn::If": [ "isPrivateNexus", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
+                    "IsPrivateSubnet": { "Ref": "privateNexus" },
 					"SecurityGroupIds": { "Ref": "NexusSecurityGroup" },
 					"TalendProfile": "nexus",
 					"TalendProfileInstanceId": "1",
@@ -437,8 +479,8 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "LogserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Ref": "PublicSubnet" },
-                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
+					"SubnetId": { "Fn::If": [ "isPrivateLogserver", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
+                    "IsPrivateSubnet": { "Ref": "privateLogserver" },
 					"SecurityGroupIds": { "Ref": "LogserverSecurityGroup" },
 					"TalendProfile": "logserver",
 					"TalendProfileInstanceId": "1",
@@ -462,8 +504,8 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "TacInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Ref": "PublicSubnet" },
-                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
+					"SubnetId": { "Fn::If": [ "isPrivateTac", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
+                    "IsPrivateSubnet": { "Ref": "privateTac" },
 					"SecurityGroupIds": { "Ref": "TacSecurityGroup" },
 					"TalendProfile": "tacamc",
 					"TalendProfileInstanceId": "1",
@@ -498,8 +540,8 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "JobserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Ref": "PrivateSubnet" },
-                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
+					"SubnetId": { "Fn::If": [ "isPrivateTac", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
+                    "IsPrivateSubnet": { "Ref": "privateJobserver" },
 					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
 					"TalendProfile": "jobserver",
 					"TalendProfileInstanceId": "1",

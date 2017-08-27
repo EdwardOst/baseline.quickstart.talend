@@ -1,24 +1,15 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
-        "PublicSubnet": {
-        	"Description": "Public Subnet, leave blank if using NetworkStack",
-        	"Type": "AWS::EC2::Subnet::Id"
-        },
-        "PrivateSubnet": {
-        	"Description": "Private Subnet, leave blank if using NetworkStack",
-        	"Type": "AWS::EC2::Subnet::Id"
-        },
-		"IsPrivateSubnet": {
-            "Description": "Deploy servers to private or public subnet.",
-            "Type": "String",
-			"Default": "public",
-            "AllowedValues": [ "private", "public" ]
-		},
         "networkTemplateUrl": {
             "Type": "String",
             "Description": "Network Template URL",
             "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_network.template.json"
+        },
+        "talendServersTemplateUrl": {
+            "Type": "String",
+            "Description": "Talend Servers Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_servers.template"
         },
         "nexusTemplateUrl": {
             "Type": "String",
@@ -40,21 +31,40 @@
             "Description": "Jobserver Template URL",
             "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
         },
+        "PublicSubnet": {
+        	"Type": "String",
+        	"Description": "Public Subnet, leave blank if using NetworkStack",
+            "Default": ""
+        },
+        "PrivateSubnet": {
+        	"Type": "String",
+        	"Description": "Private Subnet, leave blank if using NetworkStack",
+            "Default": ""
+        },
+		"IsPrivateSubnet": {
+            "Type": "String",
+            "Description": "Deploy servers to private or public subnet.",
+			"Default": "public",
+            "AllowedValues": [ "private", "public" ]
+		},
         "NexusSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup::Id",
-            "Description": "Nexus Security Group"
+            "Type": "String",
+            "Description": "Nexus Security Group, leave blank to use Network Stack",
+            "Default": ""
         },
         "LogserverSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup::Id",
-            "Description": "Logserver Security Group"
+            "Type": "String",
+            "Description": "Logserver Security Group, leave blank to use Network Stack"
         },
         "TacSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup::Id",
-            "Description": "TAC Security Group"
+            "Type": "String",
+            "Description": "TAC Security Group, leave blank to use Network Stack",
+            "Default": ""
         },
         "JobserverSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup::Id",
-            "Description": "Jobserver Security Group"
+            "Type": "String",
+            "Description": "Jobserver Security Group, leave blank to use Network Stack",
+            "Default": ""
         },
         "TacInstanceType": {
             "Description": "TAC EC2 instance type",
@@ -363,19 +373,19 @@
         "createLogserverStack": {
             "Description": "Create Logserver stack.",
             "Type": "String",
-			"Default": "false",
+			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
         "createTacStack": {
             "Description": "Create TAC stack.",
             "Type": "String",
-			"Default": "false",
+			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
         "createJobserverStack": {
             "Description": "Create Jobserver stack.",
             "Type": "String",
-			"Default": "false",
+			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
         "createNetworkStack": {
@@ -455,7 +465,7 @@
 			"Type" : "AWS::CloudFormation::Stack",
 			"DependsOn": [ "NetworkStack" ],
 			"Properties" : {
-				"TemplateURL" : { "Ref": "nexusTemplateUrl" },
+				"TemplateURL" : { "Ref": "talendServersTemplateUrl" },
 				"TimeoutInMinutes" : "10",
 				"Parameters" : {
                     "PublicSubnet": { 
@@ -472,7 +482,10 @@
                             { "Ref": "PrivateSubnet" }
                         ]
                     },
-                    "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
+                    "privateNexus": { "Ref": "IsPrivateSubnet" },
+                    "privateLogserver": { "Ref": "IsPrivateSubnet" },
+                    "privateTac": { "Ref": "IsPrivateSubnet" },
+                    "privateJobserver": { "Ref": "IsPrivateSubnet" },
                     
                     "nexusTemplateUrl": { "Ref": "nexusTemplateUrl" },
                     "logserverTemplateUrl": { "Ref": "logserverTemplateUrl" },
