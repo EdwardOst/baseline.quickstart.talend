@@ -417,6 +417,26 @@
                 { "Ref": "createJobserverStack" },
                 "true"
             ]
+        },
+        "ExternalNexusSecurityGroupCondition": {
+            "Fn::Not": [ 
+                { "Fn::Equals": [ { "Ref": "NexusSecurityGroup" }, "" ] }  
+            ] 
+        },
+        "ExternalLogserverSecurityGroupCondition": {
+            "Fn::Not": [ 
+                { "Fn::Equals": [ { "Ref": "LogserverSecurityGroup" }, "" ] }
+            ]
+        },
+        "ExternalTacSecurityGroupCondition": {
+            "Fn::Not": [
+                { "Fn::Equals": [ { "Ref": "TacSecurityGroup" }, "" ] }  
+            ]
+        },
+        "ExternalJobserverSecurityGroupCondition": {
+            "Fn::Not": [
+                { "Fn::Equals": [ { "Ref": "JobserverSecurityGroup" }, "" ] }  
+            ]
         }
     },
     "Resources": {
@@ -453,14 +473,44 @@
                         ]
                     },
                     "IsPrivateSubnet": { "Ref": "IsPrivateSubnet" },
+                    
                     "nexusTemplateUrl": { "Ref": "nexusTemplateUrl" },
                     "logserverTemplateUrl": { "Ref": "logserverTemplateUrl" },
                     "tacTemplateUrl": { "Ref": "tacTemplateUrl" },
                     "jobserverTemplateUrl": { "Ref": "jobserverTemplateUrl" },
-                    "NexusSecurityGroup": { "Ref": "NexusSecurityGroup" },
-                    "LogserverSecurityGroup": { "Ref": "LogserverSecurityGroup" },
-                    "TacSecurityGroup": { "Ref": "TacSecurityGroup" },
-                    "JobserverSecurityGroup": { "Ref": "JobserverSecurityGroup" },
+                    
+                    "NexusSecurityGroup": {
+                        "Fn::If": [
+                            "ExternalNexusSecurityGroupCondition",
+                            { "Ref": "NexusSecurityGroup" },
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup"] }
+                        ]
+                    },
+                    
+                    "LogserverSecurityGroup": {
+                        "Fn::If": [
+                            "ExternalLogserverSecurityGroupCondition",
+                            { "Ref": "LogserverSecurityGroup" },
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup"] }
+                        ]
+                    },
+
+                    "TacSecurityGroup": {
+                        "Fn::If": [
+                            "ExternalTacSecurityGroupCondition",
+                            { "Ref": "TacSecurityGroup" },
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup"] }
+                        ]
+                    },
+
+                    "JobserverSecurityGroup": {
+                        "Fn::If": [
+                            "ExternalLogserverSecurityGroupCondition",
+                            { "Ref": "JobserverSecurityGroup" },
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.jobserverSecurityGroup"] }
+                        ]
+                    },
+                    
                     "NexusInstanceType": { "Ref": "NexusInstanceType" },
                     "LogserverInstanceType": { "Ref": "LogserverInstanceType" },
                     "TacInstanceType": { "Ref": "TacInstanceType" },
