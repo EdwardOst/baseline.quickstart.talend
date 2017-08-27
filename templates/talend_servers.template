@@ -9,20 +9,6 @@
         	"Description": "Private Subnet",
         	"Type": "AWS::EC2::Subnet::Id"
         },
-        "QSS3BucketName": {
-        	"AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-.]*[0-9a-zA-Z])*$",
-        	"ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, periods (.), and hyphens (-). It cannot start or end with a hyphen (-).",
-        	"Default": "quickstart-reference",
-        	"Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
-        	"Type": "String"
-        },
-        "QSS3KeyPrefix": {
-        	"AllowedPattern": "^[0-9a-zA-Z-]+(/[0-9a-zA-Z-]+)*$",
-        	"ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with forward slash (/) because they are automatically appended.",
-        	"Default": "oodle-accelerator",
-        	"Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with forward slash (/) because they are automatically appended.",
-        	"Type": "String"
-        },
         "nexusTemplateUrl": {
             "Type": "String",
             "Description": "Nexus Template URL",
@@ -375,14 +361,6 @@
         }
     },
     "Mappings": {
-        "Talend": {
-            "templates": {
-                "nexusTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_nexus.template.json",
-                "logserverTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_logserver.template.json",
-				"tacTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_tac.template.json",
-				"jobserverTemplateUrl": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
-            }
-        }
     },
     "Conditions": {
         "CreateNexusStackCondition": {
@@ -417,6 +395,7 @@
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateNexusStackCondition",
 			"Properties" : {
+                "TemplateURL" : { "Ref": "nexusTemplateUrl" },
 				"Parameters" : {
 					"InstanceType": { "Ref": "NexusInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
@@ -433,7 +412,6 @@
                     "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
                     "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" }
 				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "nexusTemplateUrl"] },
 				"TimeoutInMinutes" : "10"
 			}
 		},
@@ -441,6 +419,7 @@
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateLogserverStackCondition",
 			"Properties" : {
+				"TemplateURL" : { "Ref": "logserverTemplateUrl" },
 				"Parameters" : {
 					"InstanceType": { "Ref": "LogserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
@@ -457,7 +436,6 @@
                     "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
                     "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" }
 				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "logserverTemplateUrl"] },
 				"TimeoutInMinutes" : "10"
 			}
 		},
@@ -466,6 +444,7 @@
             "Condition" : "CreateTacStackCondition",
 			"DependsOn": [ "NexusStack", "LogserverStack" ],
 			"Properties" : {
+				"TemplateURL" : { "Ref": "tacTemplateUrl" },
 				"Parameters" : {
 					"InstanceType": { "Ref": "TacInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
@@ -493,7 +472,6 @@
                     "talendGitUser": { "Ref": "talendGitUser" },
                     "talendGitPassword": { "Ref": "talendGitPassword" }
 				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "tacTemplateUrl"] },
 				"TimeoutInMinutes" : "10"
 			}
 		},
@@ -502,6 +480,7 @@
             "Condition" : "CreateJobserverStackCondition",
 			"DependsOn": [ "TacStack", "LogserverStack" ],
 			"Properties" : {
+				"TemplateURL" : { "Ref": "jobserverTemplateUrl" },
 				"Parameters" : {
 					"InstanceType": { "Ref": "JobserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
@@ -519,7 +498,6 @@
                     "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
                     "talendLogstashJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashJobserverPort" ] }
 				},
-				"TemplateURL" : { "Fn::FindInMap": [ "Talend", "templates", "jobserverTemplateUrl"] },
 				"TimeoutInMinutes" : "10"
 			}
 		}
