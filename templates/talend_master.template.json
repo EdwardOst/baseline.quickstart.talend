@@ -15,6 +15,11 @@
 			"Default": "public",
             "AllowedValues": [ "private", "public" ]
 		},
+        "networkTemplateUrl": {
+            "Type": "String",
+            "Description": "Network Template URL",
+            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_network.template.json"
+        },
         "nexusTemplateUrl": {
             "Type": "String",
             "Description": "Nexus Template URL",
@@ -435,12 +440,14 @@
 				"Parameters" : {
                     "PublicSubnet": { 
                         "Fn::If": [
+                            "CreateNetworkStackCondition",
                             { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
                             { "Ref": "PublicSubnet"  }
                         ]
                     },
                     "PrivateSubnet": { 
                         "Fn::If": [
+                            "CreateNetworkStackCondition",
                             { "Fn::GetAtt": [ "NetworkStack", "Outputs.privateSubnet" ] },
                             { "Ref": "PrivateSubnet" }
                         ]
@@ -492,43 +499,12 @@
 				} 
 			}
         },
-        "NexusStack": {
-            "Condition": "CreateNexusStackCondition",
-            "Value": { "Ref": "NexusStack" },
-            "Description": "Nested Nexus stack",
+        "ServersStack": {
+            "Value": { "Ref": "ServersStack" },
+            "Description": "Nested Talend Servers stack",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "NexusStack" ] ] 
-				} 
-			}
-        },
-        "LogserverStack": {
-            "Condition": "CreateLogserverStackCondition",
-            "Value": { "Ref": "LogserverStack" },
-            "Description": "Nested Logserver stack",
-			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "LogserverStack" ] ] 
-				} 
-			}
-        },
-        "TacStack": {
-            "Condition": "CreateTacStackCondition",
-            "Value": { "Ref": "TacStack" },
-            "Description": "Nested TAC stack",
-			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "TacStack" ] ] 
-				} 
-			}
-        },
-        "JobserverStack": {
-            "Condition": "CreateJobserverStackCondition",
-            "Value": { "Ref": "JobserverStack" },
-            "Description": "Nested Jobserver stack",
-			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "JobserverStack" ] ] 
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "ServersStack" ] ] 
 				} 
 			}
         }

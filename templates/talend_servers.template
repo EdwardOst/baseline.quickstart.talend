@@ -517,5 +517,45 @@
 		}
     },
     "Outputs": {
+        "NexusStack": {
+            "Condition": "CreateNexusStackCondition",
+            "Value": { "Ref": "NexusStack" },
+            "Description": "Nested Nexus stack",
+			"Export": {
+				"Name": {
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "NexusStack" ] ] 
+				} 
+			}
+        },
+        "LogserverStack": {
+            "Condition": "CreateLogserverStackCondition",
+            "Value": { "Ref": "LogserverStack" },
+            "Description": "Nested Logserver stack",
+			"Export": {
+				"Name": {
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "LogserverStack" ] ] 
+				} 
+			}
+        },
+        "TacStack": {
+            "Condition": "CreateTacStackCondition",
+            "Value": { "Ref": "TacStack" },
+            "Description": "Nested TAC stack",
+			"Export": {
+				"Name": {
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "TacStack" ] ] 
+				} 
+			}
+        },
+        "JobserverStack": {
+            "Condition": "CreateJobserverStackCondition",
+            "Value": { "Ref": "JobserverStack" },
+            "Description": "Nested Jobserver stack",
+			"Export": {
+				"Name": {
+					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "JobserverStack" ] ] 
+				} 
+			}
+        }
     }
 }
