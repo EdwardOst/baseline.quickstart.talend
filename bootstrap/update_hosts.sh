@@ -27,7 +27,7 @@ local_hostname=$(parse_metadata_result "${local_hostname}")
 # ec2 instances on public subnets have host names that do not end in ec2.internal and hence do not match their private DNS
 # ec2 instances on private subnets have host names that do end in ec2.internal and hence match their private DNS
 
-local private_dns="${local_hostname%.ec2.internal}.ec2.internal"
+private_dns="${local_hostname%.ec2.internal}.ec2.internal"
 
 local_ipv4=$("${update_hosts_script_dir}/ec2-metadata" -o)
 local_ipv4=$(parse_metadata_result "${local_ipv4}")
