@@ -23,7 +23,6 @@ function parse_metadata_result() {
 
 local_hostname=$("${update_hosts_script_dir}/ec2-metadata" -h)
 local_hostname=$(parse_metadata_result "${local_hostname}")
-internal_hostname="${local_hostname}.ec2.internal"
 local_ipv4=$("${update_hosts_script_dir}/ec2-metadata" -o)
 local_ipv4=$(parse_metadata_result "${local_ipv4}")
 public_hostname=$("${update_hosts_script_dir}/ec2-metadata" -p)
@@ -35,7 +34,7 @@ if [ -z "${public_ipv4}" ] || [ "${public_ipv4}" == "not available" ] || [ -z "$
     public_hostname=""
 fi
 
-echo "${local_ipv4}    ${internal_hostname} ${local_hostname} ${public_hostname}" >> /etc/hosts
+echo "${local_ipv4}    ${local_hostname} ${public_hostname}" >> /etc/hosts
 
 sed -i "s/HOSTNAME=.*/HOSTNAME=${local_hostname}/g" /etc/sysconfig/network
 sudo hostname "${local_hostname}"
