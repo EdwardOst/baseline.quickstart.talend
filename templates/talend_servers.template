@@ -519,7 +519,7 @@
                     "tacDbHost": { "Ref": "talendTacDbHost" },
                     "talendNexusHost": { "Fn::GetAtt": [ "NexusStack", "Outputs.privateDnsName" ] },
                     "talendNexusPort": { "Fn::GetAtt": [ "NexusStack", "Outputs.nexusPort" ] },
-                    "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.publicDnsName" ] },
+                    "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
                     "talendLogstashTacPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashTacPort" ] },
                     "talendLogstashKibanaPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashKibanaPort" ] },
                     "talendGitHost": { "Ref": "talendGitHost" },
@@ -550,7 +550,7 @@
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
                     "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
                     "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
-					"tacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.publicDnsName" ] },
+					"tacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.privateDnsName" ] },
                     "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
                     "talendLogstashJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashJobserverPort" ] }
 				},
