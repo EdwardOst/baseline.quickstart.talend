@@ -65,7 +65,7 @@
             "Description": "Talend Server subnet id.",
             "Type": "AWS::EC2::Subnet::Id"
 		},
-		"IsPrivateSubnet": {
+		"privateSubnet": {
             "Description": "Is this is a private subnet.",
             "Type": "String",
 			"Default": "private",
@@ -333,14 +333,14 @@
         }
     },
 	"Conditions": {
-        "PrivateSubnetCondition": {
+        "isPrivateSubnet": {
             "Fn::Equals": [
-                { "Ref": "IsPrivateSubnet" },
+                { "Ref": "privateSubnet" },
                 "private"
             ]
         },
-		"PublicSubnetCondition": {
-			"Fn::Not": [ { "Condition": "PrivateSubnetCondition" } ]
+		"isPublicSubnet": {
+			"Fn::Not": [ { "Condition": "isPrivateSubnet" } ]
 		}
 	},
     "Resources": {
@@ -841,7 +841,7 @@
 			}
         },
         "publicIp": {
-			"Condition": "PublicSubnetCondition",
+			"Condition": "isPublicSubnet",
             "Value": {
                 "Fn::GetAtt": [
                     "TalendServerInstance",
@@ -870,7 +870,7 @@
 			}
         },
         "publicDnsName": {
-			"Condition": "PublicSubnetCondition",
+			"Condition": "isPublicSubnet",
             "Value": {
                 "Fn::GetAtt": [
                     "TalendServerInstance",

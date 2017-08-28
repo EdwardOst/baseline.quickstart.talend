@@ -23,6 +23,12 @@ function parse_metadata_result() {
 
 local_hostname=$("${update_hosts_script_dir}/ec2-metadata" -h)
 local_hostname=$(parse_metadata_result "${local_hostname}")
+
+# ec2 instances on public subnets have host names that do not end in ec2.internal and hence do not match their private DNS
+# ec2 instances on private subnets have host names that do end in ec2.internal and hence match their private DNS
+
+local private_dns="${local_hostname%.ec2.internal}.ec2.internal"
+
 local_ipv4=$("${update_hosts_script_dir}/ec2-metadata" -o)
 local_ipv4=$(parse_metadata_result "${local_ipv4}")
 public_hostname=$("${update_hosts_script_dir}/ec2-metadata" -p)
@@ -34,10 +40,10 @@ if [ -z "${public_ipv4}" ] || [ "${public_ipv4}" == "not available" ] || [ -z "$
     public_hostname=""
 fi
 
-echo "${local_ipv4}    ${local_hostname} ${public_hostname}" >> /etc/hosts
+echo "${local_ipv4}    ${private_dns} ${public_hostname}" >> /etc/hosts
 
-sed -i "s/HOSTNAME=.*/HOSTNAME=${local_hostname}/g" /etc/sysconfig/network
-sudo hostname "${local_hostname}"
+sed -i "s/HOSTNAME=.*/HOSTNAME=${private_dns}/g" /etc/sysconfig/network
+sudo hostname "${private_dns}"
 
 sudo service network restart
 

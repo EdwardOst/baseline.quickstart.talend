@@ -31,20 +31,38 @@
             "Description": "Jobserver Template URL",
             "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
         },
-        "PublicSubnet": {
+        "PublicSubnetId": {
         	"Type": "String",
         	"Description": "Public Subnet, leave blank if using NetworkStack",
             "Default": ""
         },
-        "PrivateSubnet": {
+        "PrivateSubnetId": {
         	"Type": "String",
         	"Description": "Private Subnet, leave blank if using NetworkStack",
             "Default": ""
         },
-		"IsPrivateSubnet": {
+		"privateNexus": {
+            "Description": "Deploy Nexus to private or public subnet.",
             "Type": "String",
-            "Description": "Deploy servers to private or public subnet.",
 			"Default": "public",
+            "AllowedValues": [ "private", "public" ]
+		},
+		"privateLogserver": {
+            "Description": "Deploy Logserver to private or public subnet.",
+            "Type": "String",
+			"Default": "public",
+            "AllowedValues": [ "private", "public" ]
+		},
+		"privateTac": {
+            "Description": "Deploy TAC to private or public subnet.",
+            "Type": "String",
+			"Default": "public",
+            "AllowedValues": [ "private", "public" ]
+		},
+		"privateJobserver": {
+            "Description": "Deploy Jobserver to private or public subnet.",
+            "Type": "String",
+			"Default": "private",
             "AllowedValues": [ "private", "public" ]
 		},
         "NexusSecurityGroup": {
@@ -468,24 +486,24 @@
 				"TemplateURL" : { "Ref": "talendServersTemplateUrl" },
 				"TimeoutInMinutes" : "10",
 				"Parameters" : {
-                    "PublicSubnet": { 
+                    "PublicSubnetId": { 
                         "Fn::If": [
                             "CreateNetworkStackCondition",
                             { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
-                            { "Ref": "PublicSubnet"  }
+                            { "Ref": "PublicSubnetId"  }
                         ]
                     },
-                    "PrivateSubnet": { 
+                    "PrivateSubnetId": { 
                         "Fn::If": [
                             "CreateNetworkStackCondition",
                             { "Fn::GetAtt": [ "NetworkStack", "Outputs.privateSubnet" ] },
-                            { "Ref": "PrivateSubnet" }
+                            { "Ref": "PrivateSubnetId" }
                         ]
                     },
-                    "privateNexus": { "Ref": "IsPrivateSubnet" },
-                    "privateLogserver": { "Ref": "IsPrivateSubnet" },
-                    "privateTac": { "Ref": "IsPrivateSubnet" },
-                    "privateJobserver": { "Ref": "IsPrivateSubnet" },
+                    "privateNexus": { "Ref": "privateNexus" },
+                    "privateLogserver": { "Ref": "privateLogserver" },
+                    "privateTac": { "Ref": "privateTac" },
+                    "privateJobserver": { "Ref": "privateJobserver" },
                     
                     "nexusTemplateUrl": { "Ref": "nexusTemplateUrl" },
                     "logserverTemplateUrl": { "Ref": "logserverTemplateUrl" },

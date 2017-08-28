@@ -21,11 +21,11 @@
             "Description": "Jobserver Template URL",
             "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
         },
-        "PublicSubnet": {
+        "PublicSubnetId": {
         	"Description": "Public Subnet",
         	"Type": "AWS::EC2::Subnet::Id"
         },
-        "PrivateSubnet": {
+        "PrivateSubnetId": {
         	"Description": "Private Subnet",
         	"Type": "AWS::EC2::Subnet::Id"
         },
@@ -455,8 +455,8 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "NexusInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::If": [ "isNexusPrivate", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
-                    "IsPrivateSubnet": { "Ref": "privateNexus" },
+					"SubnetId": { "Fn::If": [ "isNexusPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
+                    "privateSubnet": { "Ref": "privateNexus" },
 					"SecurityGroupIds": { "Ref": "NexusSecurityGroup" },
 					"TalendProfile": "nexus",
 					"TalendProfileInstanceId": "1",
@@ -479,8 +479,8 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "LogserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::If": [ "isLogserverPrivate", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
-                    "IsPrivateSubnet": { "Ref": "privateLogserver" },
+					"SubnetId": { "Fn::If": [ "isLogserverPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
+                    "privateSubnet": { "Ref": "privateLogserver" },
 					"SecurityGroupIds": { "Ref": "LogserverSecurityGroup" },
 					"TalendProfile": "logserver",
 					"TalendProfileInstanceId": "1",
@@ -504,8 +504,8 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "TacInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::If": [ "isTacPrivate", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
-                    "IsPrivateSubnet": { "Ref": "privateTac" },
+					"SubnetId": { "Fn::If": [ "isTacPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
+                    "privateSubnet": { "Ref": "privateTac" },
 					"SecurityGroupIds": { "Ref": "TacSecurityGroup" },
 					"TalendProfile": "tacamc",
 					"TalendProfileInstanceId": "1",
@@ -540,8 +540,8 @@
 				"Parameters" : {
 					"InstanceType": { "Ref": "JobserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
-					"SubnetId": { "Fn::If": [ "isJobserverPrivate", { "Ref": "PrivateSubnet" }, { "Ref": "PublicSubnet" } ] },
-                    "IsPrivateSubnet": { "Ref": "privateJobserver" },
+					"SubnetId": { "Fn::If": [ "isJobserverPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
+                    "privateSubnet": { "Ref": "privateJobserver" },
 					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
 					"TalendProfile": "jobserver",
 					"TalendProfileInstanceId": "1",
