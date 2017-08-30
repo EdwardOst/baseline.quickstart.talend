@@ -1156,7 +1156,7 @@
                                                 "",
                                                 [
                                                     { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
-                                                    "/tac/create-db.sh",
+                                                    "/tac/create-db.sh ",
                                                     { "Ref": "tacDbHost" }, " ",
                                                     { "Ref": "masterDbUser" }, " ",
                                                     { "Ref": "masterDbPassword" }, " ",
@@ -1179,7 +1179,7 @@
                                                 "",
                                                 [
                                                     { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
-                                                    "/tac/create-db.sh",
+                                                    "/tac/create-db.sh ",
                                                     { "Ref": "amcDbHost" }, " ",
                                                     { "Ref": "masterDbUser" }, " ",
                                                     { "Ref": "masterDbPassword" }, " ",

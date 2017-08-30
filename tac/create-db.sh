@@ -31,7 +31,7 @@ database="\`${database}\`"
 
 declare create_sql
 define create_sql <<EOF
-CREATE DATABASE IF NOT EXISTS tac_oodle;
+CREATE DATABASE IF NOT EXISTS ${database};
 GRANT ALL ON ${database}.* to '${database_user}'@'%' IDENTIFIED BY '${database_password}';
 EOF
 
