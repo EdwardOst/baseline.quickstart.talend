@@ -132,17 +132,6 @@
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "masterDbUser": {
-            "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if the TAC database and user do not already exist.",
-            "Type": "String",
-            "Default": "tadmin"
-        },
-        "masterDbPassword": {
-            "Description": "Master user database password.  Only needed if the TAC database and user does not already exist.",
-            "Type": "String",
-            "Default": "tadminTalend123",
-            "NoEcho": "true"
-        },
         "createTacDatabase": {
             "Description": "Create TAC Database (true) or use an existing TAC database (false)",
             "Type": "String",
@@ -154,6 +143,17 @@
             "Type": "String",
             "AllowedValues": [ "true", "false" ],
             "Default": "true"
+        },
+        "masterDbUser": {
+            "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if creating the TAC or AMC databases.",
+            "Type": "String",
+            "Default": ""
+        },
+        "masterDbPassword": {
+            "Description": "Master user database password.  Only needed if creating the TAC or AMC databases.",
+            "Type": "String",
+            "Default": "",
+            "NoEcho": "true"
         },
         "tacDbSchema": {
             "Description": "TAC database schema.",

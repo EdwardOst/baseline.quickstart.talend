@@ -340,6 +340,29 @@
             "Type": "String",
             "Default": "eost-rds-mysql-2.cfcij7o8rjxs.us-east-1.rds.amazonaws.com"
         },
+        "createTacDatabase": {
+            "Description": "Create TAC Database (true) or use an existing TAC database (false)",
+            "Type": "String",
+            "AllowedValues": [ "true", "false" ],
+            "Default": "true"
+        },
+        "createAmcDatabase": {
+            "Description": "Create AMC Database (true) or use an existing AMC database (false)",
+            "Type": "String",
+            "AllowedValues": [ "true", "false" ],
+            "Default": "true"
+        },
+        "masterDbUser": {
+            "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if creating the TAC or AMC databases.",
+            "Type": "String",
+            "Default": ""
+        },
+        "masterDbPassword": {
+            "Description": "Master user database password.  Only needed if creating the TAC or AMC databases.",
+            "Type": "String",
+            "Default": "",
+            "NoEcho": "true"
+        },
         "talendGitHost": {
             "Description": "Git host.",
             "Type": "String",
@@ -517,6 +540,10 @@
                     "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
                     "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
                     "tacDbHost": { "Ref": "talendTacDbHost" },
+                    "masterDbUser": { "Ref": "masterDbUser" },
+                    "masterDbPassword": { "Ref": "masterDbPassword" },
+                    "createTacDatabase": { "Ref": "createTacDatabase" },
+                    "createAmcDatabase": { "Ref": "createAmcDatabase" },
                     "talendNexusHost": { "Fn::GetAtt": [ "NexusStack", "Outputs.privateDnsName" ] },
                     "talendNexusPort": { "Fn::GetAtt": [ "NexusStack", "Outputs.nexusPort" ] },
                     "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
