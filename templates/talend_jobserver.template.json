@@ -815,7 +815,7 @@
                                                     "baselineTarget"
                                                 ]
                                             },
-                                            "/scripts/tac/isTACStarted.sh ",
+                                            "/tac/isTACStarted.sh ",
                                             { "Ref": "tacHost" }
                                         ]
                                     ]

@@ -132,6 +132,29 @@
             "MinValue": "1",
             "MaxValue": "65535"
         },
+        "masterDbUser": {
+            "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if the TAC database and user do not already exist.",
+            "Type": "String",
+            "Default": "tadmin"
+        },
+        "masterDbPassword": {
+            "Description": "Master user database password.  Only needed if the TAC database and user does not already exist.",
+            "Type": "String",
+            "Default": "tadminTalend123",
+            "NoEcho": "true"
+        },
+        "createTacDatabase": {
+            "Description": "Create TAC Database (true) or use an existing TAC database (false)",
+            "Type": "String",
+            "AllowedValues": [ "true", "false" ],
+            "Default": "true"
+        },
+        "createAmcDatabase": {
+            "Description": "Create AMC Database (true) or use an existing AMC database (false)",
+            "Type": "String",
+            "AllowedValues": [ "true", "false" ],
+            "Default": "true"
+        },
         "tacDbSchema": {
             "Description": "TAC database schema.",
             "Type": "String",
@@ -140,12 +163,12 @@
         "tacDbUser": {
             "Description": "TAC database user.",
             "Type": "String",
-            "Default": "tadmin"
+            "Default": "tac_admin"
         },
         "tacDbPassword": {
             "Description": "TAC database password.",
             "Type": "String",
-            "Default": "tadminTalend123",
+            "Default": "tac_adminTalend123",
             "NoEcho": "true"
         },
         "amcDbHost": {
@@ -449,7 +472,19 @@
         },
 		"isPublicSubnet": {
 			"Fn::Not": [ { "Condition": "isPrivateSubnet" } ]
-		}
+		},
+        "CreateTacDatabaseCondition": {
+            "Fn::Equals": [
+                { "Ref": "createTacDatabase" },
+                "true"
+            ]
+        },
+        "CreateAmcDatabaseCondition": {
+            "Fn::Equals": [
+                { "Ref": "createAmcDatabase" },
+                "true"
+            ]
+        }
     },
     "Resources": {
         "TalendServerInstance": {
@@ -526,10 +561,18 @@
                 "AWS::CloudFormation::Init": {
                     "configSets": {
                         "All": [
+                            "Prepare",
                             "Download",
                             "Configure",
                             "Install"
                         ]
+                    },
+                    "Prepare": {
+                        "commands": {
+                            "01-install-mysql-client": {
+                                "command": "yum install -y mysql"
+                            }
+                        }
                     },
                     "Download": {
                         "files": {
@@ -1104,7 +1147,53 @@
                                     ]
                                 }
                             },
-                            "04-install-talend": {
+                            "04-install-tac-db": {
+                                "command": {
+                                    "Fn::If": [ 
+                                        "CreateTacDatabaseCondition",
+                                        { "Fn::Join": 
+                                            [
+                                                "",
+                                                [
+                                                    { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                                    "/tac/create-db.sh",
+                                                    { "Ref": "tacDbHost" }, " ",
+                                                    { "Ref": "masterDbUser" }, " ",
+                                                    { "Ref": "masterDbPassword" }, " ",
+                                                    { "Ref": "tacDbSchema" }, " ",
+                                                    { "Ref": "tacDbUser" }, " ",
+                                                    { "Ref": "tacDbPassword" }
+                                                ]
+                                            ]
+                                        },
+                                        "echo CreateTacDatabaseCondition is false, using existing database and credentials"
+                                    ]
+                                }
+                            },
+                            "05-install-amc-db": {
+                                "command": {
+                                    "Fn::If": [ 
+                                        "CreateAmcDatabaseCondition",
+                                        { "Fn::Join": 
+                                            [
+                                                "",
+                                                [
+                                                    { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                                    "/tac/create-db.sh",
+                                                    { "Ref": "amcDbHost" }, " ",
+                                                    { "Ref": "masterDbUser" }, " ",
+                                                    { "Ref": "masterDbPassword" }, " ",
+                                                    { "Ref": "amcDbSchema" }, " ",
+                                                    { "Ref": "amcDbUser" }, " ",
+                                                    { "Ref": "amcDbPassword" }
+                                                ]
+                                            ]
+                                        },
+                                        "echo CreateAmcDatabaseCondition is false, using existing database and credentials"
+                                    ]
+                                }
+                            },
+                            "06-install-talend": {
                                 "command": {
                                     "Fn::Join": [ 
                                         "", 
