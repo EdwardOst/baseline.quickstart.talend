@@ -568,7 +568,13 @@
                     "createAmcDatabase": { "Ref": "createAmcDatabase" },
                     "talendNexusHost": { "Fn::GetAtt": [ "NexusStack", "Outputs.privateDnsName" ] },
                     "talendNexusPort": { "Fn::GetAtt": [ "NexusStack", "Outputs.nexusPort" ] },
-                    "talendLoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
+                    "talendLoggingHost": { 
+                        "Fn::If": [ 
+                            "isLogserverPrivate",
+                            { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
+                            { "Fn::GetAtt": [ "LogserverStack", "Outputs.publicDnsName" ] }
+                        ] 
+                    },
                     "talendLogstashTacPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashTacPort" ] },
                     "talendLogstashKibanaPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashKibanaPort" ] },
                     "talendGitHost": { "Ref": "talendGitHost" },
