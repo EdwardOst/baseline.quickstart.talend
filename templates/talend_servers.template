@@ -1,25 +1,19 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
-        "nexusTemplateUrl": {
-            "Type": "String",
-            "Description": "Nexus Template URL",
-            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_nexus.template.json"
+        "QSS3BucketName": {
+            "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-.]*[0-9a-zA-Z])*$",
+            "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, periods, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Default": "baseline.quickstart.talend",
+            "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Type": "String"
         },
-        "logserverTemplateUrl": {
-            "Type": "String",
-            "Description": "Logserver Template URL",
-            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_logserver.template.json"
-        },
-        "tacTemplateUrl": {
-            "Type": "String",
-            "Description": "TAC Template URL",
-            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_tac.template.json"
-        },
-        "jobserverTemplateUrl": {
-            "Type": "String",
-            "Description": "Jobserver Template URL",
-            "Default": "https://s3.amazonaws.com/baseline.quickstart.talend/templates/talend_jobserver.template.json"
+        "QSS3KeyPrefix": {
+            "AllowedPattern": "^[0-9a-zA-Z-/]*$",
+            "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).  Prefix cannot start with a slash but must end with a slash unless it is the empty string.",
+            "Default": "",
+            "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Type": "String"
         },
         "PublicSubnetId": {
         	"Description": "Public Subnet",
@@ -416,6 +410,14 @@
         }
     },
     "Mappings": {
+        "Talend": {
+            "templates": {
+                "nexus": "templates/talend_nexus.template",
+                "logserver": "templates/talend_logserver.template",
+                "tac": "templates/talend_tac.template",
+                "jobserver": "templates/talend_jobserver.template"
+            }
+        }
     },
     "Conditions": {
         "CreateNexusStackCondition": {
@@ -468,13 +470,19 @@
         }
     },
     "Resources": {
-
-    
 		"NexusStack": {
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateNexusStackCondition",
 			"Properties" : {
-                "TemplateURL" : { "Ref": "nexusTemplateUrl" },
+                "TemplateURL" : { "Fn::Join": 
+                    [ "",
+                        [ 
+                            { "Fn::Sub": "https://s3.amazonaws.com/${QSS3BucketName}/${QSS3KeyPrefix}" },
+                            { "Fn::FindInMap": [ "Talend", "templates", "nexus"] }
+                        ]
+                    ]                    
+                },
+                
 				"Parameters" : {
 					"InstanceType": { "Ref": "NexusInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
@@ -498,7 +506,14 @@
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateLogserverStackCondition",
 			"Properties" : {
-				"TemplateURL" : { "Ref": "logserverTemplateUrl" },
+                "TemplateURL" : { "Fn::Join": 
+                    [ "",
+                        [ 
+                            { "Fn::Sub": "https://s3.amazonaws.com/${QSS3BucketName}/${QSS3KeyPrefix}" },
+                            { "Fn::FindInMap": [ "Talend", "templates", "logserver"] }
+                        ]
+                    ]                    
+                },
 				"Parameters" : {
 					"InstanceType": { "Ref": "LogserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
@@ -523,7 +538,14 @@
             "Condition" : "CreateTacStackCondition",
 			"DependsOn": [ "NexusStack", "LogserverStack" ],
 			"Properties" : {
-				"TemplateURL" : { "Ref": "tacTemplateUrl" },
+                "TemplateURL" : { "Fn::Join": 
+                    [ "",
+                        [ 
+                            { "Fn::Sub": "https://s3.amazonaws.com/${QSS3BucketName}/${QSS3KeyPrefix}" },
+                            { "Fn::FindInMap": [ "Talend", "templates", "tac"] }
+                        ]
+                    ]                    
+                },
 				"Parameters" : {
 					"InstanceType": { "Ref": "TacInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
@@ -563,7 +585,14 @@
             "Condition" : "CreateJobserverStackCondition",
 			"DependsOn": [ "TacStack", "LogserverStack" ],
 			"Properties" : {
-				"TemplateURL" : { "Ref": "jobserverTemplateUrl" },
+                "TemplateURL" : { "Fn::Join": 
+                    [ "",
+                        [ 
+                            { "Fn::Sub": "https://s3.amazonaws.com/${QSS3BucketName}/${QSS3KeyPrefix}" },
+                            { "Fn::FindInMap": [ "Talend", "templates", "jobserver"] }
+                        ]
+                    ]                    
+                },
 				"Parameters" : {
 					"InstanceType": { "Ref": "JobserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
