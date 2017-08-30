@@ -70,54 +70,37 @@ to fix this situation.  This ensures that TUI can operate with all of the defaul
 An alternatve to the TUI installer is provided in the scripts/java directory.  The jre-installer.sh will install the JRE from a previously
 downloaded tgz file.  Since the Quickstart repository will typically be attached as an s3fs mount, this will typically be slightly faster and it will make the environment self-contained.
 
-### Quickstart Factory
+### Quickstart Configuration
 
-There are four s3 buckets used by the Quickstart.
+There are three s3 buckets used by the Quickstart.
 
 * License
 * Baseline
-* Quickstart
 * Repo Bucket
 
-The AWS Quickstart uses buckets common to all users.  If you are looking to customize the Quickstart,
-or perhaps just re-use specific templates then you may wish to set up your own environment so that you
-can tailor individual components.
-
-The Quickstart Factory allows you to do this.  The factory scripts can be found in the Baseline bucket
-or in the [Talend Quickstart Baseline git repository](https://github.com/EdwardOst/baseline.aws.talend.com).
+The Baseline and Repo buckets are common to all users.
 
 #### License Bucket
 
-The License bucket contains the user's Talend license.  When run as part of an AWS Quickstart this
-bucket is hosted by Talend with access to just the user's license file allowed via ACL permissions.
-
-When a customer with a subscription wishes to re-use these assets in their own Cloud Formation
+The License bucket contains the user's Talend license.  This bucket should only be accessible by the Taled
+license owner.  When a customer with a subscription wishes to re-use these assets in their own Cloud Formation
 infrastructure, they can create their own bucket, load their license to that private location, and point
 to it in their Cloud Formation scripts.
 
 #### Baseline Bucket
 
-The Baseline bucket hosts a snapshot of this git repository.  At runtime the the templates directory
+The Baseline bucket hosts a snapshot of this git repository.  At runtime the templates directory
 is accessed by the Cloud Formation engine to launch the master and nest templates.
 
 The scripts/bootstrap directories are used by the userdata scripts to ensure the aws ec2 instance can resolve its
 own hostname so that TUI will work.
 
-The scripts/tac and scripts/amc contain sql scripts for configuring TAC and AMC.  Most of these are not
-used.  Only the iTACStarted.sh script is currently used.
-
 The scripts/java directory contains a script to install the JRE.  It can either download the JRE from
 the Oracle online sources or use a tgz file that has already been downloaded.  It is used by the Talend
 templates to install Oracle JRE on Talend servers.
 
-The scripts/resources and scripts/talend-factory directories host scripts to create the Quickstart
-environment.  The scripts/resources/talend-factory shell script is a sample launch point.  It will
-create the four buckets described here so that they can be customized for a particular user environment.
-
-### Quickstart Bucket
-
-This bucket contains infrastructure scripts for the rest of the Quickstart other than the Talend server
-templates.  This includes things like RDS, Redshift, EMR, and other resources. 
+The `install` script in the `scripts/conf` directory uses the `scripts/factory` to create new Quickstart configuration
+buckets.  The Quickstart factory allows users to provision their own customized Quickstart Baseline and Repository buckets.
 
 #### Repo Bucket
 
@@ -137,11 +120,11 @@ First, install the git client
 
 Next, clone the Talend Baseline git repository
 
-    git clone https://github.com/EdwardOst/baseline.aws.talend.com.git
+    git clone https://github.com/EdwardOst/baseline.quickstart.talend.git
 
 Go to the new directory
 
-    cd baseline.aws.talend.com
+    cd baseline.quickstart.talend
 
 Some AWS instances are not able to resolve their host ip.  This is a problem for the Talend Unattended
 Installer (TUI).  Check if your host has this problem
@@ -152,7 +135,7 @@ If the command above does not resolve to an IP address then run the update_hosts
 
     sudo bootstrap/update_hosts.sh
 
-Talend requires the Oracle JDK, not the OpenJDK that comes with AWS images.
+Talend requires the Oracle JRE, not the OpenJRE that comes with AWS images.
 
     sudo java/jre-installer.sh
 
@@ -175,11 +158,11 @@ account manager.  Download it to your `factory_setup` directory.
 The other file is the Talend Unattended Installer (TUI) binary.  Dowload TUI to the `factory_setup`
 directory from the public Talend Quickstart repository.
 
-    wget https://s3.amazonaws.com/talend-quickstart-repo/tui/TUI-4.5.2.tar
+    wget https://s3.amazonaws.com/repo-quickstart-talend/tui/TUI-4.5.2.tar
 
 Run the installer as sudo
 
-    sudo /home/ec2-user/baseline.aws.talend.com/scripts/conf/install
+    sudo /home/ec2-user/baseline.quickstart.talend/scripts/conf/install
 
 It will prompt you for your AWS credentials and your Talend credentials.  These will be used during
 the factory setup and saved to a file with read-only privileges for the current user (which will be
