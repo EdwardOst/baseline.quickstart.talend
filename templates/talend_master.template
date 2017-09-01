@@ -1,6 +1,12 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
+        "QSS3URL": {
+            "Description": "Encapsulate variation in s3 root url for commercial or gov-cloud",
+            "Type": "String",
+            "Default": "https://s3.amazonaws.com",
+            "AllowedValues": [ "https://s3.amazonaws.com", "https://s3-us-gov-west-1.amazonaws.com" ]
+        },
         "QSS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-.]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, periods, and hyphens (-). It cannot start or end with a hyphen (-).",
@@ -14,6 +20,24 @@
             "Default": "",
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
             "Type": "String"
+        },
+        "talendServersTemplate": {
+            "Description": "template relative path",
+            "Type": "String",
+            "Default": "templates/talend-servers.template",
+            "AllowedValues": [ "templates/talend-servers.template" ]
+        },
+        "talendSecurityGroupTemplate": {
+            "Description": "template relative path",
+            "Type": "String",
+            "Default": "templates/talend-securitygroups.template",
+            "AllowedValues": [ "templates/talend-securitygroups.template" ]
+        },
+        "talendNetworkTemplate": {
+            "Description": "template relative path",
+            "Type": "String",
+            "Default": "templates/talend_network.template",
+            "AllowedValues": [ "templates/talend_network.template" ]
         },
         "PublicSubnetId": {
         	"Type": "String",
@@ -49,25 +73,6 @@
 			"Default": "private",
             "AllowedValues": [ "private", "public" ]
 		},
-        "NexusSecurityGroup": {
-            "Type": "String",
-            "Description": "Nexus Security Group, leave blank to use Network Stack",
-            "Default": ""
-        },
-        "LogserverSecurityGroup": {
-            "Type": "String",
-            "Description": "Logserver Security Group, leave blank to use Network Stack"
-        },
-        "TacSecurityGroup": {
-            "Type": "String",
-            "Description": "TAC Security Group, leave blank to use Network Stack",
-            "Default": ""
-        },
-        "JobserverSecurityGroup": {
-            "Type": "String",
-            "Description": "Jobserver Security Group, leave blank to use Network Stack",
-            "Default": ""
-        },
         "TacInstanceType": {
             "Description": "TAC EC2 instance type",
             "Type": "String",
@@ -421,12 +426,6 @@
         }
     },
     "Mappings": {
-        "Talend": {
-            "templates": {
-                "servers": "templates/talend_servers.template",
-                "network": "templates/talend_network.template"
-            }
-        }
     },
     "Conditions": {
         "CreateNetworkStackCondition": {
@@ -458,26 +457,6 @@
                 { "Ref": "createJobserverStack" },
                 "true"
             ]
-        },
-        "ExternalNexusSecurityGroupCondition": {
-            "Fn::Not": [ 
-                { "Fn::Equals": [ { "Ref": "NexusSecurityGroup" }, "" ] }  
-            ] 
-        },
-        "ExternalLogserverSecurityGroupCondition": {
-            "Fn::Not": [ 
-                { "Fn::Equals": [ { "Ref": "LogserverSecurityGroup" }, "" ] }
-            ]
-        },
-        "ExternalTacSecurityGroupCondition": {
-            "Fn::Not": [
-                { "Fn::Equals": [ { "Ref": "TacSecurityGroup" }, "" ] }  
-            ]
-        },
-        "ExternalJobserverSecurityGroupCondition": {
-            "Fn::Not": [
-                { "Fn::Equals": [ { "Ref": "JobserverSecurityGroup" }, "" ] }  
-            ]
         }
     },
     "Resources": {
@@ -486,31 +465,29 @@
             "Condition" : "CreateNetworkStackCondition",
 			"Properties" : {
 				"Parameters" : {
-					"SSHLocation": { "Ref": "SSHLocation" }
-				},
-                "TemplateURL" : { "Fn::Join": 
-                    [ "",
-                        [ 
-                            { "Fn::Sub": "https://s3.amazonaws.com/${QSS3BucketName}/${QSS3KeyPrefix}" },
-                            { "Fn::FindInMap": [ "Talend", "templates", "network"] }
-                        ]
-                    ]                    
+                    "SSHLocation": { "Ref": "SSHLocation" } 
                 },
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${talendNetworkTemplate}" },
 				"TimeoutInMinutes" : "5"
 			}
 		},
+
+        "TalendSecurityGroup": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${talendSecurityGroupTemplate}" },
+                "Parameters": {
+                    "VpcId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.TalendVPC" ] },
+                    "SSHLocation": { "Ref": "SSHLocation" }
+                }
+            }
+        },
+        
         "ServersStack": {
 			"Type" : "AWS::CloudFormation::Stack",
 			"DependsOn": [ "NetworkStack" ],
 			"Properties" : {
-                "TemplateURL" : { "Fn::Join": 
-                    [ "",
-                        [ 
-                            { "Fn::Sub": "https://s3.amazonaws.com/${QSS3BucketName}/${QSS3KeyPrefix}" },
-                            { "Fn::FindInMap": [ "Talend", "templates", "servers"] }
-                        ]
-                    ]                    
-                },
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${talendServersTemplate}" },
 				"TimeoutInMinutes" : "10",
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
@@ -546,34 +523,10 @@
                     "TacInstanceType": { "Ref": "TacInstanceType" },
                     "JobserverInstanceType": { "Ref": "JobserverInstanceType" },
 
-                    "NexusSecurityGroup": {
-                        "Fn::If": [
-                            "ExternalNexusSecurityGroupCondition",
-                            { "Ref": "NexusSecurityGroup" },
-                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup"] }
-                        ]
-                    },
-                    "LogserverSecurityGroup": {
-                        "Fn::If": [
-                            "ExternalLogserverSecurityGroupCondition",
-                            { "Ref": "LogserverSecurityGroup" },
-                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup"] }
-                        ]
-                    },
-                    "TacSecurityGroup": {
-                        "Fn::If": [
-                            "ExternalTacSecurityGroupCondition",
-                            { "Ref": "TacSecurityGroup" },
-                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.tacSecurityGroup"] }
-                        ]
-                    },
-                    "JobserverSecurityGroup": {
-                        "Fn::If": [
-                            "ExternalLogserverSecurityGroupCondition",
-                            { "Ref": "JobserverSecurityGroup" },
-                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.jobserverSecurityGroup"] }
-                        ]
-                    },
+                    "TacSecurityGroup": { "Fn::GetAtt": [ "TalendSecurityGroup", "Outputs.TacSecurityGroup" ] },
+					"NexusSecurityGroup": { "Fn::GetAtt": [ "TalendSecurityGroup", "Outputs.TacSecurityGroup" ] },
+					"LogserverSecurityGroup": { "Fn::GetAtt": [ "TalendSecurityGroup", "Outputs.TacSecurityGroup" ] },
+                    "JobserverSecurityGroup": { "Fn::GetAtt": [ "TalendSecurityGroup", "Outputs.JobserverSecurityGroup" ] },
                     
                     "KeyName": { "Ref": "KeyName" },
                     "SSHLocation": { "Ref": "SSHLocation" },

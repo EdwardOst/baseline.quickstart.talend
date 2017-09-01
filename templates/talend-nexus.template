@@ -879,9 +879,7 @@
             },
             "Description": "Talend public DNS",
 			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":", "publicDns" ] ]
-				}
+                "Name": { "Fn::Sub": "${AWS::StackName}:${TalendProfile}:${TalendProfileInstanceId}:publicDns" }
 			}
         },
         "privateDnsName": {
