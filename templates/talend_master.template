@@ -477,7 +477,7 @@
             "Properties": {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${talendSecurityGroupTemplate}" },
                 "Parameters": {
-                    "VpcId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.TalendVPC" ] },
+                    "VpcId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.TalendVpc" ] },
                     "SSHLocation": { "Ref": "SSHLocation" }
                 }
             }
