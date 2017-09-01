@@ -9,16 +9,16 @@
         },
         "QSS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-.]*[0-9a-zA-Z])*$",
-            "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, periods, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, periods (.), and hyphens (-). It cannot start or end with a hyphen (-).",
             "Default": "baseline.quickstart.talend",
-            "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, periods (.), and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String"
         },
         "QSS3KeyPrefix": {
             "AllowedPattern": "^[0-9a-zA-Z-/]*$",
             "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).  Prefix cannot start with a slash but must end with a slash unless it is the empty string.",
             "Default": "",
-            "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).  Prefix cannot start with a slash but must end with a slash unless it is the empty string.",
             "Type": "String"
         },
         "talendServersTemplate": {
@@ -36,8 +36,8 @@
         "talendNetworkTemplate": {
             "Description": "template relative path",
             "Type": "String",
-            "Default": "templates/talend_network.template",
-            "AllowedValues": [ "templates/talend_network.template" ]
+            "Default": "templates/talend-network.template",
+            "AllowedValues": [ "templates/talend-network.template" ]
         },
         "PublicSubnetId": {
         	"Type": "String",
@@ -473,11 +473,12 @@
 		},
 
         "TalendSecurityGroup": {
+            "DependsOn": [ "NetworkStack" ],
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${talendSecurityGroupTemplate}" },
                 "Parameters": {
-                    "VpcId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.TalendVpc" ] },
+                    "VpcId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.talendVpc" ] },
                     "SSHLocation": { "Ref": "SSHLocation" }
                 }
             }
@@ -485,7 +486,7 @@
         
         "ServersStack": {
 			"Type" : "AWS::CloudFormation::Stack",
-			"DependsOn": [ "NetworkStack" ],
+			"DependsOn": [ "NetworkStack", "TalendSecurityGroup" ],
 			"Properties" : {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${talendServersTemplate}" },
 				"TimeoutInMinutes" : "10",
