@@ -38,6 +38,68 @@
                 ]
             }
         },
+        "DatabaseSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "VpcId": { "Ref": "VpcId" },
+                "GroupDescription": "Allow access to Database from TAC and bastion server on 3306.",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "3306",
+                        "ToPort": "3306",
+                        "CidrIp": {
+                            "Ref": "SSHLocation"
+                        }
+                    }
+                ]
+            }
+        },
+        "DatabaseSecurityGroupIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "DatabaseSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DatabaseSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "3306",
+                "ToPort": "3306",
+                "SourceSecurityGroupId": {
+                    "Ref": "DatabaseSecurityGroup"
+                }
+            }
+        },
+        "DatabaseSecurityGroupBastionIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "TacSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "TacSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "3306",
+                "ToPort": "3306",
+                "SourceSecurityGroupId": {
+                    "Ref": "BastionSecurityGroup"
+                }
+            }
+        },
+        "DatabaseSecurityGroupTacIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "TacSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "TacSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "3306",
+                "ToPort": "3306",
+                "SourceSecurityGroupId": {
+                    "Ref": "TacSecurityGroup"
+                }
+            }
+        },
         "TacSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
@@ -607,6 +669,11 @@
             "Value": { "Ref": "BastionSecurityGroup" },
             "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:BastionSecurityGroup" } }
         },
+        "DatabaseSecurityGroup": {
+            "Description": "Database server security group.",
+            "Value": { "Ref": "DatabaseSecurityGroup" },
+            "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:DatabaseSecurityGroup" } }
+        },
         "TacSecurityGroup": {
             "Description": "TAC security group.",
             "Value": { "Ref": "TacSecurityGroup" },
@@ -621,6 +688,11 @@
             "Description": "Nexus security group.",
             "Value": { "Ref": "NexusSecurityGroup" },
             "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:NexusSecurityGroup" } }
+        },
+        "LogserverSecurityGroup": {
+            "Description": "Logserver security group.",
+            "Value": { "Ref": "LogserverSecurityGroup" },
+            "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:LogserverSecurityGroup" } }
         },
         "CommandlineSecurityGroup": {
             "Description": "Commandline security group.",
