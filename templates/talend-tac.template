@@ -120,18 +120,6 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "tacDbHost": {
-            "Description": "TAC database DNS hostname.",
-            "Type": "String",
-            "Default": "eost-rds-mysql-2.cfcij7o8rjxs.us-east-1.rds.amazonaws.com"
-        },
-        "tacDbPort": {
-            "Description": "TAC database port.",
-            "Type": "Number",
-            "Default": "3306",
-            "MinValue": "1",
-            "MaxValue": "65535"
-        },
         "createTacDatabase": {
             "Description": "Create TAC Database (true) or use an existing TAC database (false)",
             "Type": "String",
@@ -144,16 +132,28 @@
             "AllowedValues": [ "true", "false" ],
             "Default": "true"
         },
-        "masterDbUser": {
+        "MasterDbUser": {
             "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if creating the TAC or AMC databases.",
             "Type": "String",
             "Default": ""
         },
-        "masterDbPassword": {
+        "MasterDbPassword": {
             "Description": "Master user database password.  Only needed if creating the TAC or AMC databases.",
             "Type": "String",
             "Default": "",
             "NoEcho": "true"
+        },
+        "tacDbHost": {
+            "Description": "TAC database DNS hostname.",
+            "Type": "String",
+            "Default": "eost-rds-mysql-2.cfcij7o8rjxs.us-east-1.rds.amazonaws.com"
+        },
+        "tacDbPort": {
+            "Description": "TAC database port.",
+            "Type": "Number",
+            "Default": "3306",
+            "MinValue": "1",
+            "MaxValue": "65535"
         },
         "tacDbSchema": {
             "Description": "TAC database schema.",
@@ -1158,8 +1158,8 @@
                                                     { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
                                                     "/tac/create-db.sh ",
                                                     { "Ref": "tacDbHost" }, " ",
-                                                    { "Ref": "masterDbUser" }, " ",
-                                                    { "Ref": "masterDbPassword" }, " ",
+                                                    { "Ref": "MasterDbUser" }, " ",
+                                                    { "Ref": "MasterDbPassword" }, " ",
                                                     { "Ref": "tacDbSchema" }, " ",
                                                     { "Ref": "tacDbUser" }, " ",
                                                     { "Ref": "tacDbPassword" }
@@ -1181,8 +1181,8 @@
                                                     { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
                                                     "/tac/create-db.sh ",
                                                     { "Ref": "amcDbHost" }, " ",
-                                                    { "Ref": "masterDbUser" }, " ",
-                                                    { "Ref": "masterDbPassword" }, " ",
+                                                    { "Ref": "MasterDbUser" }, " ",
+                                                    { "Ref": "MasterDbPassword" }, " ",
                                                     { "Ref": "amcDbSchema" }, " ",
                                                     { "Ref": "amcDbUser" }, " ",
                                                     { "Ref": "amcDbPassword" }
@@ -1223,91 +1223,53 @@
     },
     "Outputs": {
         "TalendServerHandle": {
-            "Value": { "Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" } ] ] },
+            "Value": { "Fn::Sub": "${AWS::StackName}:${TalendProfile}:${TalendProfileInstanceId}" },
             "Description": "Talend Server export handle"
-        },
-        "TalendProfile": {
-            "Value": { "Ref": "TalendProfile" },
-            "Description": "Type of Talend Server",
-			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "profile" ] ]
-				}
-			}
         },
         "TalendServerInstanceId": {
             "Value": { "Ref": "TalendServerInstance" },
             "Description": "Talend Server EC2 resource Id",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "instanceId" ] ]
-				}
-			}
-        },
-        "TalendServerId": {
-            "Value": { "Ref": "TalendServerInstance" },
-            "Description": "Talend Server EC2 resource Id",
-			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":",  "instanceId" ] ]
+					"Fn::Sub": "${AWS::StackName}:instanceId"
 				}
 			}
         },
         "publicIp": {
 			"Condition": "isPublicSubnet",
-            "Value": {
-                "Fn::GetAtt": [
-                    "TalendServerInstance",
-                    "PublicIp"
-                ]
-            },
+            "Value": { "Fn::GetAtt": [ "TalendServerInstance", "PublicIp" ] },
             "Description": "Talend public IP",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":", "publicIp" ] ] 
+					"Fn::Sub": "${AWS::StackName}:publicIp" 
 				} 
 			}
         },
         "privateIp": {
-            "Value": {
-                "Fn::GetAtt": [
-                    "TalendServerInstance",
-                    "PrivateIp"
-                ]
-            },
+            "Value": { "Fn::GetAtt": [ "TalendServerInstance", "PrivateIp" ] },
             "Description": "Talend private IP",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":", "privateIp" ] ]
+					"Fn::Sub": "${AWS::StackName}:privateIp" 
 				}
 			}
         },
         "publicDnsName": {
 			"Condition": "isPublicSubnet",
-            "Value": {
-                "Fn::GetAtt": [
-                    "TalendServerInstance",
-                    "PublicDnsName"
-                ]
-            },
+            "Value": { "Fn::GetAtt": [ "TalendServerInstance", "PublicDnsName" ] },
             "Description": "Talend public DNS",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":", "publicDns" ] ]
+					"Fn::Sub": "${AWS::StackName}:publicDns"
 				}
 			}
         },
         "privateDnsName": {
-            "Value": {
-                "Fn::GetAtt": [
-                    "TalendServerInstance",
-                    "PrivateDnsName"
-                ]
-            },
+            "Value": { "Fn::GetAtt": [ "TalendServerInstance", "PrivateDnsName" ] },
             "Description": "Talend private DNS",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":", "privateDns" ] ]
+					"Fn::Sub": "${AWS::StackName}:privateDns" 
 				}
 			}
         }

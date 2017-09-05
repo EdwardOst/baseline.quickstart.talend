@@ -376,12 +376,12 @@
             "AllowedValues": [ "true", "false" ],
             "Default": "true"
         },
-        "masterDbUser": {
+        "MasterDbUser": {
             "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if creating the TAC or AMC databases.",
             "Type": "String",
             "Default": ""
         },
-        "masterDbPassword": {
+        "MasterDbPassword": {
             "Description": "Master user database password.  Only needed if creating the TAC or AMC databases.",
             "Type": "String",
             "Default": "",
@@ -562,8 +562,9 @@
                     "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
                     "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
                     "tacDbHost": { "Ref": "talendTacDbHost" },
-                    "masterDbUser": { "Ref": "masterDbUser" },
-                    "masterDbPassword": { "Ref": "masterDbPassword" },
+                    "amcDbHost": { "Ref": "talendTacDbHost" },
+                    "MasterDbUser": { "Ref": "MasterDbUser" },
+                    "MasterDbPassword": { "Ref": "MasterDbPassword" },
                     "createTacDatabase": { "Ref": "createTacDatabase" },
                     "createAmcDatabase": { "Ref": "createAmcDatabase" },
                     "talendNexusHost": { "Fn::GetAtt": [ "NexusStack", "Outputs.privateDnsName" ] },
@@ -614,44 +615,36 @@
 		}
     },
     "Outputs": {
-        "NexusStack": {
+        "Nexus": {
             "Condition": "CreateNexusStackCondition",
             "Value": { "Ref": "NexusStack" },
             "Description": "Nested Nexus stack",
 			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "NexusStack" ] ] 
+				"Name": { "Fn::Sub": "${AWS::StackName}:Nexus" } 
 				} 
-			}
         },
-        "LogserverStack": {
+        "Logserver": {
             "Condition": "CreateLogserverStackCondition",
             "Value": { "Ref": "LogserverStack" },
             "Description": "Nested Logserver stack",
 			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "LogserverStack" ] ] 
-				} 
+				"Name": { "Fn::Sub": "${AWS::StackName}:Logserver" } 
 			}
         },
-        "TacStack": {
+        "Tac": {
             "Condition": "CreateTacStackCondition",
             "Value": { "Ref": "TacStack" },
             "Description": "Nested TAC stack",
 			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "TacStack" ] ] 
-				} 
+				"Name": { "Fn::Sub": "${AWS::StackName}:Tac" } 
 			}
         },
-        "JobserverStack": {
+        "Jobserver": {
             "Condition": "CreateJobserverStackCondition",
             "Value": { "Ref": "JobserverStack" },
             "Description": "Nested Jobserver stack",
 			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "JobserverStack" ] ] 
-				} 
+				"Name": { "Fn::Sub": "${AWS::StackName}:Jobserver" } 
 			}
         }
     }
