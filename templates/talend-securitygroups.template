@@ -57,7 +57,6 @@
         },
         "DatabaseSecurityGroupIngress": {
             "Type": "AWS::EC2::SecurityGroupIngress",
-            "DependsOn": "DatabaseSecurityGroup",
             "Properties": {
                 "GroupId": {
                     "Ref": "DatabaseSecurityGroup"
@@ -72,10 +71,9 @@
         },
         "DatabaseSecurityGroupBastionIngress": {
             "Type": "AWS::EC2::SecurityGroupIngress",
-            "DependsOn": "TacSecurityGroup",
             "Properties": {
                 "GroupId": {
-                    "Ref": "TacSecurityGroup"
+                    "Ref": "DatabaseSecurityGroup"
                 },
                 "IpProtocol": "tcp",
                 "FromPort": "3306",
@@ -87,10 +85,9 @@
         },
         "DatabaseSecurityGroupTacIngress": {
             "Type": "AWS::EC2::SecurityGroupIngress",
-            "DependsOn": "TacSecurityGroup",
             "Properties": {
                 "GroupId": {
-                    "Ref": "TacSecurityGroup"
+                    "Ref": "DatabaseSecurityGroup"
                 },
                 "IpProtocol": "tcp",
                 "FromPort": "3306",
