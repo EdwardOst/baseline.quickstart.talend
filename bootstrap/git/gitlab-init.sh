@@ -7,8 +7,6 @@ function init_gitlab() {
 
     local usage="gitlab_init.sh <git_admin_userid> <git_admin_password> <git_admin_email> <git_tac_userid> <git_tac_password> <git_tac_email> <git_repo>"
 
-    [ "${#}" -lt 7 ] && echo "too few arguments: usage: ${usage}" && exit 1
-
     local git_admin_userid="${1:-${git_admin_userid}:-}"
     local git_admin_password="${2:-${git_admin_password}:-}"
     local git_admin_email="${3:-${git_admin_email}:-}"
