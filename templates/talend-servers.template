@@ -390,7 +390,7 @@
         "GitHost": {
             "Description": "Git host.",
             "Type": "String",
-            "Default": "github.com"
+            "Default": ""
         },
         "GitPort": {
             "Description": "Git port.",
@@ -402,12 +402,12 @@
         "GitRepo": {
             "Description": "Git repository.",
             "Type": "String",
-            "Default": "EdwardOst/quickstart-repo"
+            "Default": ""
         },
         "GitAdminUserid": {
             "Description": "Git user.",
             "Type": "String",
-            "Default": "EdwardOst"
+            "Default": ""
         },
         "GitAdminPassword": {
             "Description": "Git password.",

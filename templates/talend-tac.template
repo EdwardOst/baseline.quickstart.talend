@@ -1222,10 +1222,6 @@
         }
     },
     "Outputs": {
-        "TalendServerHandle": {
-            "Value": { "Fn::Sub": "${AWS::StackName}:${TalendProfile}:${TalendProfileInstanceId}" },
-            "Description": "Talend Server export handle"
-        },
         "TalendServerInstanceId": {
             "Value": { "Ref": "TalendServerInstance" },
             "Description": "Talend Server EC2 resource Id",
