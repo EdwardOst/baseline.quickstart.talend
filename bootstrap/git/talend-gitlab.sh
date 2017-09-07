@@ -37,9 +37,11 @@ function gitlab_init() {
 
     # need to confirm that the gitlab-rails runner will accept unquoted arguments.  the outer quote needs to use double quotes in order
     # for bash parameter expansion to work
-    gitlab-rails runner "User.create!(username: ${git_admin_userid}, email: test2@example.com, password: ${git_admin_password}, password_confirmation: ${git_admin_password}, name: ${git_admin_userid}, admin: true)"
+    echo "creating git admin user"
+    gitlab-rails runner "User.create!(username: \"${git_admin_userid}\", email: \"${git_admin_email}\", password: \"${git_admin_password}\", password_confirmation: \"${git_admin_password}\", name: \"${git_admin_userid}\", admin: \"true\")"
 
-    gitlab-rails runner "User.create!(username: ${git_tac_userid}, email: test@example.com, password: ${git_tac_password}, password_confirmation: ${git_tac_password}, name: ${git_tac_userid})"
+    echo "creating git tac user"
+    gitlab-rails runner "User.create!(username: \"${git_tac_userid}\", email: \"${git_tac_email}\", password: \"${git_tac_password}\", password_confirmation: \"${git_tac_password}\", name: \"${git_tac_userid}\")"
 
     # This next section puts the ip in as the first variable and the access token as the second
 
@@ -51,15 +53,19 @@ function gitlab_init() {
 
     # Create the project, clone it to local file, populate it with demo, and push it
 
+    echo "creating project ${git_repo}"
     curl --header "PRIVATE-TOKEN: ${xvar}" -X POST "http://${ipvar}/api/v3/projects?name=${git_repo}"
 
+    echo "cloning http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/oodlejobs.git"
     git clone "http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/oodlejobs.git"
 
     cd "${git_repo}"
 
     # placeholder to retrieve standard jobs
+    echo "wget ${source_url}"
     wget "${source_url}"
 
+    echo "git commit and push"
     git add .
     git commit -m "First Jobs"
     git push "http://Admin:AdminPassword@${ipvar}/Admin/oodlejobs.git"

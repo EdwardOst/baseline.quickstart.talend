@@ -230,29 +230,29 @@
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "talendGitHost": {
+        "GitHost": {
             "Description": "Git host DNS hostname.",
             "Type": "String",
             "Default": "localhost"
         },
-        "talendGitPort": {
+        "GitPort": {
             "Description": "Git port.",
             "Type": "Number",
             "Default": "443",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "talendGitRepo": {
+        "GitRepo": {
             "Description": "Git repository.",
             "Type": "String",
             "Default": "talend"
         },
-        "talendGitUser": {
+        "GitAdminUser": {
             "Description": "Git admin user.",
             "Type": "String",
             "Default": "tisadmin"
         },
-        "talendGitPassword": {
+        "GitAdminPassword": {
             "Description": "Git password.",
             "Type": "String",
             "Default": "secretpassword",
@@ -885,7 +885,7 @@
                                                     [
                                                         "export TALEND_GIT_HOST=",
                                                         {
-                                                            "Ref": "talendGitHost"
+                                                            "Ref": "GitHost"
                                                         }
                                                     ]
                                                 ]
@@ -896,7 +896,7 @@
                                                     [
                                                         "export TALEND_GIT_PORT=",
                                                         {
-                                                            "Ref": "talendGitPort"
+                                                            "Ref": "GitPort"
                                                         }
                                                     ]
                                                 ]
@@ -907,7 +907,7 @@
                                                     [
                                                         "export TALEND_GIT_REPO=",
                                                         {
-                                                            "Ref": "talendGitRepo"
+                                                            "Ref": "GitRepo"
                                                         }
                                                     ]
                                                 ]
@@ -918,7 +918,7 @@
                                                     [
                                                         "export TALEND_GIT_USER=",
                                                         {
-                                                            "Ref": "talendGitUser"
+                                                            "Ref": "GitAdminUser"
                                                         }
                                                     ]
                                                 ]
@@ -929,7 +929,7 @@
                                                     [
                                                         "export TALEND_GIT_PASSWORD=",
                                                         {
-                                                            "Ref": "talendGitPassword"
+                                                            "Ref": "GitAdminPassword"
                                                         }
                                                     ]
                                                 ]
