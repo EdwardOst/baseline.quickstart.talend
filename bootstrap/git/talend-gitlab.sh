@@ -1,4 +1,7 @@
-#!/bin/bash -eu
+#!/usr/bin/env bash
+
+set -e
+set -u
 
 function gitlab_init() {
 
@@ -13,14 +16,14 @@ function gitlab_init() {
     local git_repo="${7:-${git_repo:-}}"
     local source_url="${8:-${source_url:-}}"
 
-    [ -z "${git_admin_userid}"] && echo "invalid argument git_admin_userid cannot be empty: usage: ${usage}" && return 1
-    [ -z "${git_admin_password"] && echo "invalid argument git_admin_password cannot be empty: usage: ${usage}" && return 1
-    [ -z "${git_admin_email"] && echo "invalid argument git_admin_email cannot be empty: usage: ${usage}" && return 1
-    [ -z "${git_tac_userid}"] && echo "invalid argument git_tac_userid cannot be empty: usage: ${usage}" && return 1
-    [ -z "${git_tac_password}"] && echo "invalid argument git_tac_password cannot be empty: usage: ${usage}" && return 1
-    [ -z "${git_tac_email"] && echo "invalid argument git_tac_email cannot be empty: usage: ${usage}" && return 1
-    [ -z "${git_repo}"] && echo "invalid argument git_repo cannot be empty: usage: ${usage}" && return 1
-    [ -z "${source_url}"] && echo "invalid argument source_url cannot be empty: usage: ${usage}" && return 1
+    [ -z "${git_admin_userid}" ] && echo "invalid argument git_admin_userid cannot be empty: usage: ${usage}" && return 1
+    [ -z "${git_admin_password}" ] && echo "invalid argument git_admin_password cannot be empty: usage: ${usage}" && return 1
+    [ -z "${git_admin_email}" ] && echo "invalid argument git_admin_email cannot be empty: usage: ${usage}" && return 1
+    [ -z "${git_tac_userid}" ] && echo "invalid argument git_tac_userid cannot be empty: usage: ${usage}" && return 1
+    [ -z "${git_tac_password}" ] && echo "invalid argument git_tac_password cannot be empty: usage: ${usage}" && return 1
+    [ -z "${git_tac_email}" ] && echo "invalid argument git_tac_email cannot be empty: usage: ${usage}" && return 1
+    [ -z "${git_repo}" ] && echo "invalid argument git_repo cannot be empty: usage: ${usage}" && return 1
+    [ -z "${source_url}" ] && echo "invalid argument source_url cannot be empty: usage: ${usage}" && return 1
 
     #Install the packages.  The wait is to prevent a stall after reconfigure
 
@@ -40,9 +43,11 @@ function gitlab_init() {
 
     # This next section puts the ip in as the first variable and the access token as the second
 
-    local ipvar=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+    local ipvar
+    ipvar=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
 
-    local xvar=$(curl http://${ipvar}/api/v3/session --data "login=${git_admin_userid}&password=${git_admin_password}" | jq --raw-output .private_token)
+    local xvar
+    xvar=$(curl "http://${ipvar}/api/v3/session" --data "login=${git_admin_userid}&password=${git_admin_password}" | jq --raw-output .private_token)
 
     # Create the project, clone it to local file, populate it with demo, and push it
 
@@ -57,6 +62,6 @@ function gitlab_init() {
 
     git add .
     git commit -m "First Jobs"
-    git push http://Admin:AdminPassword@${ipvar}/Admin/oodlejobs.git
+    git push "http://Admin:AdminPassword@${ipvar}/Admin/oodlejobs.git"
 
 }
