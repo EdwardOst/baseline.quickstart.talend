@@ -45,11 +45,18 @@ function gitlab_init() {
 
     # This next section puts the ip in as the first variable and the access token as the second
 
+    echo "getting ip"
     local ipvar
-    ipvar=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+    # this probably needs to be private ip since server cannot access its own external ip, just its private ip
+    # ipvar=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+    ipvar=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+    echo "ip=${ipvar}"
 
+    echo "getting private token"
+    echo "curl http://${ipvar}/api/v3/session --data login=${git_admin_userid}&password=${git_admin_password}"
     local xvar
     xvar=$(curl "http://${ipvar}/api/v3/session" --data "login=${git_admin_userid}&password=${git_admin_password}" | jq --raw-output .private_token)
+    echo "xvar=${xvar}"
 
     # Create the project, clone it to local file, populate it with demo, and push it
 

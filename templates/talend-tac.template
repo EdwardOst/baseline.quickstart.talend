@@ -247,7 +247,7 @@
             "Type": "String",
             "Default": "talend"
         },
-        "GitAdminUser": {
+        "GitAdminUserid": {
             "Description": "Git admin user.",
             "Type": "String",
             "Default": "tisadmin"
@@ -918,7 +918,7 @@
                                                     [
                                                         "export TALEND_GIT_USER=",
                                                         {
-                                                            "Ref": "GitAdminUser"
+                                                            "Ref": "GitAdminUserid"
                                                         }
                                                     ]
                                                 ]
