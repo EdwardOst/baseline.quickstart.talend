@@ -387,29 +387,29 @@
             "Default": "",
             "NoEcho": "true"
         },
-        "talendGitHost": {
+        "GitHost": {
             "Description": "Git host.",
             "Type": "String",
             "Default": "github.com"
         },
-        "talendGitPort": {
+        "GitPort": {
             "Description": "Git port.",
             "Type": "Number",
             "Default": "443",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "talendGitRepo": {
+        "GitRepo": {
             "Description": "Git repository.",
             "Type": "String",
             "Default": "EdwardOst/quickstart-repo"
         },
-        "talendGitUser": {
+        "GitAdminUserid": {
             "Description": "Git user.",
             "Type": "String",
             "Default": "EdwardOst"
         },
-        "talendGitPassword": {
+        "GitAdminPassword": {
             "Description": "Git password.",
             "Type": "String",
             "NoEcho": "true"
@@ -578,11 +578,11 @@
                     },
                     "talendLogstashTacPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashTacPort" ] },
                     "talendLogstashKibanaPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashKibanaPort" ] },
-                    "talendGitHost": { "Ref": "talendGitHost" },
-                    "talendGitPort": { "Ref": "talendGitPort" },
-                    "talendGitRepo": { "Ref": "talendGitRepo" },
-                    "talendGitUser": { "Ref": "talendGitUser" },
-                    "talendGitPassword": { "Ref": "talendGitPassword" }
+                    "GitHost": { "Ref": "GitHost" },
+                    "GitPort": { "Ref": "GitPort" },
+                    "GitRepo": { "Ref": "GitRepo" },
+                    "GitAdminUserid": { "Ref": "GitAdminUserid" },
+                    "GitAdminPassword": { "Ref": "GitAdminPassword" }
 				},
 				"TimeoutInMinutes" : "10"
 			}
