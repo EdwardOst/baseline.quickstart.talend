@@ -299,6 +299,21 @@
                 }
             }
         },
+        "JobserverSecurityGroupTacSshIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "JobserverSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "JobserverSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "22",
+                "ToPort": "22",
+                "SourceSecurityGroupId": {
+                    "Ref": "TacSecurityGroup"
+                }
+            }
+        },
         "JobserverSecurityGroupBastionSshIngress": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "DependsOn": "JobserverSecurityGroup",

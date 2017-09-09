@@ -360,11 +360,7 @@
                         }
                     ]
                 },
-                "Tags": [ 
-                    { "Key": "StackId", "Value": "${AWS::StackId}" },
-                    { "Key": "StackName", "Value": "${AWS::StackName}" },
-                    { "Key": "Name", "Value": "Nexus" }
-                    ],
+                "Tags": [ { "Key": "Name", "Value": "Nexus" } ],
                 "KeyName": { "Ref": "KeyName" },
 				"SecurityGroupIds": { "Ref": "SecurityGroupIds" },
 				"SubnetId": { "Ref": "SubnetId" },
