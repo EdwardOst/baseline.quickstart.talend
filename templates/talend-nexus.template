@@ -130,6 +130,10 @@
 	},
     "Mappings": {
         "Talend": {
+            "bootstrap": {
+                "ec2Metadata": "https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/ec2-metadata",
+                "updateHosts": "https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/update_hosts.sh"
+            },
             "tui": {
                 "tuiUrl": "https://s3.amazonaws.com/repo-quickstart-talend/tui/TUI-4.5.2.tar",
                 "tuiTarget": "/home/ec2-user/TUI-4.5.2",
@@ -380,9 +384,13 @@
                                 "#!/bin/bash -xe\n",
                                 "yum install -y aws-cfn-bootstrap\n",
 								"#fix ec2 hostname resolution\n",
-                                "wget https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/ec2-metadata\n",
+                                "wget ",
+                                { "Fn::FindInMap": [ "Talend", "bootstrap", "ec2Metadata"] },
+                                "\n",
 								"chmod +x ec2-metadata\n",
-                                "wget https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/update_hosts.sh\n",
+                                "wget ",
+                                { "Fn::FindInMap": [ "Talend", "bootstrap", "updateHosts"] },
+                                "\n",
 								"chmod +x update_hosts.sh\n",
                                 "./update_hosts.sh\n",
                                 "# Install the files and packages from the metadata\n",
@@ -800,34 +808,50 @@
         }
     },
     "Outputs": {
-        "TalendServerHandle": {
-            "Value": { "Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" } ] ] },
-            "Description": "Talend Server export handle"
-        },
-        "TalendProfile": {
-            "Value": { "Ref": "TalendProfile" },
-            "Description": "Type of Talend Server",
-			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "profile" ] ]
-				}
-			}
-        },
         "TalendServerInstanceId": {
             "Value": { "Ref": "TalendServerInstance" },
-            "Description": "Talend Server EC2 resource Id lookup by stack name",
+            "Description": "Talend Server EC2 resource Id",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "instanceId" ] ]
+					"Fn::Sub": "${AWS::StackName}:instanceId"
 				}
 			}
         },
-        "TalendServerId": {
-            "Value": { "Ref": "TalendServerInstance" },
-            "Description": "Talend Server EC2 resource Id lookup by profile instance",
+        "publicIp": {
+			"Condition": "isPublicSubnet",
+            "Value": { "Fn::GetAtt": [ "TalendServerInstance", "PublicIp" ] },
+            "Description": "Talend public IP",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":",  "instanceId" ] ]
+					"Fn::Sub": "${AWS::StackName}:publicIp" 
+				} 
+			}
+        },
+        "privateIp": {
+            "Value": { "Fn::GetAtt": [ "TalendServerInstance", "PrivateIp" ] },
+            "Description": "Talend private IP",
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}:privateIp" 
+				}
+			}
+        },
+        "publicDnsName": {
+			"Condition": "isPublicSubnet",
+            "Value": { "Fn::GetAtt": [ "TalendServerInstance", "PublicDnsName" ] },
+            "Description": "Talend public DNS",
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}:publicDns"
+				}
+			}
+        },
+        "privateDnsName": {
+            "Value": { "Fn::GetAtt": [ "TalendServerInstance", "PrivateDnsName" ] },
+            "Description": "Talend private DNS",
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}:privateDns" 
 				}
 			}
         },
@@ -836,63 +860,7 @@
             "Description": "Talend Nexus Port",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":", "nexusPort" ] ]
-				}
-			}
-        },
-        "publicIp": {
-			"Condition": "isPublicSubnet",
-            "Value": {
-                "Fn::GetAtt": [
-                    "TalendServerInstance",
-                    "PublicIp"
-                ]
-            },
-            "Description": "Talend public IP",
-			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":", "publicIp" ] ] 
-				} 
-			}
-        },
-        "privateIp": {
-            "Value": {
-                "Fn::GetAtt": [
-                    "TalendServerInstance",
-                    "PrivateIp"
-                ]
-            },
-            "Description": "Talend private IP",
-			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":", "privateIp" ] ]
-				}
-			}
-        },
-        "publicDnsName": {
-			"Condition": "isPublicSubnet",
-            "Value": {
-                "Fn::GetAtt": [
-                    "TalendServerInstance",
-                    "PublicDnsName"
-                ]
-            },
-            "Description": "Talend public DNS",
-			"Export": {
-                "Name": { "Fn::Sub": "${AWS::StackName}:${TalendProfile}:${TalendProfileInstanceId}:publicDns" }
-			}
-        },
-        "privateDnsName": {
-            "Value": {
-                "Fn::GetAtt": [
-                    "TalendServerInstance",
-                    "PrivateDnsName"
-                ]
-            },
-            "Description": "Talend private DNS",
-			"Export": {
-				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  { "Ref" : "TalendProfile" }, ":",  { "Ref" : "TalendProfileInstanceId" }, ":", "privateDns" ] ]
+                    "Fn::Sub": "${AWS::StackName}:nexusPort"
 				}
 			}
         }

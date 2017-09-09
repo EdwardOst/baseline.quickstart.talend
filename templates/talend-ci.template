@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This template will deploy a Jobserver instance into an existing VPC subnet.  **WARNING** This template creates Amazon EC2 instance and related resources. You will be billed for the AWS resources used if you create a stack from this template. QS(9999)",
+    "Description": "This template will deploy a Talend CI instance into an existing VPC subnet.  **WARNING** This template creates Amazon EC2 instance and related resources. You will be billed for the AWS resources used if you create a stack from this template. QS(9999)",
     "Parameters": {
         "InstanceType": {
             "Description": "Talend Server EC2 instance type",
@@ -75,18 +75,6 @@
             "Description": "Talend Server Security Group.",
             "Type": "CommaDelimitedList"
 		},
-        "TalendProfile": {
-            "Description": " The Talend Profile specifies which Talend server processes to be created on this EC2 instance.",
-            "Type": "String",
-            "Default": "nexus",
-            "AllowedValues": [ "nexus", "logserver", "tac", "jobserver" ]
-        },
-		"TalendProfileInstanceId": {
-            "Description": " The Talend Instance Id distinguishes between multiple instances of the same Talend Profile.",
-            "Type": "Number",
-            "Default": "1",
-            "MinValue": "1"
-		},
         "TalendLicenseUser": {
             "Description": "The Talend License User is included in the email you received with your eval license.",
             "Type": "String"
@@ -120,19 +108,10 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "tacHost": {
-            "Description": "TAC DNS hostname.",
-            "Type": "String"
-        },
-        "talendLoggingHost": {
-            "Description": "Logstash server host DNS.",
-            "Type": "String",
-            "Default": "localhost"
-        },
-        "talendLogstashJobserverPort": {
-            "Description": "Logstash Jobserver input port.",
+        "TalendNexusPort": {
+            "Description": "Nexus port.",
             "Type": "Number",
-            "Default": "8055",
+            "Default": "8081",
             "MinValue": "1",
             "MaxValue": "65535"
         }
@@ -152,7 +131,8 @@
                 "s3fsUrl": "https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.82.tar.gz",
                 "s3fsTarget": "/home/ec2-user/s3fs-fuse-1.82",
                 "generatedTarget": "/home/ec2-user/generated",
-				"talendRepoDir": "/opt/repo"
+				"talendRepoDir": "/opt/repo",
+                "talendProfile": "ci"
             }
         },
         "AWSInstanceType2Arch": {
@@ -415,7 +395,6 @@
                                     "Ref": "AWS::Region"
                                 },
                                 "\n",
-                                "# Signal the status from cfn-init\n",
                                 "/opt/aws/bin/cfn-signal -e $? ",
                                 "         --stack ",
                                 {
@@ -585,31 +564,9 @@
                                                 "Fn::Join": [
                                                     "",
                                                     [
-                                                        "export TALEND_TAC_HOST=",
+                                                        "export TALEND_NEXUS_PORT=",
                                                         {
-                                                            "Ref": "tacHost"
-                                                        }
-                                                    ]
-                                                ]
-                                            },
-                                            {
-                                                "Fn::Join": [
-                                                    "",
-                                                    [
-                                                        "export TALEND_LOGGING_HOST=",
-                                                        {
-                                                            "Ref": "talendLoggingHost"
-                                                        }
-                                                    ]
-                                                ]
-                                            },
-                                            {
-                                                "Fn::Join": [
-                                                    "",
-                                                    [
-                                                        "export TALEND_LOGSTASH_JOBSERVER_PORT=",
-                                                        {
-                                                            "Ref": "talendLogstashJobserverPort"
+                                                            "Ref": "TalendNexusPort"
                                                         }
                                                     ]
                                                 ]
@@ -759,7 +716,13 @@
                                                 ]
                                             },
 											"/scripts/create-",
-											{ "Ref": "TalendProfile" },
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "talendProfile"
+                                                ]
+                                            },
 											"-env.sh ",
                                             {
                                                 "Fn::FindInMap": [
@@ -811,25 +774,7 @@
                                     ]
                                 }
                             },
-                            "03-tac-started": {
-                                "command": {
-                                    "Fn::Join": [
-                                        "",
-                                        [
-                                            {
-                                                "Fn::FindInMap": [
-                                                    "Talend",
-                                                    "tui",
-                                                    "baselineTarget"
-                                                ]
-                                            },
-                                            "/tac/isTACStarted.sh ",
-                                            { "Ref": "tacHost" }
-                                        ]
-                                    ]
-                                }
-                            },
-                            "04-install-talend": {
+                            "03-install-talend": {
                                 "command": {
                                     "Fn::Join": [ 
                                         "", 
@@ -839,7 +784,13 @@
                                             "source ./instance-env.sh; ",
                                             "source ./server-env.sh; ",
                                             "./install -q ",
-                                            { "Ref": "TalendProfile" }
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "talendProfile"
+                                                ]
+                                            }
                                         ] 
                                     ]
                                 },
