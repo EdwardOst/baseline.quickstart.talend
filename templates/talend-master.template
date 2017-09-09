@@ -548,8 +548,8 @@
                     "GitHost": { "Ref": "GitHost" },
                     "GitPort": { "Ref": "GitPort" },
                     "GitRepo": { "Ref": "GitRepo" },
-                    "GitUser": { "Ref": "GitUser" },
-                    "GitPassword": { "Ref": "GitPassword" }
+                    "GitAdminUserid": { "Ref": "GitUser" },
+                    "GitAdminPassword": { "Ref": "GitPassword" }                    
                 }
             }
         }
