@@ -399,9 +399,12 @@
                         }
                     ]
                 },
-                "KeyName": {
-                    "Ref": "KeyName"
-                },
+                "Tags": [ 
+                    { "Key": "StackId", "Value": "${AWS::StackId}" },
+                    { "Key": "StackName", "Value": "${AWS::StackName}" },
+                    { "Key": "Name", "Value": "Logserver" }
+                    ],
+                "KeyName": { "Ref": "KeyName" },
 				"SecurityGroupIds": { "Ref": "SecurityGroupIds" },
 				"SubnetId": { "Ref": "SubnetId" },
                 "UserData": {

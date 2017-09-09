@@ -514,9 +514,12 @@
                         }
                     ]
                 },
-                "KeyName": {
-                    "Ref": "KeyName"
-                },
+                "Tags": [ 
+                    { "Key": "StackId", "Value": "${AWS::StackId}" },
+                    { "Key": "StackName", "Value": "${AWS::StackName}" },
+                    { "Key": "Name", "Value": "TAC" }
+                    ],
+                "KeyName": { "Ref": "KeyName" },
 				"SecurityGroupIds": { "Ref": "SecurityGroupIds" },
 				"SubnetId": { "Ref": "SubnetId" },
                 "UserData": {
@@ -534,6 +537,7 @@
                                 "wget ",
                                 { "Fn::FindInMap": [ "Talend", "bootstrap", "updateHosts"] },
                                 "\n",
+								"chmod +x update_hosts.sh\n",
                                 "./update_hosts.sh\n",
                                 "# Install the files and packages from the metadata\n",
                                 "/opt/aws/bin/cfn-init -v ",
