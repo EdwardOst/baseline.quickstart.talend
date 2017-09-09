@@ -65,7 +65,7 @@
             "Description": "Talend Server subnet id.",
             "Type": "AWS::EC2::Subnet::Id"
 		},
-		"privateSubnet": {
+		"PrivateSubnet": {
             "Description": "Is this is a private subnet.",
             "Type": "String",
 			"Default": "private",
@@ -74,18 +74,6 @@
 		"SecurityGroupIds": {
             "Description": "Talend Server Security Group.",
             "Type": "CommaDelimitedList"
-		},
-        "TalendProfile": {
-            "Description": " The Talend Profile specifies which Talend server processes to be created on this EC2 instance.",
-            "Type": "String",
-            "Default": "tacamc",
-            "AllowedValues": [ "nexus", "logserver", "tac", "tacamc", "jobserver" ]
-        },
-		"TalendProfileInstanceId": {
-            "Description": " The Talend Instance Id distinguishes between multiple instances of the same Talend Profile.",
-            "Type": "Number",
-            "Default": "1",
-            "MinValue": "1"
 		},
         "TalendLicenseUser": {
             "Description": "The Talend License User is included in the email you received with your eval license.",
@@ -120,13 +108,13 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "createTacDatabase": {
+        "CreateTacDatabase": {
             "Description": "Create TAC Database (true) or use an existing TAC database (false)",
             "Type": "String",
             "AllowedValues": [ "true", "false" ],
             "Default": "true"
         },
-        "createAmcDatabase": {
+        "CreateAmcDatabase": {
             "Description": "Create AMC Database (true) or use an existing AMC database (false)",
             "Type": "String",
             "AllowedValues": [ "true", "false" ],
@@ -143,87 +131,87 @@
             "Default": "",
             "NoEcho": "true"
         },
-        "tacDbHost": {
+        "TacDbHost": {
             "Description": "TAC database DNS hostname.",
             "Type": "String",
             "Default": "eost-rds-mysql-2.cfcij7o8rjxs.us-east-1.rds.amazonaws.com"
         },
-        "tacDbPort": {
+        "TacDbPort": {
             "Description": "TAC database port.",
             "Type": "Number",
             "Default": "3306",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "tacDbSchema": {
+        "TacDbSchema": {
             "Description": "TAC database schema.",
             "Type": "String",
             "Default": "tac_quickstart"
         },
-        "tacDbUser": {
+        "TacDbUser": {
             "Description": "TAC database user.",
             "Type": "String",
             "Default": "tac_admin"
         },
-        "tacDbPassword": {
+        "TacDbPassword": {
             "Description": "TAC database password.",
             "Type": "String",
             "Default": "tac_adminTalend123",
             "NoEcho": "true"
         },
-        "amcDbHost": {
+        "AmcDbHost": {
             "Description": "AMC database DNS hostname.",
             "Type": "String",
             "Default": "eost-rds-mysql-2.cfcij7o8rjxs.us-east-1.rds.amazonaws.com"
         },
-        "amcDbPort": {
+        "AmcDbPort": {
             "Description": "AMC database port.",
             "Type": "Number",
             "Default": "3306",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "amcDbSchema": {
+        "AmcDbSchema": {
             "Description": "AMC database schema.",
             "Type": "String",
             "Default": "amc"
         },
-        "amcDbUser": {
+        "AmcDbUser": {
             "Description": "AMC database user.",
             "Type": "String",
             "Default": "tadmin"
         },
-        "amcDbPassword": {
+        "AmcDbPassword": {
             "Description": "AMC database password.",
             "Type": "String",
             "Default": "tadminTalend123",
             "NoEcho": "true"
         },
-        "talendNexusHost": {
+        "NexusHost": {
             "Description": "Nexus host DNS hostname.",
             "Type": "String",
             "Default": "localhost"
         },
-        "talendNexusPort": {
+        "NexusPort": {
             "Description": "Nexus port.",
             "Type": "Number",
             "Default": "8081",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "talendLoggingHost": {
+        "LoggingHost": {
             "Description": "Logstash server host DNS hostname.",
             "Type": "String",
             "Default": "localhost"
         },
-        "talendLogstashTacPort": {
+        "LogstashTacPort": {
             "Description": "Logstash TAC input port.",
             "Type": "Number",
             "Default": "8050",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "talendLogstashKibanaPort": {
+        "LogstashKibanaPort": {
             "Description": "Logstash Kibana port.",
             "Type": "Number",
             "Default": "5601",
@@ -266,6 +254,7 @@
                 "updateHosts": "https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/update_hosts.sh"
             },
             "tui": {
+                "profile": "tacamc",
                 "tuiUrl": "https://s3.amazonaws.com/repo-quickstart-talend/tui/TUI-4.5.2.tar",
                 "tuiTarget": "/home/ec2-user/TUI-4.5.2",
                 "baselineUrl": "https://github.com/EdwardOst/baseline.quickstart.talend/archive/0.3.0.tar.gz",
@@ -470,7 +459,7 @@
 	"Conditions": {
         "isPrivateSubnet": {
             "Fn::Equals": [
-                { "Ref": "privateSubnet" },
+                { "Ref": "PrivateSubnet" },
                 "private"
             ]
         },
@@ -479,13 +468,13 @@
 		},
         "CreateTacDatabaseCondition": {
             "Fn::Equals": [
-                { "Ref": "createTacDatabase" },
+                { "Ref": "CreateTacDatabase" },
                 "true"
             ]
         },
         "CreateAmcDatabaseCondition": {
             "Fn::Equals": [
-                { "Ref": "createAmcDatabase" },
+                { "Ref": "CreateAmcDatabase" },
                 "true"
             ]
         }
@@ -731,7 +720,7 @@
                                                     [
                                                         "export TALEND_TAC_DB_HOST=",
                                                         {
-                                                            "Ref": "tacDbHost"
+                                                            "Ref": "TacDbHost"
                                                         }
                                                     ]
                                                 ]
@@ -742,7 +731,7 @@
                                                     [
                                                         "export TALEND_TAC_DB_PORT=",
                                                         {
-                                                            "Ref": "tacDbPort"
+                                                            "Ref": "TacDbPort"
                                                         }
                                                     ]
                                                 ]
@@ -753,7 +742,7 @@
                                                     [
                                                         "export TALEND_TAC_DB_SCHEMA=",
                                                         {
-                                                            "Ref": "tacDbSchema"
+                                                            "Ref": "TacDbSchema"
                                                         }
                                                     ]
                                                 ]
@@ -764,7 +753,7 @@
                                                     [
                                                         "export TALEND_TAC_DB_USER=",
                                                         {
-                                                            "Ref": "tacDbUser"
+                                                            "Ref": "TacDbUser"
                                                         }
                                                     ]
                                                 ]
@@ -775,7 +764,7 @@
                                                     [
                                                         "export TALEND_TAC_DB_PASSWORD=",
                                                         {
-                                                            "Ref": "tacDbPassword"
+                                                            "Ref": "TacDbPassword"
                                                         }
                                                     ]
                                                 ]
@@ -786,7 +775,7 @@
                                                     [
                                                         "export TALEND_AMC_DB_HOST=",
                                                         {
-                                                            "Ref": "amcDbHost"
+                                                            "Ref": "AmcDbHost"
                                                         }
                                                     ]
                                                 ]
@@ -797,7 +786,7 @@
                                                     [
                                                         "export TALEND_AMC_DB_PORT=",
                                                         {
-                                                            "Ref": "amcDbPort"
+                                                            "Ref": "AmcDbPort"
                                                         }
                                                     ]
                                                 ]
@@ -808,7 +797,7 @@
                                                     [
                                                         "export TALEND_AMC_DB_SCHEMA=",
                                                         {
-                                                            "Ref": "amcDbSchema"
+                                                            "Ref": "AmcDbSchema"
                                                         }
                                                     ]
                                                 ]
@@ -819,7 +808,7 @@
                                                     [
                                                         "export TALEND_AMC_DB_USER=",
                                                         {
-                                                            "Ref": "amcDbUser"
+                                                            "Ref": "AmcDbUser"
                                                         }
                                                     ]
                                                 ]
@@ -830,7 +819,7 @@
                                                     [
                                                         "export TALEND_AMC_DB_PASSWORD=",
                                                         {
-                                                            "Ref": "amcDbPassword"
+                                                            "Ref": "AmcDbPassword"
                                                         }
                                                     ]
                                                 ]
@@ -841,7 +830,7 @@
                                                     [
                                                         "export TALEND_NEXUS_HOST=",
                                                         {
-                                                            "Ref": "talendNexusHost"
+                                                            "Ref": "NexusHost"
                                                         }
                                                     ]
                                                 ]
@@ -852,7 +841,7 @@
                                                     [
                                                         "export TALEND_NEXUS_PORT=",
                                                         {
-                                                            "Ref": "talendNexusPort"
+                                                            "Ref": "NexusPort"
                                                         }
                                                     ]
                                                 ]
@@ -863,7 +852,7 @@
                                                     [
                                                         "export TALEND_LOGGING_HOST=",
                                                         {
-                                                            "Ref": "talendLoggingHost"
+                                                            "Ref": "LoggingHost"
                                                         }
                                                     ]
                                                 ]
@@ -874,7 +863,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_TAC_PORT=",
                                                         {
-                                                            "Ref": "talendLogstashTacPort"
+                                                            "Ref": "LogstashTacPort"
                                                         }
                                                     ]
                                                 ]
@@ -885,7 +874,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_KIBANA_PORT=",
                                                         {
-                                                            "Ref": "talendLogstashKibanaPort"
+                                                            "Ref": "LogstashKibanaPort"
                                                         }
                                                     ]
                                                 ]
@@ -1090,7 +1079,7 @@
                                                 ]
                                             },
 											"/scripts/create-",
-											{ "Ref": "TalendProfile" },
+											{ "FindInMap": [ "Talend", "tui", "profile" ] },
 											"-env.sh ",
                                             {
                                                 "Fn::FindInMap": [
@@ -1168,12 +1157,12 @@
                                                 [
                                                     { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
                                                     "/tac/create-db.sh ",
-                                                    { "Ref": "tacDbHost" }, " ",
+                                                    { "Ref": "TacDbHost" }, " ",
                                                     { "Ref": "MasterDbUser" }, " ",
                                                     { "Ref": "MasterDbPassword" }, " ",
-                                                    { "Ref": "tacDbSchema" }, " ",
-                                                    { "Ref": "tacDbUser" }, " ",
-                                                    { "Ref": "tacDbPassword" }
+                                                    { "Ref": "TacDbSchema" }, " ",
+                                                    { "Ref": "TacDbUser" }, " ",
+                                                    { "Ref": "TacDbPassword" }
                                                 ]
                                             ]
                                         },
@@ -1191,12 +1180,12 @@
                                                 [
                                                     { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
                                                     "/tac/create-db.sh ",
-                                                    { "Ref": "amcDbHost" }, " ",
+                                                    { "Ref": "AmcDbHost" }, " ",
                                                     { "Ref": "MasterDbUser" }, " ",
                                                     { "Ref": "MasterDbPassword" }, " ",
-                                                    { "Ref": "amcDbSchema" }, " ",
-                                                    { "Ref": "amcDbUser" }, " ",
-                                                    { "Ref": "amcDbPassword" }
+                                                    { "Ref": "AmcDbSchema" }, " ",
+                                                    { "Ref": "AmcDbUser" }, " ",
+                                                    { "Ref": "AmcDbPassword" }
                                                 ]
                                             ]
                                         },
@@ -1214,7 +1203,7 @@
                                             "source ./instance-env.sh; ",
                                             "source ./server-env.sh; ",
                                             "./install -q ",
-                                            { "Ref": "TalendProfile" }
+                                            { "FindInMap": [ "Talend", "tui", "profile" ] }
                                         ] 
                                     ]
                                 },

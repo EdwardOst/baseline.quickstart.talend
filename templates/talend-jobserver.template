@@ -65,7 +65,7 @@
             "Description": "Talend Server subnet id.",
             "Type": "AWS::EC2::Subnet::Id"
 		},
-		"privateSubnet": {
+		"PrivateSubnet": {
             "Description": "Is this is a private subnet.",
             "Type": "String",
 			"Default": "private",
@@ -74,18 +74,6 @@
 		"SecurityGroupIds": {
             "Description": "Talend Server Security Group.",
             "Type": "CommaDelimitedList"
-		},
-        "TalendProfile": {
-            "Description": " The Talend Profile specifies which Talend server processes to be created on this EC2 instance.",
-            "Type": "String",
-            "Default": "nexus",
-            "AllowedValues": [ "nexus", "logserver", "tac", "jobserver" ]
-        },
-		"TalendProfileInstanceId": {
-            "Description": " The Talend Instance Id distinguishes between multiple instances of the same Talend Profile.",
-            "Type": "Number",
-            "Default": "1",
-            "MinValue": "1"
 		},
         "TalendLicenseUser": {
             "Description": "The Talend License User is included in the email you received with your eval license.",
@@ -120,16 +108,16 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "tacHost": {
+        "TacHost": {
             "Description": "TAC DNS hostname.",
             "Type": "String"
         },
-        "talendLoggingHost": {
+        "LoggingHost": {
             "Description": "Logstash server host DNS.",
             "Type": "String",
             "Default": "localhost"
         },
-        "talendLogstashJobserverPort": {
+        "LogstashJobserverPort": {
             "Description": "Logstash Jobserver input port.",
             "Type": "Number",
             "Default": "8055",
@@ -144,6 +132,7 @@
                 "updateHosts": "https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/update_hosts.sh"
             },
             "tui": {
+                "profile": "jobserver",
                 "tuiUrl": "https://s3.amazonaws.com/repo-quickstart-talend/tui/TUI-4.5.2.tar",
                 "tuiTarget": "/home/ec2-user/TUI-4.5.2",
                 "baselineUrl": "https://github.com/EdwardOst/baseline.quickstart.talend/archive/0.3.0.tar.gz",
@@ -348,7 +337,7 @@
 	"Conditions": {
         "isPrivateSubnet": {
             "Fn::Equals": [
-                { "Ref": "privateSubnet" },
+                { "Ref": "PrivateSubnet" },
                 "private"
             ]
         },
@@ -590,7 +579,7 @@
                                                     [
                                                         "export TALEND_TAC_HOST=",
                                                         {
-                                                            "Ref": "tacHost"
+                                                            "Ref": "TacHost"
                                                         }
                                                     ]
                                                 ]
@@ -601,7 +590,7 @@
                                                     [
                                                         "export TALEND_LOGGING_HOST=",
                                                         {
-                                                            "Ref": "talendLoggingHost"
+                                                            "Ref": "LoggingHost"
                                                         }
                                                     ]
                                                 ]
@@ -612,7 +601,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_JOBSERVER_PORT=",
                                                         {
-                                                            "Ref": "talendLogstashJobserverPort"
+                                                            "Ref": "LogstashJobserverPort"
                                                         }
                                                     ]
                                                 ]
@@ -762,7 +751,7 @@
                                                 ]
                                             },
 											"/scripts/create-",
-											{ "Ref": "TalendProfile" },
+											{ "FindInMap": [ "Talend", "tui", "profile" ] },
 											"-env.sh ",
                                             {
                                                 "Fn::FindInMap": [
@@ -827,7 +816,7 @@
                                                 ]
                                             },
                                             "/tac/isTACStarted.sh ",
-                                            { "Ref": "tacHost" }
+                                            { "Ref": "TacHost" }
                                         ]
                                     ]
                                 }
@@ -842,7 +831,7 @@
                                             "source ./instance-env.sh; ",
                                             "source ./server-env.sh; ",
                                             "./install -q ",
-                                            { "Ref": "TalendProfile" }
+											{ "FindInMap": [ "Talend", "tui", "profile" ] }
                                         ] 
                                     ]
                                 },

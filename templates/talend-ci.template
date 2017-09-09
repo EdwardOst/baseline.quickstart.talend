@@ -65,7 +65,7 @@
             "Description": "Talend Server subnet id.",
             "Type": "AWS::EC2::Subnet::Id"
 		},
-		"privateSubnet": {
+		"PrivateSubnet": {
             "Description": "Is this is a private subnet.",
             "Type": "String",
 			"Default": "private",
@@ -108,7 +108,7 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "TalendNexusPort": {
+        "NexusPort": {
             "Description": "Nexus port.",
             "Type": "Number",
             "Default": "8081",
@@ -123,6 +123,7 @@
                 "updateHosts": "https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/update_hosts.sh"
             },
             "tui": {
+                "profile": "ci",
                 "tuiUrl": "https://s3.amazonaws.com/repo-quickstart-talend/tui/TUI-4.5.2.tar",
                 "tuiTarget": "/home/ec2-user/TUI-4.5.2",
                 "baselineUrl": "https://github.com/EdwardOst/baseline.quickstart.talend/archive/0.3.0.tar.gz",
@@ -131,8 +132,7 @@
                 "s3fsUrl": "https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.82.tar.gz",
                 "s3fsTarget": "/home/ec2-user/s3fs-fuse-1.82",
                 "generatedTarget": "/home/ec2-user/generated",
-				"talendRepoDir": "/opt/repo",
-                "talendProfile": "ci"
+				"talendRepoDir": "/opt/repo"
             }
         },
         "AWSInstanceType2Arch": {
@@ -328,7 +328,7 @@
 	"Conditions": {
         "isPrivateSubnet": {
             "Fn::Equals": [
-                { "Ref": "privateSubnet" },
+                { "Ref": "PrivateSubnet" },
                 "private"
             ]
         },
@@ -569,7 +569,7 @@
                                                     [
                                                         "export TALEND_NEXUS_PORT=",
                                                         {
-                                                            "Ref": "TalendNexusPort"
+                                                            "Ref": "NexusPort"
                                                         }
                                                     ]
                                                 ]
@@ -719,13 +719,7 @@
                                                 ]
                                             },
 											"/scripts/create-",
-                                            {
-                                                "Fn::FindInMap": [
-                                                    "Talend",
-                                                    "tui",
-                                                    "talendProfile"
-                                                ]
-                                            },
+                                            { "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
 											"-env.sh ",
                                             {
                                                 "Fn::FindInMap": [
@@ -787,13 +781,7 @@
                                             "source ./instance-env.sh; ",
                                             "source ./server-env.sh; ",
                                             "./install -q ",
-                                            {
-                                                "Fn::FindInMap": [
-                                                    "Talend",
-                                                    "tui",
-                                                    "talendProfile"
-                                                ]
-                                            }
+                                            { "Fn::FindInMap": [ "Talend", "tui", "profile" ] }
                                         ] 
                                     ]
                                 },
