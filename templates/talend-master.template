@@ -477,7 +477,7 @@
             "Properties": {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${TalendSecurityGroupTemplate}" },
                 "Parameters": {
-                    "VpcId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.talendVpc" ] },
+                    "VpcId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.TalendVpc" ] },
                     "RemoteAccessCIDR": { "Ref": "RemoteAccessCIDR" }
                 }
             }
@@ -496,14 +496,14 @@
                     "PublicSubnetId": { 
                         "Fn::If": [
                             "CreateNetworkStackCondition",
-                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.publicSubnet" ] },
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.PublicSubnet" ] },
                             { "Ref": "PublicSubnetId"  }
                         ]
                     },
                     "PrivateSubnetId": { 
                         "Fn::If": [
                             "CreateNetworkStackCondition",
-                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.privateSubnet" ] },
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.PrivateSubnet" ] },
                             { "Ref": "PrivateSubnetId" }
                         ]
                     },
