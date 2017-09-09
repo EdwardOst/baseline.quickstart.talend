@@ -21,19 +21,19 @@
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).  Prefix cannot start with a slash but must end with a slash unless it is the empty string.",
             "Type": "String"
         },
-        "talendServersTemplate": {
+        "TalendServersTemplate": {
             "Description": "template relative path",
             "Type": "String",
             "Default": "templates/talend-servers.template",
             "AllowedValues": [ "templates/talend-servers.template" ]
         },
-        "talendSecurityGroupTemplate": {
+        "TalendSecurityGroupTemplate": {
             "Description": "template relative path",
             "Type": "String",
             "Default": "templates/talend-securitygroups.template",
             "AllowedValues": [ "templates/talend-securitygroups.template" ]
         },
-        "talendNetworkTemplate": {
+        "TalendNetworkTemplate": {
             "Description": "template relative path",
             "Type": "String",
             "Default": "templates/talend-network.template",
@@ -49,25 +49,25 @@
         	"Description": "Private Subnet, leave blank if using NetworkStack",
             "Default": ""
         },
-		"privateNexus": {
+		"PrivateNexus": {
             "Description": "Deploy Nexus to private or public subnet.",
             "Type": "String",
 			"Default": "public",
             "AllowedValues": [ "private", "public" ]
 		},
-		"privateLogserver": {
+		"PrivateLogserver": {
             "Description": "Deploy Logserver to private or public subnet.",
             "Type": "String",
 			"Default": "public",
             "AllowedValues": [ "private", "public" ]
 		},
-		"privateTac": {
+		"PrivateTac": {
             "Description": "Deploy TAC to private or public subnet.",
             "Type": "String",
 			"Default": "public",
             "AllowedValues": [ "private", "public" ]
 		},
-		"privateJobserver": {
+		"PrivateJobserver": {
             "Description": "Deploy Jobserver to private or public subnet.",
             "Type": "String",
 			"Default": "private",
@@ -295,7 +295,7 @@
             "ConstraintDescription": "must be the name of an existing EC2 KeyPair.",
             "Default": "eost-aws-quickstart"
         },
-        "SSHLocation": {
+        "RemoteAccessCIDR": {
             "Description": " The IP address range that can be used to access the TAC server using SSH.",
             "Type": "String",
             "MinLength": "9",
@@ -339,86 +339,86 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "talendTacDbHost": {
+        "TacDbHost": {
             "Description": "TAC database hostname.",
             "Type": "String",
             "Default": "eost-rds-mysql-2.cfcij7o8rjxs.us-east-1.rds.amazonaws.com"
         },
-        "createTacDatabase": {
+        "CreateTacDatabase": {
             "Description": "Create TAC Database (true) or use an existing TAC database (false)",
             "Type": "String",
             "AllowedValues": [ "true", "false" ],
             "Default": "true"
         },
-        "createAmcDatabase": {
+        "CreateAmcDatabase": {
             "Description": "Create AMC Database (true) or use an existing AMC database (false)",
             "Type": "String",
             "AllowedValues": [ "true", "false" ],
             "Default": "true"
         },
-        "masterDbUser": {
+        "MasterDbUser": {
             "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if creating the TAC or AMC databases.",
             "Type": "String",
             "Default": ""
         },
-        "masterDbPassword": {
+        "MasterDbPassword": {
             "Description": "Master user database password.  Only needed if creating the TAC or AMC databases.",
             "Type": "String",
             "Default": "",
             "NoEcho": "true"
         },
-        "talendGitHost": {
+        "GitHost": {
             "Description": "Git host.",
             "Type": "String",
             "Default": "github.com"
         },
-        "talendGitPort": {
+        "GitPort": {
             "Description": "Git port.",
             "Type": "Number",
             "Default": "443",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "talendGitRepo": {
+        "GitRepo": {
             "Description": "Git repository.",
             "Type": "String",
             "Default": "EdwardOst/quickstart-repo"
         },
-        "talendGitUser": {
+        "GitUser": {
             "Description": "Git user.",
             "Type": "String",
             "Default": "EdwardOst"
         },
-        "talendGitPassword": {
+        "GitPassword": {
             "Description": "Git password.",
             "Type": "String",
             "NoEcho": "true"
         },
-        "createNexusStack": {
+        "CreateNexusStack": {
             "Description": "Create Nexus stack.",
             "Type": "String",
 			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
-        "createLogserverStack": {
+        "CreateLogserverStack": {
             "Description": "Create Logserver stack.",
             "Type": "String",
 			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
-        "createTacStack": {
+        "CreateTacStack": {
             "Description": "Create TAC stack.",
             "Type": "String",
 			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
-        "createJobserverStack": {
+        "CreateJobserverStack": {
             "Description": "Create Jobserver stack.",
             "Type": "String",
 			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
-        "createNetworkStack": {
+        "CreateNetworkStack": {
             "Description": "Create network stack.",
             "Type": "String",
 			"Default": "true",
@@ -430,31 +430,31 @@
     "Conditions": {
         "CreateNetworkStackCondition": {
             "Fn::Equals": [
-                { "Ref": "createNetworkStack" },
+                { "Ref": "CreateNetworkStack" },
                 "true"
             ]
         },
         "CreateNexusStackCondition": {
             "Fn::Equals": [
-                { "Ref": "createNexusStack" },
+                { "Ref": "CreateNexusStack" },
                 "true"
             ]
         },
         "CreateLogserverStackCondition": {
             "Fn::Equals": [
-                { "Ref": "createLogserverStack" },
+                { "Ref": "CreateLogserverStack" },
                 "true"
             ]
         },
         "CreateTacStackCondition": {
             "Fn::Equals": [
-                { "Ref": "createTacStack" },
+                { "Ref": "CreateTacStack" },
                 "true"
             ]
         },
         "CreateJobserverStackCondition": {
             "Fn::Equals": [
-                { "Ref": "createJobserverStack" },
+                { "Ref": "CreateJobserverStack" },
                 "true"
             ]
         }
@@ -465,30 +465,29 @@
             "Condition" : "CreateNetworkStackCondition",
 			"Properties" : {
 				"Parameters" : {
-                    "SSHLocation": { "Ref": "SSHLocation" } 
                 },
-                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${talendNetworkTemplate}" },
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${TalendNetworkTemplate}" },
 				"TimeoutInMinutes" : "5"
 			}
 		},
 
-        "TalendSecurityGroup": {
+        "SecurityGroupStack": {
             "DependsOn": [ "NetworkStack" ],
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${talendSecurityGroupTemplate}" },
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${TalendSecurityGroupTemplate}" },
                 "Parameters": {
                     "VpcId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.talendVpc" ] },
-                    "SSHLocation": { "Ref": "SSHLocation" }
+                    "RemoteAccessCIDR": { "Ref": "RemoteAccessCIDR" }
                 }
             }
         },
         
         "ServersStack": {
 			"Type" : "AWS::CloudFormation::Stack",
-			"DependsOn": [ "NetworkStack", "TalendSecurityGroup" ],
+			"DependsOn": [ "NetworkStack", "SecurityGroupStack" ],
 			"Properties" : {
-                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${talendServersTemplate}" },
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${TalendServersTemplate}" },
 				"TimeoutInMinutes" : "10",
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
@@ -509,28 +508,27 @@
                         ]
                     },
 
-                    "createNexusStack": { "Ref": "createNexusStack" },
-                    "createLogserverStack": { "Ref": "createLogserverStack" },
-                    "createTacStack": { "Ref": "createTacStack" },
-                    "createJobserverStack": { "Ref": "createJobserverStack" },
+                    "CreateNexusStack": { "Ref": "CreateNexusStack" },
+                    "CreateLogserverStack": { "Ref": "CreateLogserverStack" },
+                    "CreateTacStack": { "Ref": "CreateTacStack" },
+                    "CreateJobserverStack": { "Ref": "CreateJobserverStack" },
 
-                    "privateNexus": { "Ref": "privateNexus" },
-                    "privateLogserver": { "Ref": "privateLogserver" },
-                    "privateTac": { "Ref": "privateTac" },
-                    "privateJobserver": { "Ref": "privateJobserver" },
+                    "PrivateNexus": { "Ref": "PrivateNexus" },
+                    "PrivateLogserver": { "Ref": "PrivateLogserver" },
+                    "PrivateTac": { "Ref": "PrivateTac" },
+                    "PrivateJobserver": { "Ref": "PrivateJobserver" },
 
                     "NexusInstanceType": { "Ref": "NexusInstanceType" },
                     "LogserverInstanceType": { "Ref": "LogserverInstanceType" },
                     "TacInstanceType": { "Ref": "TacInstanceType" },
                     "JobserverInstanceType": { "Ref": "JobserverInstanceType" },
 
-                    "TacSecurityGroup": { "Fn::GetAtt": [ "TalendSecurityGroup", "Outputs.TacSecurityGroup" ] },
-					"NexusSecurityGroup": { "Fn::GetAtt": [ "TalendSecurityGroup", "Outputs.TacSecurityGroup" ] },
-					"LogserverSecurityGroup": { "Fn::GetAtt": [ "TalendSecurityGroup", "Outputs.TacSecurityGroup" ] },
-                    "JobserverSecurityGroup": { "Fn::GetAtt": [ "TalendSecurityGroup", "Outputs.JobserverSecurityGroup" ] },
+                    "TacSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupStack", "Outputs.TacSecurityGroup" ] },
+					"NexusSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupStack", "Outputs.TacSecurityGroup" ] },
+					"LogserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupStack", "Outputs.TacSecurityGroup" ] },
+                    "JobserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupStack", "Outputs.JobserverSecurityGroup" ] },
                     
                     "KeyName": { "Ref": "KeyName" },
-                    "SSHLocation": { "Ref": "SSHLocation" },
 
                     "TalendLicenseUser": { "Ref": "TalendLicenseUser" },
                     "TalendLicensePassword": { "Ref": "TalendLicensePassword" },
@@ -541,17 +539,17 @@
                     "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
                     "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
 
-                    "talendTacDbHost": { "Ref": "talendTacDbHost" },
-                    "masterDbUser": { "Ref": "masterDbUser" },
-                    "masterDbPassword": { "Ref": "masterDbPassword" },
-                    "createTacDatabase": { "Ref": "createTacDatabase" },
-                    "createAmcDatabase": { "Ref": "createAmcDatabase" },
+                    "TacDbHost": { "Ref": "TacDbHost" },
+                    "MasterDbUser": { "Ref": "MasterDbUser" },
+                    "MasterDbPassword": { "Ref": "MasterDbPassword" },
+                    "CreateTacDatabase": { "Ref": "CreateTacDatabase" },
+                    "CreateAmcDatabase": { "Ref": "CreateAmcDatabase" },
 
-                    "talendGitHost": { "Ref": "talendGitHost" },
-                    "talendGitPort": { "Ref": "talendGitPort" },
-                    "talendGitRepo": { "Ref": "talendGitRepo" },
-                    "talendGitUser": { "Ref": "talendGitUser" },
-                    "talendGitPassword": { "Ref": "talendGitPassword" }
+                    "GitHost": { "Ref": "GitHost" },
+                    "GitPort": { "Ref": "GitPort" },
+                    "GitRepo": { "Ref": "GitRepo" },
+                    "GitUser": { "Ref": "GitUser" },
+                    "GitPassword": { "Ref": "GitPassword" }
                 }
             }
         }
@@ -563,7 +561,16 @@
             "Description": "Nested network stack",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "NetworkStack" ] ] 
+					"Fn::Sub": "${AWS::StackName}:NetworkStack" 
+				} 
+			}
+        },
+        "SecurityGroupStack": {
+            "Value": { "Ref": "SecurityGroupStack" },
+            "Description": "Nested Security Group stack",
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}:SecurityGroupStack" 
 				} 
 			}
         },
@@ -572,7 +579,7 @@
             "Description": "Nested Talend Servers stack",
 			"Export": {
 				"Name": {
-					"Fn::Join": [ "", [ { "Ref" : "AWS::StackName" }, ":",  "ServersStack" ] ] 
+					"Fn::Sub": "${AWS::StackName}:ServersStack"
 				} 
 			}
         }

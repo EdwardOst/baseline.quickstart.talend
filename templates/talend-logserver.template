@@ -791,7 +791,7 @@
                                                 ]
                                             },
 											"/scripts/create-",
-											{ "FindInMap": [ "Talend", "tui", "profile" ] },
+											{ "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
 											"-env.sh ",
                                             {
                                                 "Fn::FindInMap": [
@@ -853,7 +853,7 @@
                                             "source ./instance-env.sh; ",
                                             "source ./server-env.sh; ",
                                             "./install -q ",
-                                            { "FindInMap": [ "Talend", "tui", "profile" ] }
+                                            { "Fn::FindInMap": [ "Talend", "tui", "profile" ] }
                                         ] 
                                     ]
                                 },

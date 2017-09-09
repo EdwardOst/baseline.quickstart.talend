@@ -1,7 +1,7 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
-        "SSHLocation": {
+        "RemoteAccessCIDR": {
             "Description": "The IP address range that can be used to access the TAC server using SSH.",
             "Type": "String",
             "MinLength": "9",
@@ -41,182 +41,6 @@
                 "EnableDnsSupport": "true",
                 "EnableDnsHostnames": "true",
                 "CidrBlock": { "Ref": "TalendVpcCIDR" }
-            }
-        },
-        "TacSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
-            "Properties": {
-                "VpcId": {
-                    "Ref": "TalendVPC"
-                },
-                "GroupDescription": "Allow access from HTTP and SSH traffic",
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "80",
-                        "ToPort": "80",
-                        "CidrIp": {
-                            "Ref": "SSHLocation"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "8080",
-                        "ToPort": "8080",
-                        "CidrIp": {
-                            "Ref": "SSHLocation"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "8081",
-                        "ToPort": "8081",
-                        "CidrIp": {
-                            "Ref": "SSHLocation"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "9200",
-                        "ToPort": "9200",
-                        "CidrIp": {
-                            "Ref": "SSHLocation"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "5601",
-                        "ToPort": "5601",
-                        "CidrIp": {
-                            "Ref": "SSHLocation"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "8085",
-                        "ToPort": "8085",
-                        "CidrIp": {
-                            "Ref": "SSHLocation"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "SSHLocation"
-                        }
-                    }
-                ]
-            }
-        },
-        "TacSecurityGroupIngress": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "DependsOn": "TacSecurityGroup",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "TacSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "0",
-                "ToPort": "65535",
-                "SourceSecurityGroupId": {
-                    "Ref": "TacSecurityGroup"
-                }
-            }
-        },
-        "TacSecurityGroupJobServerIngress": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "DependsOn": "TacSecurityGroup",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "TacSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "0",
-                "ToPort": "65535",
-                "SourceSecurityGroupId": {
-                    "Ref": "JobserverSecurityGroup"
-                }
-            }
-        },
-        "TacSecurityGroupIngressICMP": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "DependsOn": "TacSecurityGroup",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "TacSecurityGroup"
-                },
-                "IpProtocol": "icmp",
-                "FromPort": "-1",
-                "ToPort": "-1",
-                "SourceSecurityGroupId": {
-                    "Ref": "TacSecurityGroup"
-                }
-            }
-        },
-        "JobserverSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
-            "Properties": {
-                "VpcId": {
-                    "Ref": "TalendVPC"
-                },
-                "GroupDescription": "Job Server Security Group needs to include TAC and Nexus",
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "SSHLocation"
-                        }
-                    }
-                ]
-            }
-        },
-        "JobserverSecurityGroupIngress": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "DependsOn": "JobserverSecurityGroup",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "JobserverSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "0",
-                "ToPort": "65535",
-                "SourceSecurityGroupId": {
-                    "Ref": "JobserverSecurityGroup"
-                }
-            }
-        },
-        "JobserverSecurityGroupTacIngress": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "DependsOn": "JobserverSecurityGroup",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "JobserverSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "0",
-                "ToPort": "65535",
-                "SourceSecurityGroupId": {
-                    "Ref": "TacSecurityGroup"
-                }
-            }
-        },
-        "JobserverSecurityGroupIngressICMP": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "DependsOn": "JobserverSecurityGroup",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "JobserverSecurityGroup"
-                },
-                "IpProtocol": "icmp",
-                "FromPort": "-1",
-                "ToPort": "-1",
-                "SourceSecurityGroupId": {
-                    "Ref": "JobserverSecurityGroup"
-                }
             }
         },
         "TalendInternetGateway": {
@@ -370,113 +194,36 @@
         }
     },
     "Outputs": {
-        "talendVpc": {
+        "TalendVpc": {
             "Value": {
                 "Ref": "TalendVPC"
             },
             "Description": "VPC for Talend deployment",
             "Export": {
                 "Name": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            {
-                                "Ref": "AWS::StackName"
-                            },
-                            ":",
-                            "vpc",
-                            ":",
-                            "talendVpc"
-                        ]
-                    ]
+                    "Fn::Sub": "${AWS::StackName}:vpc"
                 }
             }
         },
-        "publicSubnet": {
+        "PublicSubnet": {
             "Value": {
                 "Ref": "TalendPublicSubnet"
             },
             "Description": "Subnet on  which the TAC resides",
             "Export": {
                 "Name": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            {
-                                "Ref": "AWS::StackName"
-                            },
-                            ":",
-                            "network",
-                            ":",
-                            "publicSubnet"
-                        ]
-                    ]
+                    "Fn::Sub": "${AWS::StackName}:publicSubnet"
                 }
             }
         },
-        "privateSubnet": {
+        "PrivateSubnet": {
             "Value": {
                 "Ref": "TalendPrivateSubnet"
             },
             "Description": "Subnet on  which the Jobservers reside",
             "Export": {
                 "Name": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            {
-                                "Ref": "AWS::StackName"
-                            },
-                            ":",
-                            "network",
-                            ":",
-                            "privateSubnet"
-                        ]
-                    ]
-                }
-            }
-        },
-        "tacSecurityGroup": {
-            "Value": {
-                "Ref": "TacSecurityGroup"
-            },
-            "Description": "Security Group for TAC server",
-            "Export": {
-                "Name": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            {
-                                "Ref": "AWS::StackName"
-                            },
-                            ":",
-                            "network",
-                            ":",
-                            "tacSecurityGroup"
-                        ]
-                    ]
-                }
-            }
-        },
-        "jobserverSecurityGroup": {
-            "Value": {
-                "Ref": "JobserverSecurityGroup"
-            },
-            "Description": "Security Group for Job Servers",
-            "Export": {
-                "Name": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            {
-                                "Ref": "AWS::StackName"
-                            },
-                            ":",
-                            "network",
-                            ":",
-                            "jobserverSecurityGroup"
-                        ]
-                    ]
+                    "Fn::Sub": "${AWS::StackName}:privateSubnet"
                 }
             }
         }
