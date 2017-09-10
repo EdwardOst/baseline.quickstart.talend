@@ -218,6 +218,11 @@
             "MinValue": "1",
             "MaxValue": "65535"
         },
+        "GitProtocol": {
+            "Description": "Git protocol.",
+            "Type": "String",
+            "Default": "http"
+        },
         "GitHost": {
             "Description": "Git host DNS hostname.",
             "Type": "String",
@@ -871,6 +876,17 @@
                                                         "export TALEND_LOGSTASH_KIBANA_PORT=",
                                                         {
                                                             "Ref": "LogstashKibanaPort"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            {
+                                                "Fn::Join": [
+                                                    "",
+                                                    [
+                                                        "export TALEND_GIT_PROTOCOL=",
+                                                        {
+                                                            "Ref": "GitProtocol"
                                                         }
                                                     ]
                                                 ]

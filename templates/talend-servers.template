@@ -389,6 +389,11 @@
             "Default": "tac_adminTalend123",
             "NoEcho": "true"
         },
+        "GitProtocol": {
+            "Description": "Git protocol.",
+            "Type": "String",
+            "Default": "http"
+        },
         "GitHost": {
             "Description": "Git host.",
             "Type": "String",
@@ -397,7 +402,7 @@
         "GitPort": {
             "Description": "Git port.",
             "Type": "Number",
-            "Default": "443",
+            "Default": "80",
             "MinValue": "1",
             "MaxValue": "65535"
         },
@@ -577,6 +582,7 @@
                     "LogstashTacPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashTacPort" ] },
                     "LogstashKibanaPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashKibanaPort" ] },
                     "GitHost": { "Ref": "GitHost" },
+                    "GitProtocol": { "Ref": "GitProtocol" },
                     "GitPort": { "Ref": "GitPort" },
                     "GitRepo": { "Ref": "GitRepo" },
                     "GitAdminUserid": { "Ref": "GitAdminUserid" },
