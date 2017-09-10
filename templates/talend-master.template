@@ -586,9 +586,8 @@
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}templates/gitlab.template" },
                 "TimeoutInMinutes": 30,
                 "Parameters": {
-                    "AccessCIDR": { "Ref": "RemoteAccessCIDR" },
-                    "GitSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.GitSecurityGroup" ] },
                     "InstanceType": "c4.large",
+                    "GitSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.GitSecurityGroup" ] },
                     "KeyPairName": { "Ref": "KeyName" },
                     "VolumeSize": "100",
                     "VolumeType": "gp2",
@@ -598,13 +597,6 @@
                             { "Fn::GetAtt": [ "NetworkStack", "Outputs.PublicSubnet" ] },
                             { "Ref": "PublicSubnetId"  }
                         ]
-                    },
-                    "VPCID": { 
-                        "Fn::If": [
-                            "CreateNetworkCondition", 
-                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.TalendVpc" ] },
-                            { "Ref": "ExistingVpc" }
-                        ] 
                     },
                     "GitAdminUserid": { "Ref": "GitAdminUserid" },
                     "GitAdminPassword": { "Ref": "GitAdminPassword" },
