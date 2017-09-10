@@ -687,7 +687,13 @@
                     "CreateTacDatabase": { "Ref": "CreateTacDatabase" },
                     "CreateAmcDatabase": { "Ref": "CreateAmcDatabase" },
 
-                    "GitHost": { "Ref": "GitHost" },
+                    "GitHost": {
+                        "Fn::If": [
+                            "CreateGitCondition",
+                            { "Fn::GetAtt": [ "GitStack", "Outputs.privateDnsName" ] },
+                            { "Ref": "GitHost" } 
+                        ]
+                    },
                     "GitPort": { "Ref": "GitPort" },
                     "GitRepo": { "Ref": "GitRepo" },
                     "GitAdminUserid": { "Ref": "GitAdminUserid" },
