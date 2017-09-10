@@ -378,6 +378,17 @@
             "Default": "",
             "NoEcho": "true"
         },
+        "TacDbUser": {
+            "Description": "TAC database user.",
+            "Type": "String",
+            "Default": "tac_admin"
+        },
+        "TacDbPassword": {
+            "Description": "TAC database password.",
+            "Type": "String",
+            "Default": "tac_adminTalend123",
+            "NoEcho": "true"
+        },
         "GitHost": {
             "Description": "Git host.",
             "Type": "String",
@@ -550,6 +561,8 @@
                     "AmcDbHost": { "Ref": "TacDbHost" },
                     "MasterDbUser": { "Ref": "MasterDbUser" },
                     "MasterDbPassword": { "Ref": "MasterDbPassword" },
+                    "TacDbUser": { "Ref": "TacDbUser" },
+                    "TacDbPassword": { "Ref": "TacDbPassword" },
                     "CreateTacDatabase": { "Ref": "CreateTacDatabase" },
                     "CreateAmcDatabase": { "Ref": "CreateAmcDatabase" },
                     "NexusHost": { "Fn::GetAtt": [ "NexusStack", "Outputs.privateDnsName" ] },

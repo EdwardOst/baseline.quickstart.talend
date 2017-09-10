@@ -21,23 +21,10 @@
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).  Prefix cannot start with a slash but must end with a slash unless it is the empty string.",
             "Type": "String"
         },
-        "TalendServersTemplate": {
-            "Description": "template relative path",
-            "Type": "String",
-            "Default": "templates/talend-servers.template",
-            "AllowedValues": [ "templates/talend-servers.template" ]
-        },
-        "TalendSecurityGroupTemplate": {
-            "Description": "template relative path",
-            "Type": "String",
-            "Default": "templates/talend-securitygroups.template",
-            "AllowedValues": [ "templates/talend-securitygroups.template" ]
-        },
-        "TalendNetworkTemplate": {
-            "Description": "template relative path",
-            "Type": "String",
-            "Default": "templates/talend-network.template",
-            "AllowedValues": [ "templates/talend-network.template" ]
+        "ExistingVpc": {
+            "Description": "VPC to which subnets, servers, and security groups belong.  Leave blank if creating a new network stack.",
+            "Type": "AWS::EC2::VPC::Id",
+            "Default": ""
         },
         "PublicSubnetId": {
         	"Type": "String",
@@ -340,9 +327,20 @@
             "NoEcho": "true"
         },
         "TacDbHost": {
-            "Description": "TAC database hostname.",
+            "Description": "TAC database hostname.  Leave blank to create a new RDS instance.",
             "Type": "String",
-            "Default": "eost-rds-mysql-2.cfcij7o8rjxs.us-east-1.rds.amazonaws.com"
+            "Default": ""
+        },
+        "DbClass": {
+            "Description": "Instance class of RDS instance",
+            "Type": "String",
+            "AllowedValues": [ "db.t2.micro", "db.t2.small", "db.t2.medium", "db.t2.large", "db.m4.large", "db.m4.xlarge", "db.m4.2xlarge", "db.m4.4xlarge", "db.m4.10xlarge", "db.r3.large", "db.r3.xlarge", "db.r3.2xlarge", "db.r3.4xlarge", "db.r3.8xlarge" ],
+            "Default": "db.t2.micro"
+        },
+        "DbAllocatedStorage": {
+            "Description": "Allocated Storage (in GB) for RDS instance",
+            "Type": "Number",
+            "Default": "20"
         },
         "CreateTacDatabase": {
             "Description": "Create TAC Database (true) or use an existing TAC database (false)",
@@ -357,14 +355,25 @@
             "Default": "true"
         },
         "MasterDbUser": {
-            "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if creating the TAC or AMC databases.",
+            "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if creating a new TAC or AMC database.",
             "Type": "String",
             "Default": ""
         },
         "MasterDbPassword": {
-            "Description": "Master user database password.  Only needed if creating the TAC or AMC databases.",
+            "Description": "Master user database password.  Only needed if creating a new TAC or AMC database.",
             "Type": "String",
             "Default": "",
+            "NoEcho": "true"
+        },
+        "TacDbUser": {
+            "Description": "TAC database user.",
+            "Type": "String",
+            "Default": "tac_admin"
+        },
+        "TacDbPassword": {
+            "Description": "TAC database password.",
+            "Type": "String",
+            "Default": "tac_adminTalend123",
             "NoEcho": "true"
         },
         "GitHost": {
@@ -423,36 +432,91 @@
             "Type": "String",
 			"Default": "true",
             "AllowedValues": [ "true", "false" ]
+        },
+        "GitHost": {
+            "Description": "Git host.  Leave blank to create a new Gitlab instance.",
+            "Type": "String",
+            "Default": ""
+        },
+        "GitPort": {
+            "Description": "Git port.",
+            "Type": "Number",
+            "Default": "443",
+            "MinValue": "1",
+            "MaxValue": "65535"
+        },
+        "GitRepo": {
+            "Description": "Git repository.",
+            "Type": "String",
+            "Default": "oodlejobs"
+        },
+        "GitAdminUserid": {
+            "Description": "Git user.",
+            "Type": "String"
+        },
+        "GitAdminPassword": {
+            "Description": "Git password.",
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "GitAdminEmail": {
+            "Description": "Git admin contact email.",
+            "Type": "String"
+        },
+        "GitTacUserid": {
+            "Description": "Git TAC userid.",
+            "Type": "String"
+        },
+        "GitTacPassword": {
+            "Description": "Git TAC password.",
+            "Type": "String",
+            "NoEcho": "true"
+        },
+        "GitTacEmail": {
+            "Description": "TAC contact email.",
+            "Type": "String"
         }
     },
     "Mappings": {
     },
     "Conditions": {
-        "CreateNetworkStackCondition": {
+        "CreateNetworkCondition": {
             "Fn::Equals": [
                 { "Ref": "CreateNetworkStack" },
                 "true"
             ]
         },
-        "CreateNexusStackCondition": {
+        "CreateRdsCondition": {
+            "Fn::Equals": [
+                { "Ref": "TacDbHost" },
+                ""
+            ]
+        },
+        "CreateGitCondition": {
+            "Fn::Equals": [
+                { "Ref": "GitHost" },
+                ""
+            ]
+        },
+        "CreateNexusCondition": {
             "Fn::Equals": [
                 { "Ref": "CreateNexusStack" },
                 "true"
             ]
         },
-        "CreateLogserverStackCondition": {
+        "CreateLogserverCondition": {
             "Fn::Equals": [
                 { "Ref": "CreateLogserverStack" },
                 "true"
             ]
         },
-        "CreateTacStackCondition": {
+        "CreateTacCondition": {
             "Fn::Equals": [
                 { "Ref": "CreateTacStack" },
                 "true"
             ]
         },
-        "CreateJobserverStackCondition": {
+        "CreateJobserverCondition": {
             "Fn::Equals": [
                 { "Ref": "CreateJobserverStack" },
                 "true"
@@ -462,32 +526,107 @@
     "Resources": {
 		"NetworkStack": {
 			"Type" : "AWS::CloudFormation::Stack",
-            "Condition" : "CreateNetworkStackCondition",
+            "Condition" : "CreateNetworkCondition",
 			"Properties" : {
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}templates/talend-network.template" },
 				"Parameters" : {
                 },
-                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${TalendNetworkTemplate}" },
 				"TimeoutInMinutes" : "5"
 			}
 		},
 
-        "SecurityGroupStack": {
+        "SecurityGroupsStack": {
             "DependsOn": [ "NetworkStack" ],
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
-                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${TalendSecurityGroupTemplate}" },
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}templates/talend-securitygroups.template" },
                 "Parameters": {
-                    "VpcId": { "Fn::GetAtt": [ "NetworkStack", "Outputs.TalendVpc" ] },
+                    "VpcId": {
+                        "Fn::If": [
+                            "CreateNetworkCondition", 
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.TalendVpc" ] },
+                            { "Ref": "ExistingVpc" }
+                        ] 
+                    },
                     "RemoteAccessCIDR": { "Ref": "RemoteAccessCIDR" }
                 }
             }
         },
         
+        "TalendDbStack": {
+            "Type": "AWS::CloudFormation::Stack",
+			"DependsOn": [ "NetworkStack", "SecurityGroupsStack" ],
+            "Condition": "CreateRdsCondition",
+            "Properties": {
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}templates/talend-rds.template" },
+                "Parameters": {
+                    "Subnets": {
+                        "Fn::If": [
+                            "CreateNetworkCondition",
+                            { "Fn::Join":
+                                [ ",",
+                                    [
+                                        { "Fn::GetAtt": [ "NetworkStack", "Outputs.PrivateSubnet"] },
+                                        { "Fn::GetAtt": [ "NetworkStack", "Outputs.PublicSubnet"] }
+                                    ]
+                                ] 
+                            },
+                            [ { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ]
+                        ]
+                    },
+                    "SecurityGroups": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.DatabaseSecurityGroup" ] },
+                    "DbClass": { "Ref": "DbClass" },
+                    "DbAllocatedStorage": { "Ref": "DbAllocatedStorage" },
+                    "MasterDbUser": { "Ref": "MasterDbUser" },
+                    "MasterDbPassword": { "Ref": "MasterDbPassword" }
+                }
+            }
+        },
+
+        "GitStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "DependsOn": [ "NetworkStack", "SecurityGroupsStack" ],
+            "Condition": "CreateGitCondition",
+            "Properties": {
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}templates/gitlab.template" },
+                "TimeoutInMinutes": 30,
+                "Parameters": {
+                    "AccessCIDR": { "Ref": "RemoteAccessCIDR" },
+                    "InstanceType": "c4.large",
+                    "KeyPairName": { "Ref": "KeyName" },
+                    "VolumeSize": "100",
+                    "VolumeType": "gp2",
+                    "SubnetId": { 
+                        "Fn::If": [
+                            "CreateNetworkCondition",
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.PublicSubnet" ] },
+                            { "Ref": "PublicSubnetId"  }
+                        ]
+                    },
+                    "VPCID": { 
+                        "Fn::If": [
+                            "CreateNetworkCondition", 
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.TalendVpc" ] },
+                            { "Ref": "ExistingVpc" }
+                        ] 
+                    },
+                    "GitAdminUserid": { "Ref": "GitAdminUserid" },
+                    "GitAdminPassword": { "Ref": "GitAdminPassword" },
+                    "GitAdminEmail": { "Ref": "GitAdminEmail" },
+                    "GitTacUserid": { "Ref": "GitTacUserid" },
+                    "GitTacPassword": { "Ref": "GitTacPassword" },
+                    "GitTacEmail": { "Ref": "GitTacEmail" },
+                    "GitRepo": { "Ref": "GitRepo" },
+                    "GitSourceUrl": "https://raw.githubusercontent.com/EdwardOst/bash-util/master/util.sh"
+                }
+            }
+        },
+
         "ServersStack": {
 			"Type" : "AWS::CloudFormation::Stack",
-			"DependsOn": [ "NetworkStack", "SecurityGroupStack" ],
+			"DependsOn": [ "NetworkStack", "SecurityGroupsStack" ],
 			"Properties" : {
-                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${TalendServersTemplate}" },
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}templates/talend-servers.template" },
 				"TimeoutInMinutes" : "10",
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
@@ -495,14 +634,14 @@
                     
                     "PublicSubnetId": { 
                         "Fn::If": [
-                            "CreateNetworkStackCondition",
+                            "CreateNetworkCondition",
                             { "Fn::GetAtt": [ "NetworkStack", "Outputs.PublicSubnet" ] },
                             { "Ref": "PublicSubnetId"  }
                         ]
                     },
                     "PrivateSubnetId": { 
                         "Fn::If": [
-                            "CreateNetworkStackCondition",
+                            "CreateNetworkCondition",
                             { "Fn::GetAtt": [ "NetworkStack", "Outputs.PrivateSubnet" ] },
                             { "Ref": "PrivateSubnetId" }
                         ]
@@ -523,10 +662,10 @@
                     "TacInstanceType": { "Ref": "TacInstanceType" },
                     "JobserverInstanceType": { "Ref": "JobserverInstanceType" },
 
-                    "TacSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupStack", "Outputs.TacSecurityGroup" ] },
-					"NexusSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupStack", "Outputs.TacSecurityGroup" ] },
-					"LogserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupStack", "Outputs.TacSecurityGroup" ] },
-                    "JobserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupStack", "Outputs.JobserverSecurityGroup" ] },
+                    "TacSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.TacSecurityGroup" ] },
+					"NexusSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.TacSecurityGroup" ] },
+					"LogserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.TacSecurityGroup" ] },
+                    "JobserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.JobserverSecurityGroup" ] },
                     
                     "KeyName": { "Ref": "KeyName" },
 
@@ -542,6 +681,8 @@
                     "TacDbHost": { "Ref": "TacDbHost" },
                     "MasterDbUser": { "Ref": "MasterDbUser" },
                     "MasterDbPassword": { "Ref": "MasterDbPassword" },
+                    "TacDbUser": { "Ref": "TacDbUser" },
+                    "TacDbPassword": { "Ref": "TacDbPassword" },
                     "CreateTacDatabase": { "Ref": "CreateTacDatabase" },
                     "CreateAmcDatabase": { "Ref": "CreateAmcDatabase" },
 
@@ -556,7 +697,7 @@
     },
     "Outputs": {
         "NetworkStack": {
-            "Condition": "CreateNetworkStackCondition",
+            "Condition": "CreateNetworkCondition",
             "Value": { "Ref": "NetworkStack" },
             "Description": "Nested network stack",
 			"Export": {
@@ -565,12 +706,12 @@
 				} 
 			}
         },
-        "SecurityGroupStack": {
-            "Value": { "Ref": "SecurityGroupStack" },
+        "SecurityGroupsStack": {
+            "Value": { "Ref": "SecurityGroupsStack" },
             "Description": "Nested Security Group stack",
 			"Export": {
 				"Name": {
-					"Fn::Sub": "${AWS::StackName}:SecurityGroupStack" 
+					"Fn::Sub": "${AWS::StackName}:SecurityGroupsStack" 
 				} 
 			}
         },
