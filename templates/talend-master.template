@@ -346,6 +346,15 @@
             "Type": "Number",
             "Default": "20"
         },
+        "CreateRds": {
+            "Description": "Create new RDS instance.",
+            "Type": "String",
+            "Default": "true",
+            "AllowedValues": [
+                "true",
+                "false"
+            ]
+        },
         "CreateTacDatabase": {
             "Description": "Create TAC Database (true) or use an existing TAC database (false)",
             "Type": "String",
@@ -470,9 +479,9 @@
             ]
         },
         "CreateRdsCondition": {
-            "Fn::Equals": [
-                { "Ref": "TacDbHost" },
-                ""
+            "Fn::Or": [
+                { "Fn::Equals": [ "true", { "Ref": "CreateRds" } ] },
+                { "Fn::Equals": [ "", { "Ref": "TacDbHost" } ] }
             ]
         },
         "CreateGitCondition": {
@@ -553,7 +562,7 @@
                                 [ ",",
                                     [
                                         { "Fn::GetAtt": [ "NetworkStack", "Outputs.PrivateSubnet1"] },
-                                        { "Fn::GetAtt": [ "NetworkStack", "Outputs.PublicSubnet"] }
+                                        { "Fn::GetAtt": [ "NetworkStack", "Outputs.PrivateSubnet2"] }
                                     ]
                                 ] 
                             },
