@@ -439,13 +439,13 @@
         "GitAdminUserid": {
             "Description": "Git user.",
             "Type": "String",
-            "Default": "admin"
+            "Default": "tadmin"
         },
         "GitAdminPassword": {
             "Description": "Git password.",
             "Type": "String",
             "NoEcho": "true",
-            "Default": "adminPassword"
+            "Default": "tadminPassword"
         },
         "GitAdminEmail": {
             "Description": "Git admin contact email.",

@@ -129,12 +129,12 @@
         "GitAdminUserid": {
             "Description": "Git admin userid.",
             "Type": "String",
-            "Default": "Admin"
+            "Default": "tadmin"
         },
         "GitAdminPassword": {
             "Description": "Git admin password.",
             "Type": "String",
-            "Default": "AdminPassword",
+            "Default": "tadminPassword",
             "NoEcho": "true"
         },
         "GitAdminEmail": {
@@ -145,12 +145,12 @@
         "GitTacUserid": {
             "Description": "Git TAC userid.",
             "Type": "String",
-            "Default": "TAC"
+            "Default": "tac"
         },
         "GitTacPassword": {
             "Description": "Git TAC password.",
             "Type": "String",
-            "Default": "TACPassword",
+            "Default": "tacPassword",
             "NoEcho": "true"
         },
         "GitTacEmail": {
