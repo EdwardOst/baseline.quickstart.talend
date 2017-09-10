@@ -36,6 +36,10 @@
         	"Description": "Private Subnet, leave blank if using NetworkStack",
             "Default": ""
         },
+        "AvailabilityZones": {
+            "Description": "List of Availability Zones to use for the subnets in the VPC. Note: only one availability zone is used for this template, but the RDS configuration requires subnets in two availability zones even if not used.",
+            "Type": "List<AWS::EC2::AvailabilityZone::Name>"
+        },
 		"PrivateNexus": {
             "Description": "Deploy Nexus to private or public subnet.",
             "Type": "String",
@@ -509,6 +513,9 @@
 			"Properties" : {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}templates/talend-network.template" },
 				"Parameters" : {
+                    "AvailabilityZones": {
+                        "Fn::Join": [ ",", { "Ref": "AvailabilityZones" } ]
+                    }
                 },
 				"TimeoutInMinutes" : "5"
 			}
@@ -545,7 +552,7 @@
                             { "Fn::Join":
                                 [ ",",
                                     [
-                                        { "Fn::GetAtt": [ "NetworkStack", "Outputs.PrivateSubnet"] },
+                                        { "Fn::GetAtt": [ "NetworkStack", "Outputs.PrivateSubnet1"] },
                                         { "Fn::GetAtt": [ "NetworkStack", "Outputs.PublicSubnet"] }
                                     ]
                                 ] 
@@ -621,7 +628,7 @@
                     "PrivateSubnetId": { 
                         "Fn::If": [
                             "CreateNetworkCondition",
-                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.PrivateSubnet" ] },
+                            { "Fn::GetAtt": [ "NetworkStack", "Outputs.PrivateSubnet1" ] },
                             { "Ref": "PrivateSubnetId" }
                         ]
                     },
