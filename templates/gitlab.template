@@ -140,6 +140,10 @@
             "Description": "The size of the EBS attached volume",
             "Type": "String"
         },
+        "GitSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup::Id",
+            "Description": "Gitlab Security Group"
+        },
         "VolumeType": {
             "AllowedValues": [
                 "gp2",
@@ -308,82 +312,6 @@
                     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
                 ],
                 "Path": "/"
-            }
-        },
-        "GitSecurityGroup": {
-            "Properties": {
-                "GroupDescription": "Ports needed for GitLab CE",
-                "SecurityGroupIngress": [
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22"
-                    },
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "tcp",
-                        "FromPort": "8080",
-                        "ToPort": "8080"
-                    },
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "tcp",
-                        "FromPort": "122",
-                        "ToPort": "122"
-                    },
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "udp",
-                        "FromPort": "1194",
-                        "ToPort": "1194"
-                    },
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "udp",
-                        "FromPort": "161",
-                        "ToPort": "161"
-                    },
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "tcp",
-                        "FromPort": "443",
-                        "ToPort": "443"
-                    },
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "tcp",
-                        "FromPort": "80",
-                        "ToPort": "80"
-                    },
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "tcp",
-                        "FromPort": "9418",
-                        "ToPort": "9418"
-                    },
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "tcp",
-                        "FromPort": "25",
-                        "ToPort": "25"
-                    },
-                    {
-                        "CidrIp": { "Ref": "AccessCIDR" },
-                        "IpProtocol": "tcp",
-                        "FromPort": "8443",
-                        "ToPort": "8443"
-                    }
-                ],
-                "VpcId": {
-                    "Ref": "VPCID"
-                }
-            },
-            "Type": "AWS::EC2::SecurityGroup",
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "17633600-2812-4565-9f9d-1f06f35b86ff"
-                }
             }
         },
         "GitInstance": {
@@ -559,9 +487,6 @@
         "AvailabilityZone": {
             "Description": "Availability Zone of the newly created EC2 instance",
             "Value": { "Fn::GetAtt": [ "GitInstance", "AvailabilityZone" ] }
-        },
-        "GitSecurityGroup": {
-            "Value": { "Ref": "GitSecurityGroup" }
         },
         "GitInstanceProfileId": {
             "Description": "Git server EC2 Instance Profile.",
