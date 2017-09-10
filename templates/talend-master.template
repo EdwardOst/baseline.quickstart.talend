@@ -664,7 +664,13 @@
                     "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
                     "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
 
-                    "TacDbHost": { "Ref": "TacDbHost" },
+                    "TacDbHost": {
+                        "Fn::If": [
+                            "CreateRdsCondition",
+                            { "Fn::GetAtt": [ "TalendDbStack", "Outputs.EndpointAddress" ] },
+                            { "Ref": "TacDbHost" } 
+                        ]
+                    },
                     "MasterDbUser": { "Ref": "MasterDbUser" },
                     "MasterDbPassword": { "Ref": "MasterDbPassword" },
                     "TacDbUser": { "Ref": "TacDbUser" },
