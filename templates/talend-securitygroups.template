@@ -648,30 +648,125 @@
             "Type": "AWS::EC2::SecurityGroupIngress",
             "DependsOn": "CommandlineSecurityGroup",
             "Properties": {
-                "GroupId": {
-                    "Ref": "CommandlineSecurityGroup"
-                },
+                "GroupId": { "Ref": "CommandlineSecurityGroup" },
                 "IpProtocol": "tcp",
                 "FromPort": "4334",
                 "ToPort": "5333",
-                "SourceSecurityGroupId": {
-                    "Ref": "TacSecurityGroup"
-                }
+                "SourceSecurityGroupId": { "Ref": "TacSecurityGroup" }
             }
         },
         "CommandlineSecurityGroupIngressICMP": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "DependsOn": "CommandlineSecurityGroup",
             "Properties": {
-                "GroupId": {
-                    "Ref": "CommandlineSecurityGroup"
-                },
+                "GroupId": { "Ref": "CommandlineSecurityGroup" },
                 "IpProtocol": "icmp",
                 "FromPort": "-1",
                 "ToPort": "-1",
-                "SourceSecurityGroupId": {
-                    "Ref": "CommandlineSecurityGroup"
-                }
+                "SourceSecurityGroupId": { "Ref": "CommandlineSecurityGroup" }
+            }
+        },
+        "GitSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "VpcId": { "Ref": "VpcId" },
+                "GroupDescription": "Ports needed for GitLab CE",
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": { "Ref": "RemoteAccessCIDR" },
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22"
+                    },
+                    {
+                        "CidrIp": { "Ref": "RemoteAccessCIDR" },
+                        "IpProtocol": "tcp",
+                        "FromPort": "443",
+                        "ToPort": "443"
+                    },
+                    {
+                        "CidrIp": { "Ref": "RemoteAccessCIDR" },
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80"
+                    },
+                    {
+                        "CidrIp": { "Ref": "RemoteAccessCIDR" },
+                        "IpProtocol": "tcp",
+                        "FromPort": "8080",
+                        "ToPort": "8080"
+                    },
+                    {
+                        "CidrIp": { "Ref": "RemoteAccessCIDR" },
+                        "IpProtocol": "tcp",
+                        "FromPort": "9418",
+                        "ToPort": "9418"
+                    },
+                    {
+                        "CidrIp": { "Ref": "RemoteAccessCIDR" },
+                        "IpProtocol": "tcp",
+                        "FromPort": "25",
+                        "ToPort": "25"
+                    },
+                    {
+                        "CidrIp": { "Ref": "RemoteAccessCIDR" },
+                        "IpProtocol": "tcp",
+                        "FromPort": "8443",
+                        "ToPort": "8443"
+                    }
+                ]
+            }
+        },
+        "GitSecurityGroupIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "GitSecurityGroup",
+            "Properties": {
+                "GroupId": { "Ref": "GitSecurityGroup" },
+                "IpProtocol": "tcp",
+                "FromPort": "0",
+                "ToPort": "65535",
+                "SourceSecurityGroupId": { "Ref": "GitSecurityGroup" }
+            }
+        },
+        "GitSecurityGroupBastionSshIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "GitSecurityGroup",
+            "Properties": {
+                "GroupId": { "Ref": "GitSecurityGroup" },
+                "IpProtocol": "tcp",
+                "FromPort": "22",
+                "ToPort": "22",
+                "SourceSecurityGroupId": { "Ref": "BastionSecurityGroup" }
+            },
+        "GitSecurityGroupTacHttpIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "GitSecurityGroup",
+            "Properties": {
+                "GroupId": { "Ref": "GitSecurityGroup" },
+                "IpProtocol": "tcp",
+                "FromPort": "80",
+                "ToPort": "80",
+                "SourceSecurityGroupId": { "Ref": "TacSecurityGroup" }
+            },
+        "GitSecurityGroupTacHttpsIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "GitSecurityGroup",
+            "Properties": {
+                "GroupId": { "Ref": "GitSecurityGroup" },
+                "IpProtocol": "tcp",
+                "FromPort": "443",
+                "ToPort": "443",
+                "SourceSecurityGroupId": { "Ref": "TacSecurityGroup" }
+            },
+        "GitSecurityGroupTacSshIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "GitSecurityGroup",
+            "Properties": {
+                "GroupId": { "Ref": "GitSecurityGroup" },
+                "IpProtocol": "tcp",
+                "FromPort": "22",
+                "ToPort": "22",
+                "SourceSecurityGroupId": { "Ref": "TacSecurityGroup" }
             }
         }
     },
@@ -710,6 +805,11 @@
             "Description": "Commandline security group.",
             "Value": { "Ref": "CommandlineSecurityGroup" },
             "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:CommandlineSecurityGroup" } }
+        },
+        "GitSecurityGroup": {
+            "Description": "Gitlab security group.",
+            "Value": { "Ref": "GitSecurityGroup" },
+            "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:GitSecurityGroup" } }
         }
     }
 }
