@@ -63,8 +63,8 @@ function gitlab_init() {
     echo "creating project ${git_repo}"
     curl --header "PRIVATE-TOKEN: ${xvar}" -X POST "http://${ipvar}/api/v3/projects?name=${git_repo}"
 
-    echo "cloning http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/oodlejobs.git"
-    git clone "http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/oodlejobs.git"
+    echo "cloning http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/${git_repo}"
+    git clone "http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/${git_repo}"
 
     cd "${git_repo}"
 
@@ -75,6 +75,6 @@ function gitlab_init() {
     echo "git commit and push"
     git add .
     git commit -m "First Jobs"
-    git push "http://Admin:AdminPassword@${ipvar}/Admin/oodlejobs.git"
+    git push "http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/${git_repo}"
 
 }

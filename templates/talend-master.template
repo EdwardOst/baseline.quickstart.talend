@@ -683,7 +683,7 @@
                     "GitHost": {
                         "Fn::If": [
                             "CreateGitCondition",
-                            { "Fn::GetAtt": [ "GitStack", "Outputs.privateDnsName" ] },
+                            { "Fn::GetAtt": [ "GitStack", "Outputs.privateIp" ] },
                             { "Ref": "GitHost" } 
                         ]
                     },
