@@ -48,7 +48,6 @@ function gitlab_init() {
     echo "getting ip"
     local ipvar
     # this probably needs to be private ip since server cannot access its own external ip, just its private ip
-    # ipvar=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
     ipvar=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
     echo "ip=${ipvar}"
 
@@ -61,20 +60,20 @@ function gitlab_init() {
     # Create the project, clone it to local file, populate it with demo, and push it
 
     echo "creating project ${git_repo}"
-    curl --header "PRIVATE-TOKEN: ${xvar}" -X POST "http://${ipvar}/api/v3/projects?name=${git_repo}"
+    curl --header "PRIVATE-TOKEN: ${xvar}" -X POST --data-urlencode 'visibility_level=10' "http://${ipvar}/api/v3/projects?name=${git_repo}"
 
-    echo "cloning http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/${git_repo}"
-    git clone "http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/${git_repo}"
+    echo "cloning http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/${git_repo}.git"
+    git clone "http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/${git_repo}.git"
 
     cd "${git_repo}"
 
     # placeholder to retrieve standard jobs
     echo "wget ${source_url}"
     wget "${source_url}"
-
+ 
     echo "git commit and push"
     git add .
     git commit -m "First Jobs"
-    git push "http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/${git_repo}"
+    git push "http://${git_admin_userid}:${git_admin_password}@${ipvar}/${git_admin_userid}/${git_repo}.git"
 
 }
