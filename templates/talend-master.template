@@ -23,7 +23,7 @@
         },
         "ExistingVpc": {
             "Description": "VPC to which subnets, servers, and security groups belong.  Leave blank if creating a new network stack.",
-            "Type": "AWS::EC2::VPC::Id",
+            "Type": "String",
             "Default": ""
         },
         "PublicSubnetId": {
@@ -376,33 +376,6 @@
             "Default": "tac_adminTalend123",
             "NoEcho": "true"
         },
-        "GitHost": {
-            "Description": "Git host.",
-            "Type": "String",
-            "Default": "github.com"
-        },
-        "GitPort": {
-            "Description": "Git port.",
-            "Type": "Number",
-            "Default": "443",
-            "MinValue": "1",
-            "MaxValue": "65535"
-        },
-        "GitRepo": {
-            "Description": "Git repository.",
-            "Type": "String",
-            "Default": "EdwardOst/quickstart-repo"
-        },
-        "GitUser": {
-            "Description": "Git user.",
-            "Type": "String",
-            "Default": "EdwardOst"
-        },
-        "GitPassword": {
-            "Description": "Git password.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
         "CreateNexusStack": {
             "Description": "Create Nexus stack.",
             "Type": "String",
@@ -452,29 +425,35 @@
         },
         "GitAdminUserid": {
             "Description": "Git user.",
-            "Type": "String"
+            "Type": "String",
+            "Default": "admin"
         },
         "GitAdminPassword": {
             "Description": "Git password.",
             "Type": "String",
-            "NoEcho": "true"
+            "NoEcho": "true",
+            "Default": "adminPassword"
         },
         "GitAdminEmail": {
             "Description": "Git admin contact email.",
-            "Type": "String"
+            "Type": "String",
+            "Default": ""
         },
         "GitTacUserid": {
             "Description": "Git TAC userid.",
-            "Type": "String"
+            "Type": "String",
+            "Default": "tac"
         },
         "GitTacPassword": {
             "Description": "Git TAC password.",
             "Type": "String",
-            "NoEcho": "true"
+            "NoEcho": "true",
+            "Default": "tacPassword"
         },
         "GitTacEmail": {
             "Description": "TAC contact email.",
-            "Type": "String"
+            "Type": "String",
+            "Default": ""
         }
     },
     "Mappings": {
@@ -689,8 +668,8 @@
                     "GitHost": { "Ref": "GitHost" },
                     "GitPort": { "Ref": "GitPort" },
                     "GitRepo": { "Ref": "GitRepo" },
-                    "GitAdminUserid": { "Ref": "GitUser" },
-                    "GitAdminPassword": { "Ref": "GitPassword" }                    
+                    "GitAdminUserid": { "Ref": "GitAdminUserid" },
+                    "GitAdminPassword": { "Ref": "GitAdminPassword" }                    
                 }
             }
         }
