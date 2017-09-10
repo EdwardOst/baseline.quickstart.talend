@@ -587,6 +587,7 @@
                 "TimeoutInMinutes": 30,
                 "Parameters": {
                     "AccessCIDR": { "Ref": "RemoteAccessCIDR" },
+                    "GitSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.GitSecurityGroup" ] },
                     "InstanceType": "c4.large",
                     "KeyPairName": { "Ref": "KeyName" },
                     "VolumeSize": "100",
@@ -661,7 +662,6 @@
 					"NexusSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.TacSecurityGroup" ] },
 					"LogserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.TacSecurityGroup" ] },
                     "JobserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.JobserverSecurityGroup" ] },
-                    "GitSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.GitSecurityGroup" ] },
                     
                     "KeyName": { "Ref": "KeyName" },
 
