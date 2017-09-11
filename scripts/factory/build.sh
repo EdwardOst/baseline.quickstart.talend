@@ -94,10 +94,11 @@ EOF
 
     # build and mount s3fs
 
+    set -x
     try s3fs_build
     try s3fs_config
     try s3fs_mount "${repo_bucket}" "${repo_path}" "${repo_mount_dir}"
-
+    
     # load talend binaries with tui
     "${tui_dir}/install" -q -d "${tui_profile}"
 

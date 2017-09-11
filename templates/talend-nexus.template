@@ -537,7 +537,7 @@
                                         [
                                             "find ",
                                             { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
-                                            "-type f -name \"*.sh\" -exec chmod u+x {} \\;"
+                                            " -type f -name \"*.sh\" -exec chmod u+x {} \\;"
                                         ]
                                     ]
                                 }
@@ -548,7 +548,7 @@
                                         [
                                             "find ",
                                             { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
-                                            "-type f -name \"ec2-metadata\" -exec chmod u+x {} \\;"
+                                            " -type f -name \"ec2-metadata\" -exec chmod u+x {} \\;"
                                         ]
                                     ]
                                 }
@@ -795,9 +795,9 @@
                                             "source ",
                                             { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
                                             "/factory/s3fs-util.sh",
-                                            "; s3fs_build ",
+                                            "; echo s3fs_build; s3fs_build ",
                                             { "Fn::FindInMap": [ "Talend", "tui", "s3fsTarget" ] },
-                                            "; s3fs_config",
+                                            "; echo s3fs_config; s3fs_config",
                                             "; whoami > /home/ec2-user/01-install-s3fs-whoami",
                                             "; s3fs_mount",
                                             " ", { "Ref": "TalendResourceBucket" },
