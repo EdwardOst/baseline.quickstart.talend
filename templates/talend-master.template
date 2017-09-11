@@ -509,6 +509,17 @@
         }
     },
     "Resources": {
+        "IamStack": {
+			"Type" : "AWS::CloudFormation::Stack",
+			"Properties" : {
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}templates/talend-iam.template" },
+				"Parameters" : {
+                    "QSS3BucketName": { "Ref": "QSS3BucketName" },
+                    "QSS3KeyPrefix": { "Ref": "QSS3KeyPrefix" }
+                }
+            }
+        },
+    
 		"NetworkStack": {
 			"Type" : "AWS::CloudFormation::Stack",
             "Condition" : "CreateNetworkCondition",
