@@ -255,8 +255,8 @@
     "Mappings": {
         "Talend": {
             "bootstrap": {
-                "ec2Metadata": "https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/ec2-metadata",
-                "updateHosts": "https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/update_hosts.sh"
+                "ec2Metadata": "https://s3.amazonaws.com/baseline.quickstart.talend/scripts/bootstrap/ec2-metadata",
+                "updateHosts": "https://s3.amazonaws.com/baseline.quickstart.talend/scripts/bootstrap/update_hosts.sh"
             },
             "tui": {
                 "profile": "tacamc",
@@ -986,7 +986,7 @@
                                                     "baselineTarget"
                                                 ]
                                             },
-											"/tui/ ",
+											"/scripts/tui/ ",
                                             {
                                                 "Fn::FindInMap": [
                                                     "Talend",
@@ -1136,7 +1136,7 @@
                                         [
                                             "source ",
                                             { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
-                                            "/java/jre-installer.sh;",
+                                            "/scripts/java/jre-installer.sh;",
                                             "jre_installer_install"
                                         ]
                                     ]
@@ -1168,7 +1168,7 @@
                                                 "",
                                                 [
                                                     { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
-                                                    "/tac/create-db.sh ",
+                                                    "/scripts/tac/create-db.sh ",
                                                     { "Ref": "TacDbHost" }, " ",
                                                     { "Ref": "MasterDbUser" }, " ",
                                                     { "Ref": "MasterDbPassword" }, " ",
@@ -1191,7 +1191,7 @@
                                                 "",
                                                 [
                                                     { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
-                                                    "/tac/create-db.sh ",
+                                                    "/scripts/tac/create-db.sh ",
                                                     { "Ref": "AmcDbHost" }, " ",
                                                     { "Ref": "MasterDbUser" }, " ",
                                                     { "Ref": "MasterDbPassword" }, " ",

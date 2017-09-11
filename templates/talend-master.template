@@ -419,6 +419,11 @@
 			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
+        "GitProtocol": {
+            "Description": "Git protocol.",
+            "Type": "String",
+            "Default": "http"
+        },
         "GitHost": {
             "Description": "Git host.  Leave blank to create a new Gitlab instance.",
             "Type": "String",
@@ -687,6 +692,7 @@
                             { "Ref": "GitHost" } 
                         ]
                     },
+                    "GitProtocol": { "Ref": "GitProtocol" },
                     "GitPort": { "Ref": "GitPort" },
                     "GitRepo": { "Ref": "GitRepo" },
                     "GitAdminUserid": { "Ref": "GitAdminUserid" },
