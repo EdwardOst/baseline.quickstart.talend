@@ -178,7 +178,7 @@
                 "profile": "logserver",
                 "tuiUrl": "https://s3.amazonaws.com/repo-quickstart-talend/tui/TUI-4.5.2.tar",
                 "tuiTarget": "/home/ec2-user/TUI-4.5.2",
-                "baselineTarget": "/home/ec2-user/baseline.quickstart.talend-0.3.0",
+                "baselineTarget": "/home/ec2-user/baseline",
                 "licenseTarget": "/home/ec2-user/TUI-4.5.2/licenses/6.3.1",
                 "s3fsUrl": "https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.82.tar.gz",
                 "s3fsTarget": "/home/ec2-user/s3fs-fuse-1.82",
