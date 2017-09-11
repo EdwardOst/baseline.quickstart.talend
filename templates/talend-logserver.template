@@ -136,35 +136,35 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "TalendLogstashTacPort": {
+        "TalendLogginngTacPort": {
             "Description": "Logstash TAC input port.",
             "Type": "Number",
             "Default": "8050",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "TalendLogstashJobserverPort": {
+        "TalendLoggingJobserverPort": {
             "Description": "Logstash Jobserver input port.",
             "Type": "Number",
             "Default": "8055",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "TalendLogstashCmdlinePort": {
+        "TalendLoggingCmdlinePort": {
             "Description": "Logstash Commandline input port.",
             "Type": "Number",
             "Default": "8056",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "TalendLogstashElasticSearchPort": {
+        "TalendLoggingElasticSearchPort": {
             "Description": "Logstash Elastic Search port.",
             "Type": "Number",
             "Default": "9200",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "TalendLogstashKibanaPort": {
+        "TalendLoggingKibanaPort": {
             "Description": "Logstash Kibana port.",
             "Type": "Number",
             "Default": "5601",
@@ -648,7 +648,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_JOBSERVER_PORT=",
                                                         {
-                                                            "Ref": "TalendLogstashJobserverPort"
+                                                            "Ref": "TalendLoggingJobserverPort"
                                                         }
                                                     ]
                                                 ]
@@ -659,7 +659,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_CMDLINE_PORT=",
                                                         {
-                                                            "Ref": "TalendLogstashCmdlinePort"
+                                                            "Ref": "TalendLoggingCmdlinePort"
                                                         }
                                                     ]
                                                 ]
@@ -670,7 +670,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_ELASTIC_SEARCH_PORT=",
                                                         {
-                                                            "Ref": "TalendLogstashElasticSearchPort"
+                                                            "Ref": "TalendLoggingElasticSearchPort"
                                                         }
                                                     ]
                                                 ]
@@ -949,48 +949,48 @@
 				}
 			}
         },
-        "logstashTacPort": {
-            "Value": { "Ref": "TalendLogstashTacPort" },
-            "Description": "Talend Logstash TAC input Port",
+        "loggingTacPort": {
+            "Value": { "Ref": "TalendLoggingTacPort" },
+            "Description": "Talend Logging TAC input Port",
 			"Export": {
 				"Name": {
-					"Fn::Sub": "${AWS::StackName}:logstashTacPort"
+					"Fn::Sub": "${AWS::StackName}:loggingTacPort"
 				}
 			}
         },
-        "logstashJobserverPort": {
-            "Value": { "Ref": "TalendLogstashJobserverPort" },
-            "Description": "Talend Logstash Jobserver input Port",
+        "loggingJobserverPort": {
+            "Value": { "Ref": "TalendLoggingJobserverPort" },
+            "Description": "Talend Logging Jobserver input Port",
 			"Export": {
 				"Name": {
-					"Fn::Sub": "${AWS::StackName}:logstashJobserverPort"
+					"Fn::Sub": "${AWS::StackName}:loggingJobserverPort"
 				}
 			}
         },
-        "logstashCmdlinePort": {
-            "Value": { "Ref": "TalendLogstashCmdlinePort" },
-            "Description": "Talend Logstash Commandline input Port",
+        "loggingCmdlinePort": {
+            "Value": { "Ref": "TalendLoggingCmdlinePort" },
+            "Description": "Talend Logging Commandline input Port",
 			"Export": {
 				"Name": {
-					"Fn::Sub": "${AWS::StackName}:logstashCmdlinePort"
+					"Fn::Sub": "${AWS::StackName}:loggingCmdlinePort"
 				}
 			}
         },
-        "logstashElasticSearchPort": {
-            "Value": { "Ref": "TalendLogstashElasticSearchPort" },
-            "Description": "Talend Logstash Elastic Search Port",
+        "loggingElasticSearchPort": {
+            "Value": { "Ref": "TalendLoggingElasticSearchPort" },
+            "Description": "Talend Logging Elastic Search Port",
 			"Export": {
 				"Name": {
-					"Fn::Sub": "${AWS::StackName}:logstashElasticSearchPort"
+					"Fn::Sub": "${AWS::StackName}:loggingElasticSearchPort"
 				}
 			}
         },
-        "logstashKibanaPort": {
-            "Value": { "Ref": "TalendLogstashKibanaPort" },
-            "Description": "Talend Logstash Kibana Port.",
+        "loggingKibanaPort": {
+            "Value": { "Ref": "TalendLoggingKibanaPort" },
+            "Description": "Talend Logging Kibana Port.",
 			"Export": {
 				"Name": {
-					"Fn::Sub": "${AWS::StackName}:logstashKibanaPort"
+					"Fn::Sub": "${AWS::StackName}:loggingKibanaPort"
 				}
 			}
         }

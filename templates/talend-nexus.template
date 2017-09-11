@@ -431,9 +431,7 @@
                 "AWS::CloudFormation::Authentication": {
                     "S3AccessCreds": {
                         "type": "S3",
-                        "roleName": {
-                            "Ref": "InstanceRole"
-                        }
+                        "roleName": { "Ref": "InstanceRole" }
                     }
                 },
 

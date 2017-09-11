@@ -232,14 +232,14 @@
             "Type": "String",
             "Default": "localhost"
         },
-        "LogstashTacPort": {
+        "LoggingTacPort": {
             "Description": "Logstash TAC input port.",
             "Type": "Number",
             "Default": "8050",
             "MinValue": "1",
             "MaxValue": "65535"
         },
-        "LogstashKibanaPort": {
+        "LoggingKibanaPort": {
             "Description": "Logstash Kibana port.",
             "Type": "Number",
             "Default": "5601",
@@ -586,9 +586,7 @@
                 "AWS::CloudFormation::Authentication": {
                     "S3AccessCreds": {
                         "type": "S3",
-                        "roleName": {
-                            "Ref": "InstanceRole"
-                        }
+                        "roleName": { "Ref": "InstanceRole" }
                     }
                 },
 
@@ -908,7 +906,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_TAC_PORT=",
                                                         {
-                                                            "Ref": "LogstashTacPort"
+                                                            "Ref": "LoggingTacPort"
                                                         }
                                                     ]
                                                 ]
@@ -919,7 +917,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_KIBANA_PORT=",
                                                         {
-                                                            "Ref": "LogstashKibanaPort"
+                                                            "Ref": "LoggingKibanaPort"
                                                         }
                                                     ]
                                                 ]

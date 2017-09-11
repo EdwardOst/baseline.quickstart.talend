@@ -593,8 +593,8 @@
                             { "Fn::GetAtt": [ "LogserverStack", "Outputs.publicDnsName" ] }
                         ] 
                     },
-                    "LogstashTacPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashTacPort" ] },
-                    "LogstashKibanaPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashKibanaPort" ] },
+                    "LoggingTacPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.loggingTacPort" ] },
+                    "LoggingKibanaPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.loggingKibanaPort" ] },
                     "GitHost": { "Ref": "GitHost" },
                     "GitProtocol": { "Ref": "GitProtocol" },
                     "GitPort": { "Ref": "GitPort" },
@@ -626,14 +626,14 @@
                     "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
 					"TacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.privateDnsName" ] },
                     "LoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
-                    "LogstashJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.logstashJobserverPort" ] }
+                    "LoggingJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.loggingJobserverPort" ] }
 				},
 				"TimeoutInMinutes" : "10"
 			}
 		}
     },
     "Outputs": {
-        "Nexus": {
+        "NexusStack": {
             "Condition": "CreateNexusStackCondition",
             "Value": { "Ref": "NexusStack" },
             "Description": "Nested Nexus stack",
@@ -641,7 +641,7 @@
 				"Name": { "Fn::Sub": "${AWS::StackName}:Nexus" } 
 				} 
         },
-        "Logserver": {
+        "LogserverStack": {
             "Condition": "CreateLogserverStackCondition",
             "Value": { "Ref": "LogserverStack" },
             "Description": "Nested Logserver stack",
@@ -649,7 +649,7 @@
 				"Name": { "Fn::Sub": "${AWS::StackName}:Logserver" } 
 			}
         },
-        "Tac": {
+        "TacStack": {
             "Condition": "CreateTacStackCondition",
             "Value": { "Ref": "TacStack" },
             "Description": "Nested TAC stack",
@@ -657,7 +657,7 @@
 				"Name": { "Fn::Sub": "${AWS::StackName}:Tac" } 
 			}
         },
-        "Jobserver": {
+        "JobserverStack": {
             "Condition": "CreateJobserverStackCondition",
             "Value": { "Ref": "JobserverStack" },
             "Description": "Nested Jobserver stack",
