@@ -475,7 +475,7 @@
             ]
         },
         "CreateRdsCondition": {
-            { "Fn::Equals": [ "", { "Ref": "TacDbHost" } ] }
+            "Fn::Equals": [ "", { "Ref": "TacDbHost" } ]
         },
         "CreateGitCondition": {
             "Fn::Equals": [
