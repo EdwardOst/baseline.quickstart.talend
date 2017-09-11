@@ -529,12 +529,29 @@
                             "03-copy-qss3bucket": {
                                 "command": {
                                     "Fn::Sub": "aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}scripts /home/ec2-user/baseline --recursive"
-                                },
+                                }
+                            },
                             "04-chmod-qss3bucket": {
                                 "command": {
-                                    "Fn::Sub": "find /home/ec2-user/baseline -type f -exec chmod +x {} \\;"
-                                },
-                                
+                                    "Fn::Join": [ "",
+                                        [
+                                            "find ",
+                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            "-type f -name \"*.sh\" -exec chmod u+x {} \\;"
+                                        ]
+                                    ]
+                                }
+                            },
+                            "05-chmod-ec2-metadata": {
+                                "command": {
+                                    "Fn::Join": [ "",
+                                        [
+                                            "find ",
+                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            "-type f -name \"ec2-metadata\" -exec chmod u+x {} \\;"
+                                        ]
+                                    ]
+                                }
                             }
                         }
                     },
@@ -719,15 +736,6 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "chmod +x ",
-                                            {
-                                                "Fn::FindInMap": [
-                                                    "Talend",
-                                                    "tui",
-                                                    "tuiTarget"
-                                                ]
-                                            },
-											"/scripts/create-instance-env.sh;",
                                             {
                                                 "Fn::FindInMap": [
                                                     "Talend",
@@ -753,17 +761,6 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "chmod +x ",
-                                            {
-                                                "Fn::FindInMap": [
-                                                    "Talend",
-                                                    "tui",
-                                                    "tuiTarget"
-                                                ]
-                                            },
-											"/scripts/create-",
-											{ "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
-											"-env.sh;",
                                             {
                                                 "Fn::FindInMap": [
                                                     "Talend",
