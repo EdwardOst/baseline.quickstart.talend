@@ -8,7 +8,7 @@ jre_installer_script_path=$(readlink -e "${BASH_SOURCE[0]}")
 jre_installer_script_dir="${jre_installer_script_path%/*}"
 
 # shellcheck source=../util/util.sh
-source "${jre_installer_script_dir}/../scripts/util/util.sh"
+source "${jre_installer_script_dir}/../util/util.sh"
 
 set -u
 
