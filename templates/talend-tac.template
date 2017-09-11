@@ -1223,7 +1223,7 @@
                                             ]
                                         },
                                         "echo CreateAmcDatabaseCondition is false, using existing database and credentials"
-                                    ]
+                                        ]
                                 }
                             },
                             "06-install-talend": {
