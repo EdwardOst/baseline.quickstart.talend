@@ -799,7 +799,7 @@
                                             { "Fn::FindInMap": [ "Talend", "tui", "s3fsTarget" ] },
                                             "; echo s3fs_config; s3fs_config",
                                             "; whoami > /home/ec2-user/01-install-s3fs-whoami",
-                                            "; s3fs_mount",
+                                            "; echo s3fs_mount; s3fs_mount",
                                             " ", { "Ref": "TalendResourceBucket" },
                                             " ", { "Ref": "TalendResourceBucketRepoPath" },
                                             " ", { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] }

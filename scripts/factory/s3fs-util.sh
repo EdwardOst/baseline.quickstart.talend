@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 set -u
-set -e
-set -x
 
 [ "${S3FS_UTIL_FLAG:-0}" -gt 0 ] && return 0
 
