@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -u
+set -x
 
 [ "${BUILD_FLAG:-0}" -gt 0 ] && return 0
 
@@ -94,14 +95,12 @@ EOF
 
     # build and mount s3fs
 
-    set -e
-    set -x
     echo "*** s3fs_build ***" 1>&2
-    try s3fs_build
+    s3fs_build
     echo "*** s3fs_config ***" 1>&2
-    try s3fs_config
+    s3fs_config
     echo "*** s3fs_mount ***" 1>&2
-    try s3fs_mount "${repo_bucket}" "${repo_path}" "${repo_mount_dir}"
+    s3fs_mount "${repo_bucket}" "${repo_path}" "${repo_mount_dir}"
     
     # load talend binaries with tui
     "${tui_dir}/install" -q -d "${tui_profile}"
