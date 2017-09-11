@@ -373,7 +373,7 @@
                     "Version": "2012-10-17"
                 },
                 "ManagedPolicyArns": [ "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess" ],
-                "Path": "/talend"
+                "Path": "/talend/"
             }
         },
         "RolePolicies":{
@@ -400,7 +400,7 @@
         "InstanceProfile": {
             "Type": "AWS::IAM::InstanceProfile",
             "Properties": {
-                "Path": "/talend",
+                "Path": "/talend/",
                 "Roles": [ { "Ref": "InstanceRole" } ]
             }
         },
