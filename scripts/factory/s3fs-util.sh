@@ -84,9 +84,7 @@ function s3fs_mount() {
     local s3_mount_root="${4:-${s3_mount_dir}}"
     local s3fs_umask="${5:-037}"
 
-    echo "**** s3fs_mount required test ****" 1>&2
     required s3_bucket s3_path s3_mount_dir s3_mount_root s3fs_umask
-    echo "**** s3fs_mount required test finished ****" 1>&2
 
     mkdir -p "${s3_mount_dir}"
 
