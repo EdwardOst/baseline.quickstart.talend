@@ -346,15 +346,6 @@
             "Type": "Number",
             "Default": "20"
         },
-        "CreateRds": {
-            "Description": "Create new RDS instance.",
-            "Type": "String",
-            "Default": "true",
-            "AllowedValues": [
-                "true",
-                "false"
-            ]
-        },
         "CreateTacDatabase": {
             "Description": "Create TAC Database (true) or use an existing TAC database (false)",
             "Type": "String",
@@ -484,10 +475,7 @@
             ]
         },
         "CreateRdsCondition": {
-            "Fn::Or": [
-                { "Fn::Equals": [ "true", { "Ref": "CreateRds" } ] },
-                { "Fn::Equals": [ "", { "Ref": "TacDbHost" } ] }
-            ]
+            { "Fn::Equals": [ "", { "Ref": "TacDbHost" } ] }
         },
         "CreateGitCondition": {
             "Fn::Equals": [
