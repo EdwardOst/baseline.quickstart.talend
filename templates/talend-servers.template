@@ -21,6 +21,14 @@
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).  Prefix cannot start with a slash but must end with a slash unless it is the empty string.",
             "Type": "String"
         },
+        "InstanceRole": {
+            "Description": "Talend Server EC2 IAM Role",
+            "Type": "String"
+        },
+        "InstanceProfile": {
+            "Description": "Talend Server EC2 Instance Profile",
+            "Type": "String"
+        },
         "NexusTemplate": {
             "Description": "Nexus template relative path and filename",
             "Type": "String",
@@ -505,6 +513,8 @@
 			"Properties" : {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${NexusTemplate}" },
 				"Parameters" : {
+                    "InstanceRole": { "Ref": "InstanceRole" },
+                    "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "NexusInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
 					"SubnetId": { "Fn::If": [ "isNexusPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
@@ -527,6 +537,8 @@
 			"Properties" : {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${LogserverTemplate}" },
 				"Parameters" : {
+                    "InstanceRole": { "Ref": "InstanceRole" },
+                    "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "LogserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
 					"SubnetId": { "Fn::If": [ "isLogserverPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
@@ -550,6 +562,8 @@
 			"Properties" : {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${TacTemplate}" },
 				"Parameters" : {
+                    "InstanceRole": { "Ref": "InstanceRole" },
+                    "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "TacInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
 					"SubnetId": { "Fn::If": [ "isTacPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
@@ -598,6 +612,8 @@
 			"Properties" : {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${JobserverTemplate}" },
 				"Parameters" : {
+                    "InstanceRole": { "Ref": "InstanceRole" },
+                    "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "JobserverInstanceType" },
 					"KeyName": { "Ref": "KeyName" },
 					"SubnetId": { "Fn::If": [ "isJobserverPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },

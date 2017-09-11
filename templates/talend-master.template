@@ -623,7 +623,8 @@
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
                     "QSS3KeyPrefix": { "Ref": "QSS3KeyPrefix" },
-                    
+                    "InstanceRole": { "Fn::GetAtt": [ "IamStack", "Outputs.InstanceRole" ] },
+                    "InstanceProfile": { "Fn::GetAtt": [ "IamStack", "Outputs.InstanceProfile" ] },
                     "PublicSubnetId": { 
                         "Fn::If": [
                             "CreateNetworkCondition",

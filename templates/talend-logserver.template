@@ -515,11 +515,11 @@
                         },
                         "commands": {
                             "01-unzip-s3fs": {
-                                "command": "sudo -E -u ec2-user tar xzvpf s3fs.tgz",
+                                "command": "tar xzvpf s3fs.tgz",
                                 "cwd": "/home/ec2-user"
                             },
                             "02-unzip-tui": {
-                                "command": "sudo -E -u ec2-user tar xvpf tui.tar",
+                                "command": "tar xvpf tui.tar",
                                 "cwd": "/home/ec2-user"
                             },
                             "03-copy-qss3bucket": {
