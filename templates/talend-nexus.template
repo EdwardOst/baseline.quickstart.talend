@@ -519,11 +519,11 @@
                         },
                         "commands": {
                             "01-unzip-s3fs": {
-                                "command": "sudo -E -u ec2-user tar xzvpf s3fs.tgz",
+                                "command": "tar xzvpf s3fs.tgz",
                                 "cwd": "/home/ec2-user"
                             },
                             "02-unzip-tui": {
-                                "command": "sudo -E -u ec2-user tar xvpf tui.tar",
+                                "command": "tar xvpf tui.tar",
                                 "cwd": "/home/ec2-user"
                             },
                             "03-copy-qss3bucket": {
@@ -655,7 +655,6 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "sudo -E -u ec2-user ",
                                             "cp -rfT ",
                                             {
                                                 "Fn::FindInMap": [
@@ -682,7 +681,6 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "sudo -E -u ec2-user ",
                                             "cp ",
                                             {
                                                 "Fn::FindInMap": [
@@ -708,7 +706,6 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "sudo -E -u ec2-user ",
                                             "mv ",
                                             {
                                                 "Fn::FindInMap": [
@@ -734,7 +731,15 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "sudo -E -u ec2-user ",
+                                            "chmod +x ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "tuiTarget"
+                                                ]
+                                            },
+											"/scripts/create-instance-env.sh;",
                                             {
                                                 "Fn::FindInMap": [
                                                     "Talend",
@@ -760,7 +765,17 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "sudo -E -u ec2-user ",
+                                            "chmod +x ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "tuiTarget"
+                                                ]
+                                            },
+											"/scripts/create-",
+											{ "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
+											"-env.sh;",
                                             {
                                                 "Fn::FindInMap": [
                                                     "Talend",
