@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -u
+set -e
+set -x
 
 [ "${S3FS_UTIL_FLAG:-0}" -gt 0 ] && return 0
 
@@ -86,6 +88,7 @@ function s3fs_mount() {
 
     echo "**** s3fs_mount required test ****" 1>&2
     required s3_bucket s3_path s3_mount_dir s3_mount_root s3fs_umask
+    echo "**** s3fs_mount required test finished ****" 1>&2
 
     mkdir -p "${s3_mount_dir}"
 

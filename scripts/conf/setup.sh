@@ -2,6 +2,7 @@
 
 set -e
 set -u
+set -x
 set -o pipefail
 
 setup_script_path=$(readlink -e "${BASH_SOURCE[0]}")

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -u
+set -e
 set -x
 
 [ "${BUILD_FLAG:-0}" -gt 0 ] && return 0
@@ -95,11 +96,11 @@ EOF
 
     # build and mount s3fs
 
-    echo "*** s3fs_build ***" 1>&2
+    echo "xxx s3fs_build" 1>&2
     s3fs_build
-    echo "*** s3fs_config ***" 1>&2
+    echo "xxx s3fs_config" 1>&2
     s3fs_config
-    echo "*** s3fs_mount ***" 1>&2
+    echo "xxx s3fs_mount" 1>&2
     s3fs_mount "${repo_bucket}" "${repo_path}" "${repo_mount_dir}"
     
     # load talend binaries with tui
