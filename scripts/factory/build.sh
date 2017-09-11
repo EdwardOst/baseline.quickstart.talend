@@ -94,6 +94,7 @@ EOF
 
     # build and mount s3fs
 
+    set -e
     set -x
     try s3fs_build
     try s3fs_config
