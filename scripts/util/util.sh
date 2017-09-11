@@ -73,7 +73,7 @@ function required() {
     local arg
     local error_message=""
     for arg in "${@}"; do
-        [[ ! -v "${arg}" ]] || [ -z "${!arg}" ] && error_message="${error_message} ${arg}"
+        [ ! -v "${arg}" ] || [ -z "${!arg}" ] && error_message="${error_message} ${arg}"
     done
     [ -n "${error_message}" ] \
         && error_message="missing required arguments:${error_message}" \
