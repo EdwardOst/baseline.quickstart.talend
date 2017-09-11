@@ -529,7 +529,12 @@
                             "03-copy-qss3bucket": {
                                 "command": {
                                     "Fn::Sub": "aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}scripts /home/ec2-user/baseline --recursive"
-                                }
+                                },
+                            "04-chmod-qss3bucket": {
+                                "command": {
+                                    "Fn::Sub": "find /home/ec2-user/baseline -type f -exec chmod +x {} \\;"
+                                },
+                                
                             }
                         }
                     },
@@ -633,23 +638,6 @@
                             }
                         },
                         "commands": {
-                            "00-prepare": {
-                                "command": {
-                                    "Fn::Join": [
-                                        " ",
-                                        [
-                                            "sudo chown -R ec2-user:ec2-user",
-                                            {
-                                                "Fn::FindInMap": [
-                                                    "Talend",
-                                                    "tui",
-                                                    "generatedTarget"
-                                                ]
-                                            }
-                                        ]
-                                    ]
-                                }
-                            },
                             "01-load-baseline": {
                                 "command": {
                                     "Fn::Join": [
