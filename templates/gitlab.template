@@ -171,6 +171,10 @@
     },
     "Mappings": {
         "Talend": {
+            "bootstrap": {
+                "ec2Metadata": "https://s3.amazonaws.com/baseline.quickstart.talend/scripts/bootstrap/ec2-metadata",
+                "updateHosts": "https://s3.amazonaws.com/baseline.quickstart.talend/scripts/bootstrap/update_hosts_ubuntu.sh"
+            },
             "git": {
                 "init": "https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/git/talend-gitlab.sh"
             }
@@ -342,6 +346,15 @@
                                 "echo \"pwd: $(pwd)\" 1>&2\n",
                                 "echo \"whoami: $(whoami)\" 1>&2\n",
                                 "while ! apt-get update -q ; do sleep 10; done\n",
+                                "wget ",
+                                { "Fn::FindInMap": [ "Talend", "bootstrap", "ec2Metadata"] },
+                                "\n",
+								"chmod +x ec2-metadata\n",
+                                "wget ",
+                                { "Fn::FindInMap": [ "Talend", "bootstrap", "updateHosts"] },
+                                "\n",
+								"chmod +x update_hosts_ubuntu.sh\n",
+                                "./update_hosts.sh\n",
                                 "while ! apt-get -y install python-setuptools; do sleep 10; done\n",
                                 "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n",
                                 "# Install the files and packages from the metadata\n",
