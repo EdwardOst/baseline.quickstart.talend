@@ -83,6 +83,14 @@
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).  Prefix cannot start with a slash but must end with a slash unless it is the empty string.",
             "Type": "String"
         },
+        "InstanceRole": {
+            "Description": "Talend Server EC2 IAM Role",
+            "Type": "String"
+        },
+        "InstanceProfile": {
+            "Description": "Talend Server EC2 Instance Profile",
+            "Type": "String"
+        },
         "InstanceType": {
             "AllowedValues": [
                 "m3.xlarge",
@@ -275,42 +283,6 @@
         }
     },
     "Resources": {
-        "GitInstanceProfile": {
-            "Type": "AWS::IAM::InstanceProfile",
-            "Properties": {
-                "Path": "/",
-                "Roles": [
-                    {
-                        "Ref": "GitInstanceRole"
-                    }
-                ]
-            }
-        },
-        "GitInstanceRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Statement": [
-                        {
-                            "Action": [
-                                "sts:AssumeRole"
-                            ],
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": [
-                                    "ec2.amazonaws.com"
-                                ]
-                            }
-                        }
-                    ],
-                    "Version": "2012-10-17"
-                },
-                "ManagedPolicyArns": [
-                    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
-                ],
-                "Path": "/"
-            }
-        },
         "GitInstance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
@@ -341,7 +313,7 @@
                 ],
                 "EbsOptimized": "true",
                 "IamInstanceProfile": {
-                    "Ref": "GitInstanceProfile"
+                    "Ref": "InstanceProfile"
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
@@ -494,13 +466,13 @@
             "Description": "Availability Zone of the newly created EC2 instance",
             "Value": { "Fn::GetAtt": [ "GitInstance", "AvailabilityZone" ] }
         },
-        "GitInstanceProfileId": {
+        "InstanceProfileId": {
             "Description": "Git server EC2 Instance Profile.",
-            "Value": { "Ref": "GitInstanceProfile" }
+            "Value": { "Ref": "InstanceProfile" }
         },
         "GitRoleId": {
             "Description": "Git server EC2 Instance Role.",
-            "Value": { "Ref": "GitInstanceRole" }
+            "Value": { "Ref": "InstanceRole" }
         },
         "ServerInstanceId": {
             "Value": { "Ref": "GitInstance" },

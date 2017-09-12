@@ -591,6 +591,8 @@
                 "TimeoutInMinutes": 30,
                 "Parameters": {
                     "InstanceType": "c4.large",
+                    "InstanceRole": { "Fn::GetAtt": [ "IamStack", "Outputs.InstanceRole" ] },
+                    "InstanceProfile": { "Fn::GetAtt": [ "IamStack", "Outputs.InstanceProfile" ] },
                     "GitSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.GitSecurityGroup" ] },
                     "KeyPairName": { "Ref": "KeyName" },
                     "VolumeSize": "100",
