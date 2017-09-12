@@ -136,7 +136,7 @@
             "Type": "String",
             "NoEcho": "true"
         },
-        "TalendLogginngTacPort": {
+        "TalendLoggingTacPort": {
             "Description": "Logstash TAC input port.",
             "Type": "Number",
             "Default": "8050",
