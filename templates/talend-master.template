@@ -597,6 +597,7 @@
                     "KeyPairName": { "Ref": "KeyName" },
                     "VolumeSize": "100",
                     "VolumeType": "gp2",
+                    "PrivateSubnet": "public",
                     "SubnetId": { 
                         "Fn::If": [
                             "CreateNetworkCondition",

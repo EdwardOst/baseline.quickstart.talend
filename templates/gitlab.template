@@ -130,7 +130,7 @@
             "Description": "The subnet where the GitLab CE instance will be launched",
             "Type": "AWS::EC2::Subnet::Id"
         },
-		"privateSubnet": {
+		"PrivateSubnet": {
             "Description": "Is this is a private subnet.",
             "Type": "String",
 			"Default": "public",
@@ -258,7 +258,7 @@
     "Conditions": {
         "isPrivateSubnet": {
             "Fn::Equals": [
-                { "Ref": "privateSubnet" },
+                { "Ref": "PrivateSubnet" },
                 "private"
             ]
         },
