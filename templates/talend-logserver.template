@@ -637,7 +637,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_TAC_PORT=",
                                                         {
-                                                            "Ref": "TalendLogstashTacPort"
+                                                            "Ref": "TalendLoggingTacPort"
                                                         }
                                                     ]
                                                 ]
@@ -681,7 +681,7 @@
                                                     [
                                                         "export TALEND_LOGSTASH_KIBANA_PORT=",
                                                         {
-                                                            "Ref": "TalendLogstashKibanaPort"
+                                                            "Ref": "TalendLoggingKibanaPort"
                                                         }
                                                     ]
                                                 ]
