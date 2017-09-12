@@ -626,8 +626,10 @@
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
                     "QSS3KeyPrefix": { "Ref": "QSS3KeyPrefix" },
+
                     "InstanceRole": { "Fn::GetAtt": [ "IamStack", "Outputs.InstanceRole" ] },
                     "InstanceProfile": { "Fn::GetAtt": [ "IamStack", "Outputs.InstanceProfile" ] },
+
                     "PublicSubnetId": { 
                         "Fn::If": [
                             "CreateNetworkCondition",
@@ -705,6 +707,15 @@
         }
     },
     "Outputs": {
+        "IamStack": {
+            "Value": { "Ref": "IamStack" },
+            "Description": "Nested IAM stack",
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}:IamStack"
+				} 
+			}
+        },
         "NetworkStack": {
             "Condition": "CreateNetworkCondition",
             "Value": { "Ref": "NetworkStack" },
@@ -721,6 +732,24 @@
 			"Export": {
 				"Name": {
 					"Fn::Sub": "${AWS::StackName}:SecurityGroupsStack" 
+				} 
+			}
+        },
+        "TalendDbStack": {
+            "Value": { "Ref": "TalendDbStack" },
+            "Description": "Nested Talend Database stack",
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}:TalendDbStack"
+				} 
+			}
+        },
+        "GitStack": {
+            "Value": { "Ref": "GitStack" },
+            "Description": "Nested Git Server stack",
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}:GitStack"
 				} 
 			}
         },
