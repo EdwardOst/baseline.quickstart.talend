@@ -198,15 +198,6 @@
         }
     },
     "Mappings": {
-        "Talend": {
-            "bootstrap": {
-                "ec2Metadata": "https://s3.amazonaws.com/baseline.quickstart.talend/scripts/bootstrap/ec2-metadata",
-                "updateHosts": "https://s3.amazonaws.com/baseline.quickstart.talend/scripts/bootstrap/update_hosts_ubuntu.sh"
-            },
-            "git": {
-                "init": "https://s3.amazonaws.com/baseline.quickstart.talend/bootstrap/git/talend-gitlab.sh"
-            }
-        },
         "AWSAMIRegionMap": {
             "AMI": {
                 "GHE29": "GitLab CE 8.17.2"
@@ -339,14 +330,14 @@
                                 "echo \"whoami: $(whoami)\" 1>&2\n",
                                 "while ! apt-get update -q ; do sleep 10; done\n",
                                 "wget ",
-                                { "Fn::FindInMap": [ "Talend", "bootstrap", "ec2Metadata"] },
+                                { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/ec2-metadata" },
                                 "\n",
 								"chmod +x ec2-metadata\n",
                                 "wget ",
-                                { "Fn::FindInMap": [ "Talend", "bootstrap", "updateHosts"] },
+                                { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/update_hosts_ubuntu.sh" },
                                 "\n",
 								"chmod +x update_hosts_ubuntu.sh\n",
-                                "./update_hosts.sh\n",
+                                "./update_hosts_ubuntu.sh\n",
                                 "while ! apt-get -y install python-setuptools; do sleep 10; done\n",
                                 "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n",
                                 "# Install the files and packages from the metadata\n",
@@ -379,6 +370,12 @@
                 }
             },
             "Metadata": {
+                "AWS::CloudFormation::Authentication": {
+                    "S3AccessCreds": {
+                        "type": "S3",
+                        "roleName": { "Ref": "InstanceRole" }
+                    }
+                },
                 "AWS::CloudFormation::Init": {
                     "configSets": {
                         "All": [
@@ -408,15 +405,12 @@
                         "files": {
                             "/home/ubuntu/talend-gitlab.sh": {
                                 "source": {
-                                    "Fn::FindInMap": [
-                                        "Talend",
-                                        "git",
-                                        "init"
-                                    ]
+                                    "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/git/talend-gitlab.sh"
                                 },
                                 "owner": "ubuntu",
                                 "group": "ubuntu",
-                                "mode": "000500"
+                                "mode": "000500",
+                                "authentication": "S3AccessCreds"
                             }
                         }
                     },
