@@ -745,6 +745,7 @@
 			}
         },
         "GitStack": {
+            "Condition": "CreateGitCondition",
             "Value": { "Ref": "GitStack" },
             "Description": "Nested Git Server stack",
 			"Export": {
