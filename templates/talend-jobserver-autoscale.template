@@ -452,7 +452,7 @@
                                 {
                                     "Ref": "AWS::StackName"
                                 },
-                                "         --resource TalendServerInstance ",
+                                "         --resource JobserverAutoscaling ",
                                 "         --configsets All ",
                                 "         --region ",
                                 {
@@ -465,7 +465,7 @@
                                 {
                                     "Ref": "AWS::StackName"
                                 },
-                                "         --resource TalendServerInstance ",
+                                "         --resource JobserverAutoscaling ",
                                 "         --region ",
                                 {
                                     "Ref": "AWS::Region"
