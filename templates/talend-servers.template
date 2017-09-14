@@ -107,6 +107,10 @@
             "Type": "AWS::EC2::SecurityGroup::Id",
             "Description": "Jobserver Security Group"
         },
+        "DistantRunSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup::Id",
+            "Description": "DistantRun Jobserver Security Group"
+        },
         "JobserverAutoscaleMinSize": {
             "Description": "Talend Jobserver autoscale minimum size",
             "Type": "Number",
@@ -485,6 +489,12 @@
             "Type": "String",
 			"Default": "true",
             "AllowedValues": [ "true", "false" ]
+        },
+        "CreateDistantRunStack": {
+            "Description": "Create Jobserver stack in public subnet for use by Studio Distant Run capability.",
+            "Type": "String",
+			"Default": "true",
+            "AllowedValues": [ "true", "false" ]
         }
     },
     "Mappings": {
@@ -511,6 +521,12 @@
         "CreateJobserverStackCondition": {
             "Fn::Equals": [
                 { "Ref": "CreateJobserverStack" },
+                "true"
+            ]
+        },
+        "CreateDistantRunStackCondition": {
+            "Fn::Equals": [
+                { "Ref": "CreateDistantRunStack" },
                 "true"
             ]
         },
@@ -679,6 +695,35 @@
 					"SubnetId": { "Fn::If": [ "isJobserverPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
                     "PrivateSubnet": { "Ref": "PrivateJobserver" },
 					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
+                    "JobserverAutoscaleMinSize": { "Ref": "JobserverAutoscaleMinSize" },
+                    "JobserverAutoscaleMaxSize": { "Ref": "JobserverAutoscaleMaxSize" },
+                    "JobserverAutoscaleDesiredCapacity": { "Ref": "JobserverAutoscaleMaxSize" },
+					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
+					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
+					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
+                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
+                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
+					"TacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.privateDnsName" ] },
+                    "LoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
+                    "LoggingJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.loggingJobserverPort" ] }
+				},
+				"TimeoutInMinutes" : "10"
+			}
+		},
+		"DistantRunStack": {
+			"Type" : "AWS::CloudFormation::Stack",
+            "Condition" : "CreateDistantRunStackCondition",
+			"DependsOn": [ "TacStack", "LogserverStack" ],
+			"Properties" : {
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${JobserverAutoscaleTemplate}" },
+				"Parameters" : {
+                    "InstanceRole": { "Ref": "InstanceRole" },
+                    "InstanceProfile": { "Ref": "InstanceProfile" },
+					"InstanceType": { "Ref": "JobserverInstanceType" },
+					"KeyName": { "Ref": "KeyName" },
+					"SubnetId": { "Ref": "PublicSubnetId" },
+                    "PrivateSubnet": "false",
+					"SecurityGroupIds": { "Ref": "DistantRunSecurityGroup" },
                     "JobserverAutoscaleMinSize": { "Ref": "JobserverAutoscaleMinSize" },
                     "JobserverAutoscaleMaxSize": { "Ref": "JobserverAutoscaleMaxSize" },
                     "JobserverAutoscaleDesiredCapacity": { "Ref": "JobserverAutoscaleMaxSize" },

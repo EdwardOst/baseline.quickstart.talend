@@ -222,6 +222,21 @@
                 }
             }
         },
+        "TacSecurityGroupDistantRunIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "TacSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "TacSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "8080",
+                "ToPort": "8080",
+                "SourceSecurityGroupId": {
+                    "Ref": "DistantRunSecurityGroup"
+                }
+            }
+        },
         "TacSecurityGroupIngressICMP": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "DependsOn": "TacSecurityGroup",
@@ -341,6 +356,92 @@
                 "ToPort": "-1",
                 "SourceSecurityGroupId": {
                     "Ref": "JobserverSecurityGroup"
+                }
+            }
+        },
+        "DistantRunSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "VpcId": { "Ref": "VpcId" },
+                "GroupDescription": "Allow access to DistantRun from TAC on 8000 (command), 8001 (file), and 8888 (monitoring), and from Bastion servers on SSH",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "8000",
+                        "ToPort": "8000",
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "8001",
+                        "ToPort": "8001",
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "8888",
+                        "ToPort": "8888",
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }
+                    }
+                ]
+            }
+        },
+        "DistantRunSecurityGroupIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "DistantRunSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DistantRunSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "0",
+                "ToPort": "65535",
+                "SourceSecurityGroupId": {
+                    "Ref": "DistantRunSecurityGroup"
+                }
+            }
+        },
+        "DistantRunSecurityGroupBastionSshIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "DistantRunSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DistantRunSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "22",
+                "ToPort": "22",
+                "SourceSecurityGroupId": {
+                    "Ref": "BastionSecurityGroup"
+                }
+            }
+        },
+        "DistantRunSecurityGroupIngressICMP": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "DistantRunSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DistantRunSecurityGroup"
+                },
+                "IpProtocol": "icmp",
+                "FromPort": "-1",
+                "ToPort": "-1",
+                "SourceSecurityGroupId": {
+                    "Ref": "DistantRunSecurityGroup"
                 }
             }
         },
@@ -793,6 +894,11 @@
             "Description": "Jobserver security group.",
             "Value": { "Ref": "JobserverSecurityGroup" },
             "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:JobserverSecurityGroup" } }
+        },
+        "DistantRunSecurityGroup": {
+            "Description": "DistantRun security group.",
+            "Value": { "Ref": "DistantRunSecurityGroup" },
+            "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:DistantRunSecurityGroup" } }
         },
         "NexusSecurityGroup": {
             "Description": "Nexus security group.",
