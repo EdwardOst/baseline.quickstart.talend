@@ -490,10 +490,16 @@
 			"Default": "true",
             "AllowedValues": [ "true", "false" ]
         },
+        "CreateJobserverAutoscaleStack": {
+            "Description": "Create JobserverAutoscale stack.",
+            "Type": "String",
+			"Default": "false",
+            "AllowedValues": [ "true", "false" ]
+        },
         "CreateDistantRunStack": {
             "Description": "Create Jobserver stack in public subnet for use by Studio Distant Run capability.",
             "Type": "String",
-			"Default": "true",
+			"Default": "false",
             "AllowedValues": [ "true", "false" ]
         }
     },
@@ -521,6 +527,12 @@
         "CreateJobserverStackCondition": {
             "Fn::Equals": [
                 { "Ref": "CreateJobserverStack" },
+                "true"
+            ]
+        },
+        "CreateJobserverAutoscaleStackCondition": {
+            "Fn::Equals": [
+                { "Ref": "CreateJobserverAutoscaleStack" },
                 "true"
             ]
         },
@@ -683,7 +695,7 @@
         },
 		"JobserverAutoscaleStack": {
 			"Type" : "AWS::CloudFormation::Stack",
-            "Condition" : "CreateJobserverStackCondition",
+            "Condition" : "CreateJobserverAutoscaleStackCondition",
 			"DependsOn": [ "TacStack", "LogserverStack" ],
 			"Properties" : {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${JobserverAutoscaleTemplate}" },
