@@ -709,7 +709,7 @@
 					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
                     "JobserverAutoscaleMinSize": { "Ref": "JobserverAutoscaleMinSize" },
                     "JobserverAutoscaleMaxSize": { "Ref": "JobserverAutoscaleMaxSize" },
-                    "JobserverAutoscaleDesiredCapacity": { "Ref": "JobserverAutoscaleMaxSize" },
+                    "JobserverAutoscaleDesiredCapacity": { "Ref": "JobserverAutoscaleDesiredCapacity" },
 					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
 					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
