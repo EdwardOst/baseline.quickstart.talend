@@ -53,6 +53,12 @@
             "Default": "templates/talend-jobserver.template",
             "AllowedValues": [ "templates/talend-jobserver.template" ]
         },
+        "JobserverAutoscaleTemplate": {
+            "Description": "Jobserver template relative path and filename",
+            "Type": "String",
+            "Default": "templates/talend-jobserver-autoscale.template",
+            "AllowedValues": [ "templates/talend-jobserver-autoscale.template" ]
+        },
         "PublicSubnetId": {
         	"Description": "Public Subnet",
         	"Type": "AWS::EC2::Subnet::Id"
@@ -664,7 +670,7 @@
             "Condition" : "CreateJobserverStackCondition",
 			"DependsOn": [ "TacStack", "LogserverStack" ],
 			"Properties" : {
-                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${JobserverTemplate}" },
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${JobserverAutoscaleTemplate}" },
 				"Parameters" : {
                     "InstanceRole": { "Ref": "InstanceRole" },
                     "InstanceProfile": { "Ref": "InstanceProfile" },
