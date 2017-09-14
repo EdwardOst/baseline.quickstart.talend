@@ -386,6 +386,11 @@
             "Default": "",
             "NoEcho": "true"
         },
+        "TacDbSchema": {
+            "Description": "TAC database schema.",
+            "Type": "String",
+            "Default": "tac_quickstart"
+        },
         "TacDbUser": {
             "Description": "TAC database user.",
             "Type": "String",
@@ -580,6 +585,7 @@
                     "AmcDbHost": { "Ref": "TacDbHost" },
                     "MasterDbUser": { "Ref": "MasterDbUser" },
                     "MasterDbPassword": { "Ref": "MasterDbPassword" },
+                    "TacDbSchema": { "Ref": "TacDbSchema" },
                     "TacDbUser": { "Ref": "TacDbUser" },
                     "TacDbPassword": { "Ref": "TacDbPassword" },
                     "CreateTacDatabase": { "Ref": "CreateTacDatabase" },

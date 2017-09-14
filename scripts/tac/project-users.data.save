@@ -1,0 +1,5 @@
+REC_TYPE,USER_FNAME,USER_LNAME,USER_LOGIN,USER_PASSWD,USER_TYPE,USER_ROLE
+USER,abhishek,guha,abhishek.guha@cognizant.com,abhishek,DI
+USER,nayan,wasnik,nayan.wasnik@cognizant.com,nayan,DI
+PROJECT,oodle_proj_Rel1,DI
+PROJECT,oodle_proj_rel2,DI

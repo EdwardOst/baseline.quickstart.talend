@@ -1247,6 +1247,41 @@
                                         "tuiTarget"
                                     ]
                                 }
+                            },
+                            "07-tac-started": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "baselineTarget"
+                                                ]
+                                            },
+                                            "/tac/isTACStarted.sh ",
+                                            "localhost"
+                                        ]
+                                    ]
+                                }
+                            },
+                            "08-tac-started": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "baselineTarget"
+                                                ]
+                                            },
+                                            "/tac/create-tac-project-users.sh"
+                                        ]
+                                    ]
+                                }
                             }
                         }
                     }

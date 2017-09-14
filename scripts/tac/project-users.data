@@ -1,5 +1,5 @@
 REC_TYPE,USER_FNAME,USER_LNAME,USER_LOGIN,USER_PASSWD,USER_TYPE,USER_ROLE
-USER,abhishek,guha,abhishek.guha@cognizant.com,abhishek,DI
-USER,nayan,wasnik,nayan.wasnik@cognizant.com,nayan,DI
-PROJECT,oodle_proj_Rel1,DI
-PROJECT,oodle_proj_rel2,DI
+USER,first1,last1,user1@talend.com,password1,DI
+USER,first2,last2,user2@talend.com,password2,DI
+PROJECT,project1,DI
+PROJECT,project2,DI
