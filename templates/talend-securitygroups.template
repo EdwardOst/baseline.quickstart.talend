@@ -415,6 +415,51 @@
                 }
             }
         },
+        "DistantRunSecurityGroupTacCommandFileIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "DistantRunSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DistantRunSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "8000",
+                "ToPort": "8001",
+                "SourceSecurityGroupId": {
+                    "Ref": "TacSecurityGroup"
+                }
+            }
+        },
+        "DistantRunSecurityGroupTacMonitoringIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "DistantRunSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DistantRunSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "8888",
+                "ToPort": "8888",
+                "SourceSecurityGroupId": {
+                    "Ref": "TacSecurityGroup"
+                }
+            }
+        },
+        "DistantRunSecurityGroupTacSshIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "DistantRunSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DistantRunSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "22",
+                "ToPort": "22",
+                "SourceSecurityGroupId": {
+                    "Ref": "TacSecurityGroup"
+                }
+            }
+        },
         "DistantRunSecurityGroupBastionSshIngress": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "DependsOn": "DistantRunSecurityGroup",
