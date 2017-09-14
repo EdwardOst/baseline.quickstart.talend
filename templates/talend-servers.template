@@ -101,6 +101,27 @@
             "Type": "AWS::EC2::SecurityGroup::Id",
             "Description": "Jobserver Security Group"
         },
+        "JobserverAutoscaleMinSize": {
+            "Description": "Talend Jobserver autoscale minimum size",
+            "Type": "Number",
+            "MinValue": "1",
+            "MaxValue": "10",
+            "Default": "1"
+        },
+        "JobserverAutoscaleMaxSize": {
+            "Description": "Talend Jobserver autoscale maximum size",
+            "Type": "Number",
+            "MinValue": "1",
+            "MaxValue": "10",
+            "Default": "5"
+        },
+        "JobserverAutoscaleDesiredCapacity": {
+            "Description": "Talend Jobserver autoscale maximum size",
+            "Type": "Number",
+            "MinValue": "1",
+            "MaxValue": "10",
+            "Default": "2"
+        },
         "TacInstanceType": {
             "Description": "TAC EC2 instance type",
             "Type": "String",
@@ -625,6 +646,35 @@
 					"SubnetId": { "Fn::If": [ "isJobserverPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
                     "PrivateSubnet": { "Ref": "PrivateJobserver" },
 					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
+					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
+					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
+					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
+                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
+                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
+					"TacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.privateDnsName" ] },
+                    "LoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
+                    "LoggingJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.loggingJobserverPort" ] }
+				},
+				"TimeoutInMinutes" : "10"
+			}
+        },
+		"JobserverAutoscaleStack": {
+			"Type" : "AWS::CloudFormation::Stack",
+            "Condition" : "CreateJobserverStackCondition",
+			"DependsOn": [ "TacStack", "LogserverStack" ],
+			"Properties" : {
+                "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${JobserverTemplate}" },
+				"Parameters" : {
+                    "InstanceRole": { "Ref": "InstanceRole" },
+                    "InstanceProfile": { "Ref": "InstanceProfile" },
+					"InstanceType": { "Ref": "JobserverInstanceType" },
+					"KeyName": { "Ref": "KeyName" },
+					"SubnetId": { "Fn::If": [ "isJobserverPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
+                    "PrivateSubnet": { "Ref": "PrivateJobserver" },
+					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
+                    "JobserverAutoscaleMinSize": { "Ref": "JobserverAutoscaleMinSize" },
+                    "JobserverAutoscaleMaxSize": { "Ref": "JobserverAutoscaleMaxSize" },
+                    "JobserverAutoscaleDesiredCapacity": { "Ref": "JobserverAutoscaleMaxSize" },
 					"TalendLicenseUser": { "Ref": "TalendLicenseUser" },
 					"TalendLicensePassword": { "Ref": "TalendLicensePassword" },
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
