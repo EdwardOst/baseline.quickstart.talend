@@ -401,6 +401,425 @@
                 "DesiredCapacity": { "Ref": "JobserverAutoscaleDesiredCapacity" },
                 "HealthCheckGracePeriod": "120",
                 "VPCZoneIdentifier": [ { "Ref": "SubnetId" } ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Authentication": {
+                    "S3AccessCreds": {
+                        "type": "S3",
+                        "roleName": { "Ref": "InstanceRole" }
+                    }
+                },
+
+                "AWS::CloudFormation::Init": {
+                    "configSets": {
+                        "All": [
+                            "Download",
+                            "Configure",
+                            "Install"
+                        ]
+                    },
+                    "Download": {
+                        "files": {
+                            "/home/ec2-user/s3fs.tgz": {
+                                "source": {
+                                    "Fn::FindInMap": [
+                                        "Talend",
+                                        "tui",
+                                        "s3fsUrl"
+                                    ]
+                                },
+                                "owner": "ec2-user",
+                                "group": "ec2-user",
+                                "mode": "000400"
+                            },
+                            "/home/ec2-user/tui.tar": {
+                                "source": {
+                                    "Fn::FindInMap": [
+                                        "Talend",
+                                        "tui",
+                                        "tuiUrl"
+                                    ]
+                                },
+                                "owner": "ec2-user",
+                                "group": "ec2-user",
+                                "mode": "000400"
+                            },
+                            "/home/ec2-user/generated/licenses/license": {
+                                "source": { "Ref": "TalendLicenseUrl" },
+                                "owner": "ec2-user",
+                                "group": "ec2-user",
+                                "mode": "000400"
+                            }
+                        },
+                        "commands": {
+                            "01-unzip-s3fs": {
+                                "command": "tar xzvpf s3fs.tgz",
+                                "cwd": "/home/ec2-user"
+                            },
+                            "02-unzip-tui": {
+                                "command": "tar xvpf tui.tar",
+                                "cwd": "/home/ec2-user"
+                            },
+                            "03-copy-qss3bucket": {
+                                "command": {
+                                    "Fn::Sub": "aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}scripts /home/ec2-user/baseline --recursive"
+                                }
+                            },
+                            "04-chmod-qss3bucket": {
+                                "command": {
+                                    "Fn::Join": [ "",
+                                        [
+                                            "find ",
+                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            " -type f -name \"*.sh\" -exec chmod u+x {} \\;"
+                                        ]
+                                    ]
+                                }
+                            },
+                            "05-chmod-ec2-metadata": {
+                                "command": {
+                                    "Fn::Join": [ "",
+                                        [
+                                            "find ",
+                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            " -type f -name \"ec2-metadata\" -exec chmod u+x {} \\;"
+                                        ]
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "Configure": {
+                        "files": {
+                            "/root/.passwd-s3fs": {
+                                "content": {
+                                    "Fn::Join": [
+                                        ":",
+                                        [
+                                            { "Ref": "TalendResourceBucketAccessKey" },
+                                            { "Ref": "TalendResourceBucketSecret" }
+                                        ]
+                                    ]
+                                },
+                                "owner": "root",
+                                "group": "root",
+                                "mode": "000400"
+                            },
+                            "/etc/passwd-s3fs": {
+                                "content": {
+                                    "Fn::Join": [
+                                        ":",
+                                        [
+                                            { "Ref": "TalendResourceBucketAccessKey" },
+                                            { "Ref": "TalendResourceBucketSecret" }
+                                        ]
+                                    ]
+                                },
+                                "owner": "root",
+                                "group": "root",
+                                "mode": "000400"
+                            },
+                            "/home/ec2-user/generated/licenses/download_credentials.properties": {
+                                "content": {
+                                    "Fn::Join": [
+                                        "\n",
+                                        [
+                                            {
+                                                "Fn::Join": [
+                                                    "",
+                                                    [
+                                                        "TALEND_DOWNLOAD_USER=",
+                                                        {
+                                                            "Ref": "TalendLicenseUser"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            {
+                                                "Fn::Join": [
+                                                    "",
+                                                    [
+                                                        "TALEND_DOWNLOAD_PASSWORD=",
+                                                        {
+                                                            "Ref": "TalendLicensePassword"
+                                                        }
+                                                    ]
+                                                ]
+                                            }
+                                        ]
+                                    ]
+                                },
+                                "owner": "ec2-user",
+                                "group": "ec2-user",
+                                "mode": "000400"
+                            },
+                            "/home/ec2-user/generated/setenv.sh": {
+                                "content": {
+                                    "Fn::Join": [
+                                        "\n",
+                                        [
+                                            {
+                                                "Fn::Join": [
+                                                    "",
+                                                    [
+                                                        "export TALEND_REPO=",
+                                                        {
+                                                            "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir"]
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            {
+                                                "Fn::Join": [
+                                                    "",
+                                                    [
+                                                        "export TALEND_TAC_HOST=",
+                                                        {
+                                                            "Ref": "TacHost"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            {
+                                                "Fn::Join": [
+                                                    "",
+                                                    [
+                                                        "export TALEND_LOGGING_HOST=",
+                                                        {
+                                                            "Ref": "LoggingHost"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            {
+                                                "Fn::Join": [
+                                                    "",
+                                                    [
+                                                        "export TALEND_LOGSTASH_JOBSERVER_PORT=",
+                                                        {
+                                                            "Ref": "LoggingJobserverPort"
+                                                        }
+                                                    ]
+                                                ]
+                                            }
+                                        ]
+                                    ]
+                                },
+                                "mode": "000400",
+								"owner": "ec2-user",
+								"group": "ec2-user"
+                            }
+                        },
+                        "commands": {
+                            "01-load-baseline": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "cp -rfT ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "baselineTarget"
+                                                ]
+                                            },
+											"/tui/ ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "tuiTarget"
+                                                ]
+                                            },
+											"/"
+                                        ]
+                                    ]
+                                }
+                            },
+                            "02-load-license": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "cp ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "generatedTarget"
+                                                ]
+                                            },
+											"/licenses/* ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "licenseTarget"
+                                                ]
+                                            }
+                                        ]
+                                    ]
+                                }
+                            },
+                            "03-load-env": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "mv ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "generatedTarget"
+                                                ]
+                                            },
+											"/setenv.sh ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "tuiTarget"
+                                                ]
+                                            }
+                                        ]
+                                    ]
+                                }
+                            },
+                            "04-load-instance-env": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "tuiTarget"
+                                                ]
+                                            },
+											"/scripts/create-instance-env.sh ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "tuiTarget"
+                                                ]
+                                            },
+											"/instance-env.sh"
+                                        ]
+                                    ]
+                                }
+                            },
+                            "05-load-server-env": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "tuiTarget"
+                                                ]
+                                            },
+											"/scripts/create-",
+											{ "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
+											"-env.sh ",
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "tuiTarget"
+                                                ]
+                                            },
+											"/server-env.sh"
+                                        ]
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "Install": {
+                        "commands": {
+                            "01-install-s3fs": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "set -e",
+                                            "; source ",
+                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            "/factory/s3fs-util.sh",
+                                            "; echo s3fs_build; s3fs_build ",
+                                            { "Fn::FindInMap": [ "Talend", "tui", "s3fsTarget" ] },
+                                            "; echo s3fs_config; s3fs_config",
+                                            "; echo s3fs_mount; s3fs_mount",
+                                            " ", { "Ref": "TalendResourceBucket" },
+                                            " ", { "Ref": "TalendResourceBucketRepoPath" },
+                                            " ", { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] }
+                                        ]
+                                    ]
+                                },
+                                "cwd": { "Fn::FindInMap": [ "Talend", "tui", "s3fsTarget" ] }
+                            },
+                            "02-install-jre": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "source ",
+                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            "/java/jre-installer.sh;",
+                                            "jre_installer_install"
+                                        ]
+                                    ]
+                                }
+                            },
+                            "03-tac-started": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            {
+                                                "Fn::FindInMap": [
+                                                    "Talend",
+                                                    "tui",
+                                                    "baselineTarget"
+                                                ]
+                                            },
+                                            "/tac/isTACStarted.sh ",
+                                            { "Ref": "TacHost" }
+                                        ]
+                                    ]
+                                }
+                            },
+                            "04-install-talend": {
+                                "command": {
+                                    "Fn::Join": [ 
+                                        "", 
+                                        [
+                                            "source /etc/profile.d/jre.sh; ",
+                                            "source ./setenv.sh; ",
+                                            "source ./instance-env.sh; ",
+                                            "source ./server-env.sh; ",
+                                            "./install -q ",
+											{ "Fn::FindInMap": [ "Talend", "tui", "profile" ] }
+                                        ] 
+                                    ]
+                                },
+                                "cwd": {
+                                    "Fn::FindInMap": [
+                                        "Talend",
+                                        "tui",
+                                        "tuiTarget"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "JobserverLaunchConfig": {
