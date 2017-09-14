@@ -448,12 +448,13 @@
         "GitAdminUserid": {
             "Description": "Git user.",
             "Type": "String",
-            "Default": ""
+            "Default": "tadmin"
         },
         "GitAdminPassword": {
             "Description": "Git password.",
             "Type": "String",
-            "NoEcho": "true"
+            "NoEcho": "true",
+            "Default": "tadm1nPassw0rd"
         },
         "CreateNexusStack": {
             "Description": "Create Nexus stack.",

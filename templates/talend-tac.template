@@ -179,12 +179,12 @@
         "TacDbUser": {
             "Description": "TAC database user.",
             "Type": "String",
-            "Default": "tac_admin"
+            "Default": "tac"
         },
         "TacDbPassword": {
             "Description": "TAC database password.",
             "Type": "String",
-            "Default": "tac_adminTalend123",
+            "Default": "tacPassw0rd",
             "NoEcho": "true"
         },
         "AmcDbHost": {
@@ -207,12 +207,12 @@
         "AmcDbUser": {
             "Description": "AMC database user.",
             "Type": "String",
-            "Default": "tadmin"
+            "Default": "amc"
         },
         "AmcDbPassword": {
             "Description": "AMC database password.",
             "Type": "String",
-            "Default": "tadminTalend123",
+            "Default": "amcPassw0rd",
             "NoEcho": "true"
         },
         "NexusHost": {
@@ -271,12 +271,12 @@
         "GitAdminUserid": {
             "Description": "Git admin user.",
             "Type": "String",
-            "Default": "tisadmin"
+            "Default": "tadmin"
         },
         "GitAdminPassword": {
             "Description": "Git password.",
             "Type": "String",
-            "Default": "secretpassword",
+            "Default": "tadminPassw0rd",
             "NoEcho": "true"
         }
 	},
