@@ -1266,7 +1266,7 @@
                                     ]
                                 }
                             },
-                            "08-tac-started": {
+                            "08-project-users": {
                                 "command": {
                                     "Fn::Join": [
                                         "",

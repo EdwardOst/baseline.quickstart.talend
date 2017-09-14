@@ -3,11 +3,16 @@
 set -e
 set -x
 
-declare project_users_file="${1:-project-users.data}"
+script_path=$(readlink -e "${BASH_SOURCE[0]}")
+script_dir="${script_path%/*}"
+
+declare project_users_file="${1:-${script_dir}/project-users.data}"
 
 declare usage="create-tac-project-users.sh <project_users_file>"
 
 [ -z "${project_users_file}" ] && echo "project users data file argument required: usage: ${usage}" && exit
+
+[ ! -f "${project_users_file}" ] && echo "project users data file argument '${projects_users_file}' does not exist" && exit
 
 declare tac_url="http://localhost:8080/tac"
 declare metaservlet_path="/opt/talend/6.3.1/tac/webapps/tac/WEB-INF/classes/MetaServletCaller.sh"
