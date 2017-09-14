@@ -426,7 +426,6 @@
                         }
                     ]
                 },
-                "Tags": [ { "Key": "Name", "Value": "Jobserver" } ],
                 "KeyName": { "Ref": "KeyName" },
 				"SecurityGroups": { "Ref": "SecurityGroupIds" },
                 "IamInstanceProfile": { "Ref": "InstanceProfile" },
