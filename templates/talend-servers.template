@@ -575,7 +575,7 @@
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${NexusTemplate}" },
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
-                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}submodules/talend/" },
+                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}" },
                     "InstanceRole": { "Ref": "InstanceRole" },
                     "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "NexusInstanceType" },
@@ -601,7 +601,7 @@
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${LogserverTemplate}" },
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
-                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}submodules/talend/" },
+                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}" },
                     "InstanceRole": { "Ref": "InstanceRole" },
                     "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "LogserverInstanceType" },
@@ -628,7 +628,7 @@
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${TacTemplate}" },
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
-                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}submodules/talend/" },
+                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}" },
                     "InstanceRole": { "Ref": "InstanceRole" },
                     "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "TacInstanceType" },
@@ -681,7 +681,7 @@
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${JobserverTemplate}" },
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
-                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}submodules/talend/" },
+                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}" },
                     "InstanceRole": { "Ref": "InstanceRole" },
                     "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "JobserverInstanceType" },
@@ -709,7 +709,7 @@
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${JobserverAutoscaleTemplate}" },
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
-                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}submodules/talend/" },
+                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}" },
                     "InstanceRole": { "Ref": "InstanceRole" },
                     "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "JobserverInstanceType" },
@@ -740,7 +740,7 @@
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${JobserverAutoscaleTemplate}" },
 				"Parameters" : {
                     "QSS3BucketName": { "Ref": "QSS3BucketName" },
-                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}submodules/talend/" },
+                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}" },
                     "InstanceRole": { "Ref": "InstanceRole" },
                     "InstanceProfile": { "Ref": "InstanceProfile" },
 					"InstanceType": { "Ref": "JobserverInstanceType" },
