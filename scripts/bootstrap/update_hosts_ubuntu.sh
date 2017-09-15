@@ -53,9 +53,4 @@ echo "hostname -I=$(hostname -I)" | tee -a "/home/ubuntu/update_hosts.log"
 echo "hostname -f=$(hostname -f)" | tee -a "/home/ubuntu/update_hosts.log"
 echo "hostname -A=$(hostname -A)" | tee -a "/home/ubuntu/update_hosts.log"
 
-# update gitlab.rb external url
-
-sed -i "s|^external_url.*|external_url '${public_hostname}'|g" /etc/gitlab/gitlab.rb
-
-
 echo "finished update_hosts"
