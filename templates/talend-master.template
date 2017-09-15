@@ -590,6 +590,8 @@
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}templates/gitlab.template" },
                 "TimeoutInMinutes": 30,
                 "Parameters": {
+                    "QSS3BucketName": { "Ref": "QSS3BucketName" },
+                    "QSS3KeyPrefix": { "Fn::Sub": "${QSS3KeyPrefix}submodules/talend/" },
                     "InstanceType": "c4.large",
                     "InstanceRole": { "Fn::GetAtt": [ "IamStack", "Outputs.InstanceRole" ] },
                     "InstanceProfile": { "Fn::GetAtt": [ "IamStack", "Outputs.InstanceProfile" ] },
