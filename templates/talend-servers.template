@@ -368,16 +368,6 @@
             "Description": "Path to binary repository in Talend S3 resources bucket.",
             "Type": "String",
             "Default": "/"
-        },  
-        "TalendResourceBucketAccessKey": {
-            "Description": "Access Key for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "TalendResourceBucketSecret": {
-            "Description": "Secret for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
         },
         "TacDbHost": {
             "Description": "TAC database hostname.",
@@ -575,9 +565,7 @@
 					"SecurityGroupIds": { "Ref": "NexusSecurityGroup" },
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
                     "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
-                    "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" }
+                    "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" }
 				},
 				"TimeoutInMinutes" : "10"
 			}
@@ -599,9 +587,7 @@
 					"SecurityGroupIds": { "Ref": "LogserverSecurityGroup" },
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
                     "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
-                    "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" }
+                    "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" }
 				},
 				"TimeoutInMinutes" : "10"
 			}
@@ -625,8 +611,6 @@
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
                     "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
                     "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
                     "TacDbHost": { "Ref": "TacDbHost" },
                     "AmcDbHost": { "Ref": "TacDbHost" },
                     "MasterDbUser": { "Ref": "MasterDbUser" },
@@ -674,8 +658,6 @@
                     "PrivateSubnet": { "Ref": "PrivateJobserver" },
 					"SecurityGroupIds": { "Ref": "JobserverSecurityGroup" },
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
 					"TacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.privateDnsName" ] },
                     "LoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
                     "LoggingJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.loggingJobserverPort" ] }
@@ -703,8 +685,6 @@
                     "JobserverAutoscaleMaxSize": { "Ref": "JobserverAutoscaleMaxSize" },
                     "JobserverAutoscaleDesiredCapacity": { "Ref": "JobserverAutoscaleDesiredCapacity" },
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
 					"TacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.privateDnsName" ] },
                     "LoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
                     "LoggingJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.loggingJobserverPort" ] }
@@ -732,8 +712,6 @@
                     "JobserverAutoscaleMaxSize": { "Ref": "JobserverAutoscaleMaxSize" },
                     "JobserverAutoscaleDesiredCapacity": { "Ref": "JobserverAutoscaleDesiredCapacity" },
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
 					"TacHost": { "Fn::GetAtt": [ "TacStack", "Outputs.privateDnsName" ] },
                     "LoggingHost": { "Fn::GetAtt": [ "LogserverStack", "Outputs.privateDnsName" ] },
                     "LoggingJobserverPort": { "Fn::GetAtt": [ "LogserverStack", "Outputs.loggingJobserverPort" ] }

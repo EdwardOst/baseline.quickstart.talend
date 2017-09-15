@@ -116,16 +116,6 @@
             "Description": "Path to binary repository in Talend S3 resources bucket.",
             "Type": "String",
             "Default": "/repo"
-        },  
-        "TalendResourceBucketAccessKey": {
-            "Description": "Access Key for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "TalendResourceBucketSecret": {
-            "Description": "Secret for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
         },
         "CreateTacDatabase": {
             "Description": "Create TAC Database (true) or use an existing TAC database (false)",
@@ -671,34 +661,6 @@
                     },
                     "Configure": {
                         "files": {
-                            "/root/.passwd-s3fs": {
-                                "content": {
-                                    "Fn::Join": [
-                                        ":",
-                                        [
-                                            { "Ref": "TalendResourceBucketAccessKey" },
-                                            { "Ref": "TalendResourceBucketSecret" }
-                                        ]
-                                    ]
-                                },
-                                "owner": "root",
-                                "group": "root",
-                                "mode": "000400"
-                            },
-                            "/etc/passwd-s3fs": {
-                                "content": {
-                                    "Fn::Join": [
-                                        ":",
-                                        [
-                                            { "Ref": "TalendResourceBucketAccessKey" },
-                                            { "Ref": "TalendResourceBucketSecret" }
-                                        ]
-                                    ]
-                                },
-                                "owner": "root",
-                                "group": "root",
-                                "mode": "000400"
-                            },
                             "/home/ec2-user/generated/licenses/download_credentials.properties": {
                                 "content": {
                                     "Fn::Join": [

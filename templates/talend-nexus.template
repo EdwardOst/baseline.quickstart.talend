@@ -117,16 +117,6 @@
             "Type": "String",
             "Default": "/"
         },  
-        "TalendResourceBucketAccessKey": {
-            "Description": "Access Key for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "TalendResourceBucketSecret": {
-            "Description": "Secret for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
         "TalendNexusPort": {
             "Description": "Nexus port.",
             "Type": "Number",
@@ -508,48 +498,6 @@
                     },
                     "Configure": {
                         "files": {
-                            "/root/.passwd-s3fs": {
-                                "content": {
-                                    "Fn::Join": [
-                                        ":",
-                                        [
-                                            { "Ref": "TalendResourceBucketAccessKey" },
-                                            { "Ref": "TalendResourceBucketSecret" }
-                                        ]
-                                    ]
-                                },
-                                "owner": "root",
-                                "group": "root",
-                                "mode": "000400"
-                            },
-                            "/etc/passwd-s3fs": {
-                                "content": {
-                                    "Fn::Join": [
-                                        ":",
-                                        [
-                                            { "Ref": "TalendResourceBucketAccessKey" },
-                                            { "Ref": "TalendResourceBucketSecret" }
-                                        ]
-                                    ]
-                                },
-                                "owner": "root",
-                                "group": "root",
-                                "mode": "000400"
-                            },
-                            "/home/ec2-user/generated/licenses/download_credentials.properties": {
-                                "content": {
-                                    "Fn::Join": [
-                                        "\n",
-                                        [
-                                            "TALEND_DOWNLOAD_USER=notused",
-                                            "TALEND_DOWNLOAD_PASSWORD=notused"
-                                        ]
-                                    ]
-                                },
-                                "owner": "ec2-user",
-                                "group": "ec2-user",
-                                "mode": "000400"
-                            },
                             "/home/ec2-user/generated/setenv.sh": {
                                 "content": {
                                     "Fn::Join": [

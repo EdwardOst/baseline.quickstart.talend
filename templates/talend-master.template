@@ -319,16 +319,6 @@
             "Description": "Path to binary repository in Talend S3 resources bucket.",
             "Type": "String",
             "Default": "/"
-        },  
-        "TalendResourceBucketAccessKey": {
-            "Description": "Access Key for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "TalendResourceBucketSecret": {
-            "Description": "Secret for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
         },
         "TacDbHost": {
             "Description": "TAC database hostname.  Leave blank to create a new RDS instance.",
@@ -651,11 +641,17 @@
                     "CreateLogserverStack": { "Ref": "CreateLogserverStack" },
                     "CreateTacStack": { "Ref": "CreateTacStack" },
                     "CreateJobserverStack": { "Ref": "CreateJobserverStack" },
+                    "CreateJobserverAutoscaleStack": "false",
+                    "CreateDistantRunStack": "false",
 
                     "PrivateNexus": { "Ref": "PrivateNexus" },
                     "PrivateLogserver": { "Ref": "PrivateLogserver" },
                     "PrivateTac": { "Ref": "PrivateTac" },
                     "PrivateJobserver": { "Ref": "PrivateJobserver" },
+
+                    "JobserverAutoscaleMinSize": { "Ref": "JobserverAutoscaleMinSize" },
+                    "JobserverAutoscaleMaxSize": { "Ref": "JobserverAutoscaleMaxSize" },
+                    "JobserverAutoscaleDesiredCapacity": {  "Ref": "JobserverAutoscaleDesiredCapacity" },
 
                     "NexusInstanceType": { "Ref": "NexusInstanceType" },
                     "LogserverInstanceType": { "Ref": "LogserverInstanceType" },
@@ -666,6 +662,7 @@
 					"NexusSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.TacSecurityGroup" ] },
 					"LogserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.TacSecurityGroup" ] },
                     "JobserverSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.JobserverSecurityGroup" ] },
+                    "DistantRunSecurityGroup": { "Fn::GetAtt": [ "SecurityGroupsStack", "Outputs.DistantRunSecurityGroup" ] },
                     
                     "KeyName": { "Ref": "KeyName" },
 
@@ -675,8 +672,6 @@
 
                     "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
                     "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" },
-                    "TalendResourceBucketAccessKey": { "Ref": "TalendResourceBucketAccessKey" },
-                    "TalendResourceBucketSecret": { "Ref": "TalendResourceBucketSecret" },
 
                     "TacDbHost": {
                         "Fn::If": [
@@ -687,6 +682,7 @@
                     },
                     "MasterDbUser": { "Ref": "MasterDbUser" },
                     "MasterDbPassword": { "Ref": "MasterDbPassword" },
+                    "TacDbSchema": { "Ref": "TacDbSchema" },
                     "TacDbUser": { "Ref": "TacDbUser" },
                     "TacDbPassword": { "Ref": "TacDbPassword" },
                     "CreateTacDatabase": { "Ref": "CreateTacDatabase" },
@@ -738,6 +734,7 @@
 			}
         },
         "TalendDbStack": {
+            "Condition": "CreateRdsCondition",
             "Value": { "Ref": "TalendDbStack" },
             "Description": "Nested Talend Database stack",
 			"Export": {

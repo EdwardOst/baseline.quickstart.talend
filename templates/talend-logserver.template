@@ -117,16 +117,6 @@
             "Type": "String",
             "Default": "/"
         },  
-        "TalendResourceBucketAccessKey": {
-            "Description": "Access Key for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
-        "TalendResourceBucketSecret": {
-            "Description": "Secret for Talend S3 resources bucket.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
         "TalendLoggingTacPort": {
             "Description": "Logstash TAC input port.",
             "Type": "Number",
@@ -545,34 +535,6 @@
                     },
                     "Configure": {
                         "files": {
-                            "/root/.passwd-s3fs": {
-                                "content": {
-                                    "Fn::Join": [
-                                        ":",
-                                        [
-                                            { "Ref": "TalendResourceBucketAccessKey" },
-                                            { "Ref": "TalendResourceBucketSecret" }
-                                        ]
-                                    ]
-                                },
-                                "owner": "root",
-                                "group": "root",
-                                "mode": "000400"
-                            },
-                            "/etc/passwd-s3fs": {
-                                "content": {
-                                    "Fn::Join": [
-                                        ":",
-                                        [
-                                            { "Ref": "TalendResourceBucketAccessKey" },
-                                            { "Ref": "TalendResourceBucketSecret" }
-                                        ]
-                                    ]
-                                },
-                                "owner": "root",
-                                "group": "root",
-                                "mode": "000400"
-                            },
                             "/home/ec2-user/generated/licenses/download_credentials.properties": {
                                 "content": {
                                     "Fn::Join": [
