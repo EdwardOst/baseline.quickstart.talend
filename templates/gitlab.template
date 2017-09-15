@@ -448,13 +448,19 @@
                     },
                     "Install": {
                         "commands": {
-                            "01-gitlab-reconfigure": {
+                            "01-install-ruby": {
+                                "command": "while ! apt-get install -y ruby ; do sleep 10; done"
+                            },
+                            "02-install-jq": {
+                                "command": "while ! apt-get install -y jq ; do sleep 10; done"
+                            },
+                            "03-gitlab-reconfigure": {
                                 "command": "gitlab-ctl reconfigure"
                             },
-                            "02-install-gitlab-gem": {
+                            "04-install-gitlab-gem": {
                                 "command": "while ! gem install gitlab ; do sleep 10; done"
                             },
-                            "03-install-gitlab": {
+                            "05-install-gitlab": {
                                 "command": ". /home/ubuntu/gitlab-config.sh; . /home/ubuntu/talend-gitlab.sh; gitlab_conf gitlab_init"
                             }
                         }
