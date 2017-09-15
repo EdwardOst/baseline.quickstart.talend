@@ -461,7 +461,7 @@
                                 "command": "while ! gem install gitlab ; do sleep 10; done"
                             },
                             "05-install-gitlab": {
-                                "command": ". /home/ubuntu/gitlab-config.sh; . /home/ubuntu/talend-gitlab.sh; gitlab_conf gitlab_init"
+                                "command": "/bin/bash -c \". /home/ubuntu/gitlab-config.sh; . /home/ubuntu/talend-gitlab.sh; gitlab_conf gitlab_init;\""
                             }
                         }
                     }
