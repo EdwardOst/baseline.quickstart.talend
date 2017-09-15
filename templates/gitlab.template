@@ -162,7 +162,7 @@
         "GitAdminPassword": {
             "Description": "Git admin password.",
             "Type": "String",
-            "Default": "tadminPassw0rd",
+            "Default": "tadm1nPassw0rd",
             "NoEcho": "true"
         },
         "GitAdminEmail": {
@@ -387,16 +387,16 @@
                     },
                     "Prepare": {
                         "commands": {
-                            "00-gitlab-reconfigure": {
+                            "01-gitlab-reconfigure": {
                                 "command": "gitlab-ctl reconfigure"
                             },
-                            "01-install-ruby": {
+                            "02-install-ruby": {
                                 "command": "while ! apt-get install -y ruby ; do sleep 10; done"
                             },
-                            "02-install-jq": {
+                            "03-install-jq": {
                                 "command": "while ! apt-get install -y jq ; do sleep 10; done"
                             },
-                            "03-install-gitlab": {
+                            "04-install-gitlab": {
                                 "command": "while ! gem install gitlab ; do sleep 10; done"
                             }
                         }
