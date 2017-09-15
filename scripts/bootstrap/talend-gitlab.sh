@@ -2,6 +2,7 @@
 
 set -e
 set -u
+set -x
 
 function gitlab_init() {
 

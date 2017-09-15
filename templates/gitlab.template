@@ -451,11 +451,11 @@
                             "01-gitlab-reconfigure": {
                                 "command": "gitlab-ctl reconfigure"
                             },
-                            "02-install-gitlab": {
+                            "02-install-gitlab-gem": {
                                 "command": "while ! gem install gitlab ; do sleep 10; done"
                             },
                             "03-install-gitlab": {
-                                "command": "/bin/bash -c \". /home/ubuntu/gitlab-config.sh; . /home/ubuntu/talend-gitlab.sh; gitlab_conf gitlab_init;\""
+                                "command": ". /home/ubuntu/gitlab-config.sh; . /home/ubuntu/talend-gitlab.sh; gitlab_conf gitlab_init"
                             }
                         }
                     }
