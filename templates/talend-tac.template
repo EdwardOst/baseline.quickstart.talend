@@ -661,20 +661,6 @@
                     },
                     "Configure": {
                         "files": {
-                            "/home/ec2-user/generated/licenses/download_credentials.properties": {
-                                "content": {
-                                    "Fn::Join": [
-                                        "\n",
-                                        [
-                                            "TALEND_DOWNLOAD_USER=notused",
-                                            "TALEND_DOWNLOAD_PASSWORD=notused"
-                                        ]
-                                    ]
-                                },
-                                "owner": "ec2-user",
-                                "group": "ec2-user",
-                                "mode": "000400"
-                            },
                             "/home/ec2-user/generated/setenv.sh": {
                                 "content": {
                                     "Fn::Join": [
