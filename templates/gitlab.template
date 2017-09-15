@@ -375,27 +375,10 @@
                 "AWS::CloudFormation::Init": {
                     "configSets": {
                         "All": [
-                            "Prepare",
                             "Download",
                             "Configure",
                             "Install"
                         ]
-                    },
-                    "Prepare": {
-                        "commands": {
-                            "01-gitlab-reconfigure": {
-                                "command": "gitlab-ctl reconfigure"
-                            },
-                            "02-install-ruby": {
-                                "command": "while ! apt-get install -y ruby ; do sleep 10; done"
-                            },
-                            "03-install-jq": {
-                                "command": "while ! apt-get install -y jq ; do sleep 10; done"
-                            },
-                            "04-install-gitlab": {
-                                "command": "while ! gem install gitlab ; do sleep 10; done"
-                            }
-                        }
                     },
                     "Download": {
                         "files": {
@@ -456,14 +439,22 @@
                                 "group": "root",
                                 "mode": "000400"
                             }
+                        },
+                        "commands": {
+                            "00-external-url": {
+                                "command": "/bin/bash -c /home/ubuntu/talend-gitlab-external-url.sh"
+                            }
                         }
                     },
                     "Install": {
                         "commands": {
-                            "00-external-url": {
-                                "command": "/bin/bash -c /home/ubuntu/talend-gitlab-external-url.sh"
+                            "01-gitlab-reconfigure": {
+                                "command": "gitlab-ctl reconfigure"
                             },
-                            "01-install-gitlab": {
+                            "02-install-gitlab": {
+                                "command": "while ! gem install gitlab ; do sleep 10; done"
+                            },
+                            "03-install-gitlab": {
                                 "command": "/bin/bash -c \". /home/ubuntu/gitlab-config.sh; . /home/ubuntu/talend-gitlab.sh; gitlab_conf gitlab_init;\""
                             }
                         }
