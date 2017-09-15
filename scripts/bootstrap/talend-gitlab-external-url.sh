@@ -26,4 +26,4 @@ public_hostname=$(parse_metadata_result "${public_hostname}")
 
 # update gitlab.rb external url
 
-sed -i "s|^external_url.*|external_url '${public_hostname}'|g" /etc/gitlab/gitlab.rb
+sed -i "s|^external_url.*|external_url 'http://${public_hostname}'|g" /etc/gitlab/gitlab.rb
