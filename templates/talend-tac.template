@@ -542,7 +542,7 @@
                             "",
                             [
                                 "#!/bin/bash -xe\n",
-                                "while ! yum install -y aws-cfn-bootstrap ; do sleep 10 done\n",
+                                "yum install -y aws-cfn-bootstrap\n",
 								"#fix ec2 hostname resolution\n",
                                 "wget ",
                                 { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/ec2-metadata" },

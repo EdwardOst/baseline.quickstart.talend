@@ -324,8 +324,6 @@
                             "",
                             [
                                 "#!/bin/bash -xe\n",
-                                "echo \"pwd: $(pwd)\" 1>&2\n",
-                                "echo \"whoami: $(whoami)\" 1>&2\n",
                                 "while ! apt-get update -q ; do sleep 10; done\n",
                                 "wget ",
                                 { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/ec2-metadata" },
