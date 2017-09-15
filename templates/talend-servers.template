@@ -354,16 +354,6 @@
             "ConstraintDescription": "must be the name of an existing EC2 KeyPair.",
             "Default": "eost-aws-quickstart"
         },
-        "TalendLicenseUser": {
-            "Description": "The Talend License User is included in the email you received with your eval license.",
-            "Type": "String",
-            "Default": "eost"
-        },
-        "TalendLicensePassword": {
-            "Description": "The Talend License Password is included in the email you received with your eval license.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
         "TalendLicenseUrl": {
             "Description": "Url to license file received in email.",
             "Type": "String",

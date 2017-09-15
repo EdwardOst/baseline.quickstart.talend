@@ -103,15 +103,6 @@
             "Description": "Talend Server Security Group.",
             "Type": "CommaDelimitedList"
 		},
-        "TalendLicenseUser": {
-            "Description": "The Talend License User is included in the email you received with your eval license.",
-            "Type": "String"
-        },
-        "TalendLicensePassword": {
-            "Description": "The Talend License Password is included in the email you received with your eval license.",
-            "Type": "String",
-            "NoEcho": "true"
-        },
         "TalendLicenseUrl": {
             "Description": "Url to license file received in email.",
             "Type": "String"
@@ -566,28 +557,8 @@
                                     "Fn::Join": [
                                         "\n",
                                         [
-                                            {
-                                                "Fn::Join": [
-                                                    "",
-                                                    [
-                                                        "TALEND_DOWNLOAD_USER=",
-                                                        {
-                                                            "Ref": "TalendLicenseUser"
-                                                        }
-                                                    ]
-                                                ]
-                                            },
-                                            {
-                                                "Fn::Join": [
-                                                    "",
-                                                    [
-                                                        "TALEND_DOWNLOAD_PASSWORD=",
-                                                        {
-                                                            "Ref": "TalendLicensePassword"
-                                                        }
-                                                    ]
-                                                ]
-                                            }
+                                            "TALEND_DOWNLOAD_USER=notused",
+                                            "TALEND_DOWNLOAD_PASSWORD=notused"
                                         ]
                                     ]
                                 },
