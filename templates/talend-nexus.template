@@ -127,16 +127,22 @@
 	},
     "Mappings": {
         "Talend": {
+            "license": {
+                "licenseTarget": "/home/ec2-user/TUI-4.5.2/licenses/6.3.1"
+            },
+            "baseline": {
+                "baselineTarget": "/home/ec2-user/baseline",
+                "generatedTarget": "/home/ec2-user/generated"
+            },
             "tui": {
                 "profile": "nexus",
                 "tuiUrl": "https://s3.amazonaws.com/repo-quickstart-talend/tui/TUI-4.5.2.tar",
                 "tuiTarget": "/home/ec2-user/TUI-4.5.2",
-                "baselineTarget": "/home/ec2-user/baseline",
-                "licenseTarget": "/home/ec2-user/TUI-4.5.2/licenses/6.3.1",
-                "s3fsUrl": "https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.82.tar.gz",
-                "s3fsTarget": "/home/ec2-user/s3fs-fuse-1.82",
-                "generatedTarget": "/home/ec2-user/generated",
 				"talendRepoDir": "/opt/repo"
+            },
+            "s3fs": {
+                "s3fsUrl": "https://s3.amazonaws.com/repo-quickstart-talend/s3fs/v1.82.tar.gz",
+                "s3fsTarget": "/home/ec2-user/s3fs-fuse-1.82"
             }
         },
         "AWSInstanceType2Arch": {
@@ -431,7 +437,7 @@
                                 "source": {
                                     "Fn::FindInMap": [
                                         "Talend",
-                                        "tui",
+                                        "s3fs",
                                         "s3fsUrl"
                                     ]
                                 },
@@ -477,7 +483,7 @@
                                     "Fn::Join": [ "",
                                         [
                                             "find ",
-                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            { "Fn::FindInMap": [ "Talend", "baseline", "baselineTarget" ] },
                                             " -type f -name \"*.sh\" -exec chmod u+x {} \\;"
                                         ]
                                     ]
@@ -488,7 +494,7 @@
                                     "Fn::Join": [ "",
                                         [
                                             "find ",
-                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            { "Fn::FindInMap": [ "Talend", "baseline", "baselineTarget" ] },
                                             " -type f -name \"ec2-metadata\" -exec chmod u+x {} \\;"
                                         ]
                                     ]
@@ -543,7 +549,7 @@
                                             {
                                                 "Fn::FindInMap": [
                                                     "Talend",
-                                                    "tui",
+                                                    "baseline",
                                                     "baselineTarget"
                                                 ]
                                             },
@@ -569,7 +575,7 @@
                                             {
                                                 "Fn::FindInMap": [
                                                     "Talend",
-                                                    "tui",
+                                                    "baseline",
                                                     "generatedTarget"
                                                 ]
                                             },
@@ -577,7 +583,7 @@
                                             {
                                                 "Fn::FindInMap": [
                                                     "Talend",
-                                                    "tui",
+                                                    "license",
                                                     "licenseTarget"
                                                 ]
                                             }
@@ -594,7 +600,7 @@
                                             {
                                                 "Fn::FindInMap": [
                                                     "Talend",
-                                                    "tui",
+                                                    "baseline",
                                                     "generatedTarget"
                                                 ]
                                             },
@@ -673,10 +679,10 @@
                                         [
                                             "set -e",
                                             "; source ",
-                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            { "Fn::FindInMap": [ "Talend", "baseline", "baselineTarget" ] },
                                             "/factory/s3fs-util.sh",
                                             "; echo s3fs_build; s3fs_build ",
-                                            { "Fn::FindInMap": [ "Talend", "tui", "s3fsTarget" ] },
+                                            { "Fn::FindInMap": [ "Talend", "s3fs", "s3fsTarget" ] },
                                             "; echo s3fs_config; s3fs_config",
                                             "; echo s3fs_mount; s3fs_mount",
                                             " ", { "Ref": "TalendResourceBucket" },
@@ -685,7 +691,7 @@
                                         ]
                                     ]
                                 },
-                                "cwd": { "Fn::FindInMap": [ "Talend", "tui", "s3fsTarget" ] }
+                                "cwd": { "Fn::FindInMap": [ "Talend", "s3fs", "s3fsTarget" ] }
                             },
                             "02-install-jre": {
                                 "command": {
@@ -693,7 +699,7 @@
                                         "",
                                         [
                                             "source ",
-                                            { "Fn::FindInMap": [ "Talend", "tui", "baselineTarget" ] },
+                                            { "Fn::FindInMap": [ "Talend", "baseline", "baselineTarget" ] },
                                             "/java/jre-installer.sh;",
                                             "jre_installer_install"
                                         ]
