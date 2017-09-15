@@ -401,7 +401,25 @@
                         "files": {
                             "/home/ubuntu/talend-gitlab.sh": {
                                 "source": {
-                                    "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/git/talend-gitlab.sh"
+                                    "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/talend-gitlab.sh"
+                                },
+                                "owner": "ubuntu",
+                                "group": "ubuntu",
+                                "mode": "000500",
+                                "authentication": "S3AccessCreds"
+                            },
+                            "/home/ubuntu/talend-gitlab-external-url.sh": {
+                                "source": {
+                                    "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/talend-gitlab-external-url.sh"
+                                },
+                                "owner": "ubuntu",
+                                "group": "ubuntu",
+                                "mode": "000500",
+                                "authentication": "S3AccessCreds"
+                            },
+                            "/home/ubuntu/ec2-metadata": {
+                                "source": {
+                                    "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/ec2-metadata"
                                 },
                                 "owner": "ubuntu",
                                 "group": "ubuntu",
@@ -442,6 +460,9 @@
                     },
                     "Install": {
                         "commands": {
+                            "00-external-url": {
+                                "command": "/bin/bash -c /home/ubuntu/talend-gitlab-external-url.sh"
+                            },
                             "01-install-gitlab": {
                                 "command": "/bin/bash -c \". /home/ubuntu/gitlab-config.sh; . /home/ubuntu/talend-gitlab.sh; gitlab_conf gitlab_init;\""
                             }
