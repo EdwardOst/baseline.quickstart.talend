@@ -4,15 +4,28 @@
 
     "Parameters": {
         "MasterDbUser": {
-            "Description": "The master or root user used to create TAC and AMC databases and the TAC user.  Only needed if creating the TAC or AMC databases.",
+            "Description": "The database master or root user.",
             "Type": "String",
             "Default": ""
         },
         "MasterDbPassword": {
-            "Description": "Master user database password.  Only needed if creating the TAC or AMC databases.",
+            "Description": "Master user database password.",
             "Type": "String",
             "Default": "",
             "NoEcho": "true"
+        },
+		"Port": {
+            "Description": "Database port",
+            "Type": "Number",
+            "MinValue": "0",
+            "MaxValue": "65535",
+            "Default": "0"
+        },
+        "Engine": {
+            "Description": "Database type",
+            "Type": "String",
+            "Default": "mysql",
+            "AllowedValues": [ "mysql" ]
         },
         "DbClass": {
             "Description": "Instance class of RDS instance",
@@ -36,9 +49,19 @@
     },
 
     "Mappings": {
+        "Engine": {
+            "mysql": {
+                "port": "3306"
+            }
+        }
     },
 
     "Conditions": {
+        "isPortSpecified": {
+            "Fn::Not": [
+                { "Fn::Equals": [ "0", { "Ref": "Port" } ] } 
+            ]
+        }
     },
 
     "Resources": {
@@ -55,7 +78,14 @@
             "Type": "AWS::RDS::DBInstance",
             "DependsOn": [ "DbSubnetGroup" ],
             "Properties": {
-                "Engine": "MySQL",
+                "Engine": { "Ref": "Engine" },
+                "Port": {
+                    "Fn::If": [
+                        "isPortSpecified",
+                        { "Ref": "Port" },
+                        { "Fn::FindInMap": [ "Engine", { "Ref": "Engine" }, "port" ] }
+                    ]
+                },
                 "AllocatedStorage": { "Ref": "DbAllocatedStorage" },
                 "DBInstanceClass": { "Ref": "DbClass" },
                 "DBSubnetGroupName": { "Ref": "DbSubnetGroup" },
@@ -79,6 +109,13 @@
             "Description": "Database endpoint hostname",
             "Export": {
 				"Name": { "Fn::Sub": "${AWS::StackName}:EndpointAddress" } 
+            }
+        },
+        "EndpointPort": {
+            "Value": { "Fn::GetAtt": [ "DatabaseInstance", "Endpoint.Port" ] },
+            "Description": "Database endpoint  port",
+            "Export": {
+				"Name": { "Fn::Sub": "${AWS::StackName}:EndpointPort" } 
             }
         }
 
