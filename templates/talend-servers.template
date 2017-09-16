@@ -369,6 +369,24 @@
             "Type": "String",
             "Default": "/"
         },
+        "NexusPort": {
+            "Description": "Nexus port.",
+            "Type": "Number",
+            "Default": "8081",
+            "MinValue": "1",
+            "MaxValue": "65535"
+        },
+        "NexusAdminUserid": {
+            "Description": "Nexus administrator userid.",
+            "Type": "String",
+            "Default": "admin"
+        },
+        "NexusAdminPassword": {
+            "Description": "Nexus password.",
+            "Type": "String",
+            "Default": "Talend123",
+            "NoEcho": "true"
+        },
         "TacDbHost": {
             "Description": "TAC database hostname.",
             "Type": "String",
@@ -563,6 +581,9 @@
 					"SubnetId": { "Fn::If": [ "isNexusPrivate", { "Ref": "PrivateSubnetId" }, { "Ref": "PublicSubnetId" } ] },
                     "PrivateSubnet": { "Ref": "PrivateNexus" },
 					"SecurityGroupIds": { "Ref": "NexusSecurityGroup" },
+                    "NexusPort": { "Ref": "NexusPort" },
+                    "NexusAdminUserid": { "Ref": "NexusAdminUserid" },
+                    "NexusAdminPassword": { "Ref": "NexusAdminPassword" },
 					"TalendLicenseUrl":  { "Ref": "TalendLicenseUrl" },
                     "TalendResourceBucket": { "Ref": "TalendResourceBucket" },
                     "TalendResourceBucketRepoPath": { "Ref": "TalendResourceBucketRepoPath" }
@@ -621,7 +642,9 @@
                     "CreateTacDatabase": { "Ref": "CreateTacDatabase" },
                     "CreateAmcDatabase": { "Ref": "CreateAmcDatabase" },
                     "NexusHost": { "Fn::GetAtt": [ "NexusStack", "Outputs.privateDnsName" ] },
-                    "NexusPort": { "Fn::GetAtt": [ "NexusStack", "Outputs.nexusPort" ] },
+                    "NexusPort": { "Ref": "NexusPort" },
+                    "NexusAdminUserid": { "Ref": "NexusAdminUserid" },
+                    "NexusAdminPassword": { "Ref": "NexusAdminPassword" },
                     "LoggingHost": { 
                         "Fn::If": [ 
                             "isLogserverPrivate",
