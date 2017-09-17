@@ -18,7 +18,7 @@ function baseline_env() {
     local region="${baseline_region}"
 
     local baseline_git_url="https://github.com/EdwardOst"
-    local baseline_git_repo="baseline.aws.talend.com"
+    local baseline_git_repo="baseline.quickstart.talend"
     local baseline_git_target="master"
 
     local git_url="${baseline_git_url}"

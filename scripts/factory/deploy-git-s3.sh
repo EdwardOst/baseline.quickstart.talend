@@ -18,6 +18,7 @@ source "${deploy_git_s3_script_dir}/../util/util.sh"
 source "${deploy_git_s3_script_dir}/../util/string_util.sh"
 
 
+
 function git_snapshot_usage() {
     cat 1>&2 <<-EOF
 
@@ -29,6 +30,9 @@ function git_snapshot_usage() {
 	    git_target: GIT_DEPLOY_TARGET (master) git tag or branch
 	EOF
 }
+
+export -f git_snapshot_usage
+
 
 
 function git_snapshot() {
@@ -45,6 +49,8 @@ function git_snapshot() {
 
     required git_url git_repo git_target
 
+    debugVar git_url; debugVar git_repo; debugVar git_target
+
     local deploy_dir="${git_repo}-${git_target}"
 
     local cloned=false
@@ -57,9 +63,9 @@ function git_snapshot() {
         debugLog "Checking for changes to tracked files"
         git diff --quiet || errorMessage "changes to tracked files detected" || return 1
 
-       # Aborting on finding untracked files
-       debugLog "Checking for untracked files"
-       git ls-files -o || errorMessage "untracked files detected" || return 1
+        # Aborting on finding untracked files
+        debugLog "Checking for untracked files"
+        git ls-files -o || errorMessage "untracked files detected" || return 1
     fi
 
     git fetch --all
@@ -71,6 +77,9 @@ function git_snapshot() {
 
     try popd
 }
+
+export -f git_snapshot
+
 
 
 function s3_sync_usage() {
@@ -85,6 +94,9 @@ function s3_sync_usage() {
 	    s3_grant: GIT_DEPLOY_GRANT (empty string)
 	EOF
 }
+
+export -f s3_sync_usage
+
 
 
 function s3_sync() {
@@ -108,6 +120,9 @@ function s3_sync() {
     aws s3 sync "${git_deploy_dir}" "s3://${s3_bucket}${s3_path}" --delete --exclude '.git/*' "${grantcmd[@]}"
 }
 
+export -f s3_sync
+
+
 
 function deploy_git_s3_usage() {
     cat 1>&2 <<-EOF
@@ -123,6 +138,9 @@ function deploy_git_s3_usage() {
 	    s3_grant: GIT_DEPLOY_GRANT (empty string)
 	EOF
 }
+
+export -f deploy_git_s3_usage
+
 
 
 function deploy_git_s3() {
@@ -141,7 +159,11 @@ function deploy_git_s3() {
 
     required git_url git_repo git_target s3_bucket
 
+    debugVar git_url; debugVar git_repo; debugVar git_target; debugVar s3_bucket
+
     git_snapshot "${git_url}" "${git_repo}" "${git_target}"
 
     s3_sync "${git_repo}-${git_target}" "${s3_bucket}" "${s3_path}" "${s3_grant}"
 }
+
+export -f deploy_git_s3

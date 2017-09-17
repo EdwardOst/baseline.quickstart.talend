@@ -20,13 +20,18 @@ export UTIL_FLAG=1
 define(){ IFS=$'\n' read -r -d '' "${1}" || true; }
 
 
-function debugLog() { 
-    [ -n "${DEBUG_LOG:-}" ] && echo "${FUNCNAME[*]}: ${*}" 1>&2
+function infoLog() {
+    [ -n "${INFO_LOG:-}" ] && echo "INFO: ${*} : ${FUNCNAME[*]:1}" 1>&2
+    return 0
+}
+
+function debugLog() {
+    [ -n "${DEBUG_LOG:-}" ] && echo "DEBUG: ${FUNCNAME[*]:1} : ${*}" 1>&2
     return 0
 }
 
 function debugVar() {
-    [ -n "${DEBUG_LOG:-}" ] && echo "${FUNCNAME[*]}: ${1}=${!1}" 1>&2
+    [ -n "${DEBUG_LOG:-}" ] && echo "DEBUG: ${FUNCNAME[*]:1} : ${1}=${!1}" 1>&2
     return 0
 }
 
@@ -34,16 +39,16 @@ function debugStack() {
     if [ -n "${DEBUG_LOG:-}" ] ; then
         local args
         [ "${#}" -gt 0 ] && args=": $*"
-        echo "debug: ${FUNCNAME[*]}${args}" 1>&2
+        echo "DEBUG: ${FUNCNAME[*]:1}${args}" 1>&2
     fi
 }
 
 function errorMessage() { 
-    echo "$0: ${FUNCNAME[*]:1}: ${*}" 1>&2
+    echo "ERROR: $0: ${FUNCNAME[*]:1} : ${*}" 1>&2
 }
 
 function die() {
-    echo "$0: ${FUNCNAME[*]:1}: ${*}" 1>&2
+    echo "$0: ${FUNCNAME[*]:1} : ${*}" 1>&2
     exit 111
 }
 

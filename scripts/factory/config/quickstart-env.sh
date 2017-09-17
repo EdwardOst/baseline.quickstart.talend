@@ -9,14 +9,14 @@ export QUICKSTART_ENV_FLAG=1
 
 function quickstart_env() {
 
-    local quickstart_bucket="oodle.${factory_name}.talend"
+    local quickstart_bucket="quickstart.${factory_name}.talend"
     local quickstart_region="us-east-1"
 
     local bucket="${quickstart_bucket}"
     local region="${quickstart_region}"
 
     local quickstart_git_url="https://github.com/EdwardOst"
-    local quickstart_git_repo="quickstart.aws.talend.com"
+    local quickstart_git_repo="quickstart-datalake-cognizant-talend"
     local quickstart_git_target="master"
 
     local git_url="${quickstart_git_url}"

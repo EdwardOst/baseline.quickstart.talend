@@ -83,8 +83,11 @@ function s3fs_mount() {
     local s3_mount_dir="${3:-${s3_mount_dir:-${TALEND_FACTORY_REPO_MOUNT_DIR:-/opt/repo}}}"
     local s3_mount_root="${4:-${s3_mount_dir}}"
     local s3fs_umask="${5:-037}"
+    local iam_role="${6:-auto}"
 
     required s3_bucket s3_path s3_mount_dir s3_mount_root s3fs_umask
+
+    debugVar s3_bucket; debugVar s3_path; debugVar s3_mount_dir; debugVar s3_mount_root; debugVar s3fs_umask; debugVar iam_role
 
     mkdir -p "${s3_mount_dir}"
 
@@ -93,9 +96,13 @@ function s3fs_mount() {
     [ -n "${s3_path}" ] && [ "${s3_path:0:1}" != "/" ] && s3_path="/${s3_path}"
     [ -n "${s3_path}" ] && s3_path=":${s3_path}"
 
-    whoami
-#    try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o allow_other -o mp_umask="${s3fs_umask}"
-    try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o iam_role=auto -o allow_other -o mp_umask="${s3fs_umask}"
+    if [ "${iam_role}" == "none" ]; then
+        debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o allow_other -o mp_umask=${s3fs_umask}"
+        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o allow_other -o mp_umask="${s3fs_umask}"
+    else
+        debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o iam_role=auto -o allow_other -o mp_umask=${s3fs_umask}"
+        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o iam_role="${iam_role}" -o allow_other -o mp_umask="${s3fs_umask}"
+    fi
 }
 
 

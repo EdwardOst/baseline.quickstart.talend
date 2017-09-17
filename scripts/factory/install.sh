@@ -16,7 +16,8 @@ source "${install_script_dir}/../util/string_util.sh"
 # shellcheck source=../setup/build.sh
 source "${install_script_dir}/../factory/build.sh"
 
-#export DEBUG_LOG=true
+export INFO_LOG=true
+export DEBUG_LOG=true
 
 # requires sudo
 [ "$(id -u)" -ne 0 ] && echo "install must be run as root" && exit

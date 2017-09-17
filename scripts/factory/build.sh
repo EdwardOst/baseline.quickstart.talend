@@ -13,10 +13,10 @@ build_script_dir="${build_script_path%/*}"
 source "${build_script_dir}/../util/util.sh"
 # shellcheck source=../util/string_util.sh
 source "${build_script_dir}/../util/string_util.sh"
+# shellcheck source=../s3fs/s3fs-util.sh
+source "${build_script_dir}/../s3fs/s3fs-util.sh"
 # shellcheck source=policy/policy.sh
 source "${build_script_dir}/policy/policy.sh"
-# shellcheck source=s3fs-util.sh
-source "${build_script_dir}/s3fs-util.sh"
 # shellcheck source=deploy-git-s3.sh
 source "${build_script_dir}/deploy-git-s3.sh"
 # shellcheck source=create-bucket.sh
@@ -75,44 +75,48 @@ function load_repo() {
 
     try required license_file_path talend_userid talend_password tui_path tui_profile repo_bucket repo_path repo_mount_dir java_target_dir java_filename
 
+    debugVar license_file_path; debugVar talend_userid; debugVar talend_password; debugVar tui_path; debugVar tui_profile; debugVar repo_bucket; debugVar repo_path; debugVar repo_mount_dir; debugVar java_target_dir; debugVar java_filename
+
     string_contains "${repo_bucket}" "." && errorMessage "invalid repo bucket name '${repo_bucket}', repo bucket name cannot contain periods" && return 1
+
+    infoLog "Creating repository bucket"
     try create_bucket "${repo_bucket}"
 
-    # unpack tui and copy tui config
+    infoLog "Unpack tui and copy tui config"
     local tui_file_path
     try download "${tui_path}" tui_file_path
     local tui_file_name="${tui_file_path##*/}"
     local tui_dir="${tui_file_name%.*}"
     tar xvpf "${tui_file_path}"
-    cp -rf "${build_script_dir}"/../../tui/conf/* "${tui_dir}/conf"
+    cp -rf "${build_script_dir}"/../tui/conf/* "${tui_dir}/conf"
 
-    # set tui license
+    infoLog "Set tui license"
     cp "${license_file_path}" "${tui_dir}/licenses/6.3.1"
 
-    # set tui credentials
+    infoLog "Set tui credentials"
     cat > "${tui_dir}/licenses/6.3.1/download_credentials.properties" <<EOF
 TALEND_DOWNLOAD_USER=${talend_userid}
 TALEND_DOWNLOAD_PASSWORD=${talend_password}
 EOF
 
-    # build and mount s3fs
+    infoLog "Build and mount s3fs"
 
     try s3fs_build
     try s3fs_config
-    try s3fs_mount "${repo_bucket}" "${repo_path}" "${repo_mount_dir}"
-    
-    # load talend binaries with tui
+    try s3fs_mount "${repo_bucket}" "${repo_path}" "${repo_mount_dir}" "${repo_mount_dir}" "037" "none"
+
+    infoLog "Load talend binaries with tui"
     "${tui_dir}/install" -q -d "${tui_profile}"
 
-    # load tui binary to repo
+    infoLog "Load tui binary to repo"
     local tui_target_dir="${repo_mount_dir}/tui"
     mkdir -p "${tui_target_dir}"
     cp "${tui_file_path}" "${tui_target_dir}"
 
-    # load jre
+    infoLog "Load jre"
     cp "${java_target_dir}/${java_filename}" "${repo_mount_dir}/dependencies"
 
-    # set owner and permissions for s3fs
+    infoLog "Set owner and permissions for s3fs"
     try s3fs_dir_attrib "ec2-user" "${repo_mount_dir}"
 }
 
@@ -133,10 +137,10 @@ function load_license() {
 
     try create_bucket
 
-    debugLog download "${license_path}" "${license_file_path_ref}"
+    debugLog "download ${license_path} ${license_file_path_ref}"
     try download "${license_path}" "${license_file_path_ref}"
 
-    debugLog aws s3 cp "${!license_file_path_ref}" "s3://${license_bucket}"
+    debugLog "aws s3 cp ${!license_file_path_ref} s3://${license_bucket}"
     aws s3 cp "${!license_file_path_ref}" "s3://${license_bucket}"
 }
 
@@ -170,42 +174,49 @@ function build() {
     # [ -z "${quickstart_env}" ] && errorMessage "quickstart_env required" && return 1
     # [ -z "${repo_env}" ] && errorMessage "repo_env required" && return 1
 
-    # upload license from local file system to aws
+    debugVar license_env; debugVar baseline_env; debugVar quickstart_env; debugVar repo_env; debugVar java_env
+
+    infoLog "Upload license from local file system to aws"
     local license_file_path
     try "${license_env}" load_license license_file_path
 
+    infoLog "Attach license policy"
     local license_policy
     try "${license_env}" policy_public_read license_policy
     echo "${license_policy}" > "license.policy"
     try "${license_env}" attach_policy "license.policy"
 
-    # upload baseline git repo to baseline bucket
+    infoLog "Upload baseline git repo to baseline bucket"
     try "${baseline_env}" create_bucket
     try "${baseline_env}" deploy_git_s3
 
+    infoLog "Attach baseline policy"
     local baseline_policy
     try "${baseline_env}" policy_public_read baseline_policy
     echo "${baseline_policy}" > "baseline.policy"
     try "${baseline_env}" attach_policy "baseline.policy"
 
-    # upload quickstart git repo to quickstart bucket
+    infoLog "Upload quickstart git repo to quickstart bucket"
     try "${quickstart_env}" create_bucket
     try "${quickstart_env}" deploy_git_s3
 
+    infoLog "Attach quickstart policy"
     local quickstart_policy
     try "${quickstart_env}" policy_public_read quickstart_policy
     echo "${quickstart_policy}" > "quickstart.policy"
     try "${quickstart_env}" attach_policy "quickstart.policy"
 
-    # create repo-bucket, mount with s3fs,  and copy binaries using tui
-    debugLog load_repo repo_env "${license_file_path}"
+    infoLog "Create repo-bucket, mount with s3fs, and copy binaries using tui"
+    debugLog "load_repo repo_env ${license_file_path}"
     try "${repo_env}" "${java_env}" load_repo "${license_file_path}"
 
+    infoLog "Attach repo policy"
     local repo_policy
     try "${repo_env}" policy_public_read repo_policy
     echo "${repo_policy}" > "repo.policy"
     try "${repo_env}" attach_policy "repo.policy"
 
+    infoLog "Finished -- SUCCESS"
 }
 
 export -f build
