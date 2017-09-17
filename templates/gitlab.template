@@ -384,7 +384,7 @@
                         "files": {
                             "/home/ubuntu/talend-gitlab.sh": {
                                 "source": {
-                                    "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/talend-gitlab.sh"
+                                    "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/git/talend-gitlab.sh"
                                 },
                                 "owner": "ubuntu",
                                 "group": "ubuntu",
@@ -393,7 +393,7 @@
                             },
                             "/home/ubuntu/talend-gitlab-external-url.sh": {
                                 "source": {
-                                    "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/talend-gitlab-external-url.sh"
+                                    "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/git/talend-gitlab-external-url.sh"
                                 },
                                 "owner": "ubuntu",
                                 "group": "ubuntu",

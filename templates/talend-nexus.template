@@ -713,7 +713,7 @@
                                             "set -e",
                                             "; source ",
                                             { "Fn::FindInMap": [ "Talend", "baseline", "baselineTarget" ] },
-                                            "/factory/s3fs-util.sh",
+                                            "/s3fs/s3fs-util.sh",
                                             "; echo s3fs_build; s3fs_build ",
                                             { "Fn::FindInMap": [ "Talend", "s3fs", "s3fsTarget" ] },
                                             "; echo s3fs_config; s3fs_config",
