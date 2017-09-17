@@ -72,10 +72,12 @@ function load_repo() {
     local repo_mount_dir="${8:-${repo_mount_dir:-${TALEND_FACTORY_REPO_MOUNT_DIR:-}}}"
     local java_target_dir="${9:-${java_target_dir:-${TALEND_FACTORY_JAVA_TARGET_DIR:-}}}"
     local java_filename="${10:-${java_filename:-}}"
+    local s3fs_target_dir="${11:-${s3fs_target_dir:-${TALEND_FACTORY_S3FS_TARGET_DIR:-}}}"
+    local s3fs_filename="${12:-${s3fs_filename:-}}"
 
     try required license_file_path talend_userid talend_password tui_path tui_profile repo_bucket repo_path repo_mount_dir java_target_dir java_filename
 
-    debugVar license_file_path; debugVar talend_userid; debugVar talend_password; debugVar tui_path; debugVar tui_profile; debugVar repo_bucket; debugVar repo_path; debugVar repo_mount_dir; debugVar java_target_dir; debugVar java_filename
+    debugVar license_file_path; debugVar talend_userid; debugVar talend_password; debugVar tui_path; debugVar tui_profile; debugVar repo_bucket; debugVar repo_path; debugVar repo_mount_dir; debugVar java_target_dir; debugVar java_filename; debugVar s3fs_target_dir; debugVar s3fs_filename
 
     string_contains "${repo_bucket}" "." && errorMessage "invalid repo bucket name '${repo_bucket}', repo bucket name cannot contain periods" && return 1
 
@@ -85,7 +87,9 @@ function load_repo() {
     infoLog "Unpack tui and copy tui config"
     local tui_file_path
     try download "${tui_path}" tui_file_path
+    # source filename
     local tui_file_name="${tui_file_path##*/}"
+    # target directory is the root of the filename
     local tui_dir="${tui_file_name%.*}"
     tar xvpf "${tui_file_path}"
     debugLog "cp -rf ${build_script_dir}/../tui/conf/* ${tui_dir}/conf"
@@ -116,6 +120,10 @@ EOF
 
     infoLog "Load jre to repo mount"
     cp "${java_target_dir}/${java_filename}" "${repo_mount_dir}/dependencies"
+
+    infoLog "Load s3fs to repo mount"
+    mkdir -p "${repo_mount_dir}/s3fs"
+    cp "${s3fs_target_dir}/${s3fs_filename}" "${repo_mount_dir}/s3fs"
 
     infoLog "Set owner and permissions for s3fs"
     try s3fs_dir_attrib "ec2-user" "${repo_mount_dir}"
@@ -206,6 +214,14 @@ function build() {
     try "${quickstart_env}" policy_public_read quickstart_policy
     echo "${quickstart_policy}" > "quickstart.policy"
     try "${quickstart_env}" attach_policy "quickstart.policy"
+
+    infoLog "Download s3fs binary"
+    local s3fs_file_path
+    local s3fs_url="${s3fs_path:-https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.82.tar.gz}"
+    try download "${s3fs_url}" s3fs_file_path
+    local s3fs_filename="${s3fs_file_path##*/}"
+    local s3fs_target_dir="${s3fs_file_path%/*}"
+    debugVar s3fs_target_dir; s3fs_filename
 
     infoLog "Create repo-bucket, mount with s3fs, and copy binaries using tui"
     debugLog "load_repo repo_env ${license_file_path}"

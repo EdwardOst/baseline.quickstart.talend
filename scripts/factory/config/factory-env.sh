@@ -24,6 +24,8 @@ function factory_env() {
     local talend_userid="${talend_userid:-${TALEND_FACTORY_TALEND_USERID:-}}"
     local talend_password="${talend_password:-${TALEND_FACTORY_TALEND_PASSWORD:-}}"
 
+    local s3fs_url="${s3fs_url:-${TALEND_FACTORY_S3FS_URL:-https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.82.tar.gz}}"
+
     required access_key secret_key talend_userid talend_password
 
     license_env=license_env
@@ -38,6 +40,8 @@ function factory_env() {
 
     local tui_path="TUI-4.5.2.tar"
     local tui_profile="quickstart"
+
+
 
     while [ -z "${1}" ]; do
         shift
