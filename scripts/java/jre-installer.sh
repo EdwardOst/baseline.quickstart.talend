@@ -155,11 +155,11 @@ export JRE_HOME="${JRE_HOME}"
 EOF
 
     # add alternatives and set priorities
-    update-alternatives --install /usr/bin/java_home java_home "${java_target_dir}/jre${java_full_version}" 999 \
-        --slave /usr/bin/java java "${java_target_dir}/jre${java_full_version}/bin/java" \
-        --slave /usr/bin/javac javac "${java_target_dir}/jre${java_full_version}/bin/javac" \
-        --slave /usr/bin/jar jar "${java_target_dir}/jre${java_full_version}/bin/jar"
+    update-alternatives --install /usr/bin/java_home java_home "${java_target_dir}/${java_type}${java_full_version}" 999 \
+        --slave /usr/bin/java java "${java_target_dir}/${java_type}${java_full_version}/bin/java" \
+        --slave /usr/bin/javac javac "${java_target_dir}/${java_type}${java_full_version}/bin/javac" \
+        --slave /usr/bin/jar jar "${java_target_dir}/${java_type}${java_full_version}/bin/jar"
 
     # select active alternative
-    update-alternatives --set java_home "${java_target_dir}/jre${java_full_version}"
+    update-alternatives --set java_home "${java_target_dir}/${java_type}${java_full_version}"
 }
