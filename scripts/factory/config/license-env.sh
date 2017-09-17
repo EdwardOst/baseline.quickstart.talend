@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
 set -u
-set -o pipefail
 
 [ "${LICENSE_ENV_FLAG:-0}" -gt 0 ] && return 0
 

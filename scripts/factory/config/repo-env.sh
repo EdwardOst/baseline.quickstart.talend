@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
 set -u
-set -o pipefail
 
 [ "${REPO_ENV_FLAG:-0}" -gt 0 ] && return 0
 
@@ -10,7 +8,7 @@ export REPO_ENV_FLAG=1
 
 function repo_env() {
 
-    local repo_bucket="talend-${factory_name}-repo"
+    local repo_bucket="repo-${factory_name}-talend"
     local repo_region="us-east-1"
     local repo_path="/"
     local repo_mount_dir="/opt/repo"

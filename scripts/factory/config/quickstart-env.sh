@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
 set -u
-set -o pipefail
 
 [ "${QUICKSTART_ENV_FLAG:-0}" -gt 0 ] && return 0
 
@@ -11,7 +9,7 @@ export QUICKSTART_ENV_FLAG=1
 
 function quickstart_env() {
 
-    local quickstart_bucket="quickstart.${factory_name}.talend"
+    local quickstart_bucket="oodle.${factory_name}.talend"
     local quickstart_region="us-east-1"
 
     local bucket="${quickstart_bucket}"
