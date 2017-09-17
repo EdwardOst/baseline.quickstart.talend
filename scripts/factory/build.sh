@@ -88,6 +88,7 @@ function load_repo() {
     local tui_file_name="${tui_file_path##*/}"
     local tui_dir="${tui_file_name%.*}"
     tar xvpf "${tui_file_path}"
+    debugLog "cp -rf ${build_script_dir}/../tui/conf/* ${tui_dir}/conf"
     cp -rf "${build_script_dir}"/../tui/conf/* "${tui_dir}/conf"
 
     infoLog "Set tui license"
@@ -105,15 +106,15 @@ EOF
     try s3fs_config
     try s3fs_mount "${repo_bucket}" "${repo_path}" "${repo_mount_dir}" "${repo_mount_dir}" "037" "none"
 
-    infoLog "Load talend binaries with tui"
+    infoLog "Load talend binaries to repo mount using tui"
     "${tui_dir}/install" -q -d "${tui_profile}"
 
-    infoLog "Load tui binary to repo"
+    infoLog "Load tui binary to repo mount"
     local tui_target_dir="${repo_mount_dir}/tui"
     mkdir -p "${tui_target_dir}"
     cp "${tui_file_path}" "${tui_target_dir}"
 
-    infoLog "Load jre"
+    infoLog "Load jre to repo mount"
     cp "${java_target_dir}/${java_filename}" "${repo_mount_dir}/dependencies"
 
     infoLog "Set owner and permissions for s3fs"
