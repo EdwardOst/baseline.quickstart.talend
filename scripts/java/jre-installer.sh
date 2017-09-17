@@ -76,8 +76,8 @@ usage:
 
    jre-installer.sh
    jre-installer.sh jre 8 144 b01 090f390dda5b47b9b721c7dfaa008135
-   jre-installer.sh jre 8 144 b01 /opt/repo/dependencies
-   jre-installer.sh jre 8 144 b01 /opt/repo/dependencies /opt/java
+   jre-installer.sh jre 8 144 b01 090f390dda5b47b9b721c7dfaa008135 /opt/repo/dependencies
+   jre-installer.sh jre 8 144 b01 090f390dda5b47b9b721c7dfaa008135 /opt/repo/dependencies /opt/java
 
 if the java tgz file is not found in the repo directory it will attempt to download it from Oracle
 EOF
@@ -86,7 +86,7 @@ EOF
 
 function jre_installer_install() {
 
-    [ "${#}" -ne 0 ] && [ "${#}" -ne 5 ] && [ "${#}" -ne 6 ] && [ "${#}" -ne 7 ] && jre_installer_install_usage && return 1
+    [ "${#}" -ne 0 ] && [ "${#}" -ne 1 ] && [ "${#}" -ne 5 ] && [ "${#}" -ne 6 ] && [ "${#}" -ne 7 ] && jre_installer_install_usage && return 1
 
     local java_type="${1:-${java_type:-${TALEND_FACTORY_JAVA_TYPE:-jre}}}"
     local java_major_version="${2:-${java_major_version:-${TALEND_FACTORY_JAVA_MAJOR_VERSION:-8}}}"
