@@ -57,6 +57,9 @@ function download() {
     [ -f "${url}" ] && return 0
 }
 
+export -f download
+
+
 function load_repo() {
     local license_file_path="${1:-}"
 
@@ -113,6 +116,8 @@ EOF
     try s3fs_dir_attrib "ec2-user" "${repo_mount_dir}"
 }
 
+export -f load_repo
+
 
 function load_license() {
     local license_file_path_ref="${1:-}"
@@ -135,6 +140,8 @@ function load_license() {
     aws s3 cp "${!license_file_path_ref}" "s3://${license_bucket}"
 }
 
+export -f load_license
+
 
 function attach_policy() {
 
@@ -145,6 +152,9 @@ function attach_policy() {
 
     aws s3api put-bucket-policy --bucket "${bucket}" --policy "file://${policy_file}"
 }
+
+export -f attach_policy
+
 
 function build() {
     local license_env="${1:-${license_env:-${TALEND_FACTORY_LICENSE_ENV:-}}}"
@@ -198,3 +208,5 @@ function build() {
     try "${repo_env}" attach_policy "repo.policy"
 
 }
+
+export -f build
