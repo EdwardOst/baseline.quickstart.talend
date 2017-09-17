@@ -14,7 +14,7 @@ source "${install_script_dir}/../util/util.sh"
 source "${install_script_dir}/../util/string_util.sh"
 
 # shellcheck source=../setup/build.sh
-source "${setup_script_dir}/../factory/build.sh"
+source "${install_script_dir}/../factory/build.sh"
 
 #export DEBUG_LOG=true
 
