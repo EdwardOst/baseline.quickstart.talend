@@ -172,7 +172,6 @@ function build() {
 
     # upload license from local file system to aws
     local license_file_path
-    debugLog load_license license_env
     try "${license_env}" load_license license_file_path
 
     local license_policy
