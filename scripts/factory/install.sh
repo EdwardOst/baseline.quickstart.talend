@@ -93,11 +93,6 @@ source "${quickstart_name}.properties"
 
 declare config_dir="${quickstart_name}"
 
-[ "${config_dir}" == "talend" ] \
-     && [ ! -d "${quickstart_name}" ] \
-     && echo "directory ${config_dir} does not exist.  Using ${install_script_dir}/talend" 1>&2 \
-     && config_dir="${install_script_dir}/talend"
-
 [ ! -d "${config_dir}" ] \
     && echo "directory ${config_dir} does not exist.  Using ${install_script_dir}/config" 1>&2 \
     && config_dir="${install_script_dir}/config"
