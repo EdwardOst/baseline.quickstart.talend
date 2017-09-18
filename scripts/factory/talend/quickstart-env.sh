@@ -22,7 +22,7 @@ function quickstart_env() {
 
     local quickstart_git_url="https://github.com/EdwardOst"
     local quickstart_git_repo="quickstart-datalake-cognizant-talend"
-    local quickstart_git_target="master"
+    local quickstart_git_target="develop"
 
     local git_url="${quickstart_git_url}"
     local git_repo="${quickstart_git_repo}"
