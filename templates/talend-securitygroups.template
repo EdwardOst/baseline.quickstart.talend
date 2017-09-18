@@ -97,6 +97,20 @@
                 }
             }
         },
+        "DatabaseSecurityGroupStudioIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DatabaseSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "3306",
+                "ToPort": "3306",
+                "SourceSecurityGroupId": {
+                    "Ref": "StudioSecurityGroup"
+                }
+            }
+        },
         "TacSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
@@ -415,7 +429,7 @@
                 }
             }
         },
-        "DistantRunSecurityGroupTacCommandFileIngress": {
+        "DistantRunSecurityGroupStudioCommandFileIngress": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "DependsOn": "DistantRunSecurityGroup",
             "Properties": {
@@ -426,11 +440,11 @@
                 "FromPort": "8000",
                 "ToPort": "8001",
                 "SourceSecurityGroupId": {
-                    "Ref": "TacSecurityGroup"
+                    "Ref": "StudioSecurityGroup"
                 }
             }
         },
-        "DistantRunSecurityGroupTacMonitoringIngress": {
+        "DistantRunSecurityGroupStudioMonitoringIngress": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "DependsOn": "DistantRunSecurityGroup",
             "Properties": {
@@ -441,11 +455,11 @@
                 "FromPort": "8888",
                 "ToPort": "8888",
                 "SourceSecurityGroupId": {
-                    "Ref": "TacSecurityGroup"
+                    "Ref": "StudioSecurityGroup"
                 }
             }
         },
-        "DistantRunSecurityGroupTacSshIngress": {
+        "DistantRunSecurityGroupStudioSshIngress": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "DependsOn": "DistantRunSecurityGroup",
             "Properties": {
@@ -456,7 +470,7 @@
                 "FromPort": "22",
                 "ToPort": "22",
                 "SourceSecurityGroupId": {
-                    "Ref": "TacSecurityGroup"
+                    "Ref": "StudioSecurityGroup"
                 }
             }
         },
@@ -575,6 +589,21 @@
                 }
             }
         },
+        "NexusSecurityGroupStudioIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "NexusSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "NexusSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "8081",
+                "ToPort": "8081",
+                "SourceSecurityGroupId": {
+                    "Ref": "StudioSecurityGroup"
+                }
+            }
+        },
         "LogserverSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
@@ -650,6 +679,36 @@
                 "ToPort": "5601",
                 "SourceSecurityGroupId": {
                     "Ref": "BastionSecurityGroup"
+                }
+            }
+        },
+        "LogserverSecurityGroupStudioElasticIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "LogserverSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "LogserverSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "9200",
+                "ToPort": "9200",
+                "SourceSecurityGroupId": {
+                    "Ref": "StudioSecurityGroup"
+                }
+            }
+        },
+        "LogserverSecurityGroupStudioKibanaIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "LogserverSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "LogserverSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "5601",
+                "ToPort": "5601",
+                "SourceSecurityGroupId": {
+                    "Ref": "StudioSecurityGroup"
                 }
             }
         },
@@ -917,6 +976,75 @@
                 "ToPort": "22",
                 "SourceSecurityGroupId": { "Ref": "TacSecurityGroup" }
             }
+        },
+        "GitSecurityGroupStudioHttpIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "GitSecurityGroup",
+            "Properties": {
+                "GroupId": { "Ref": "GitSecurityGroup" },
+                "IpProtocol": "tcp",
+                "FromPort": "80",
+                "ToPort": "80",
+                "SourceSecurityGroupId": { "Ref": "StudioSecurityGroup" }
+            }
+        },
+        "GitSecurityGroupStudioHttpsIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "GitSecurityGroup",
+            "Properties": {
+                "GroupId": { "Ref": "GitSecurityGroup" },
+                "IpProtocol": "tcp",
+                "FromPort": "443",
+                "ToPort": "443",
+                "SourceSecurityGroupId": { "Ref": "StudioSecurityGroup" }
+            }
+        },
+        "StudioSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "VpcId": { "Ref": "VpcId" },
+                "GroupDescription": "Allow access to Studio using X2Go with SSH",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }
+                    }
+                ]
+            }
+        },
+        "StudioSecurityGroupIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "StudioSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "StudioSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "0",
+                "ToPort": "65535",
+                "SourceSecurityGroupId": {
+                    "Ref": "StudioSecurityGroup"
+                }
+            }
+        },
+        "StudioSecurityGroupBastionSshIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "DependsOn": "StudioSecurityGroup",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "StudioSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "22",
+                "ToPort": "22",
+                "SourceSecurityGroupId": {
+                    "Ref": "BastionSecurityGroup"
+                }
+            }
         }
     },
     "Outputs": {
@@ -964,6 +1092,11 @@
             "Description": "Gitlab security group.",
             "Value": { "Ref": "GitSecurityGroup" },
             "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:GitSecurityGroup" } }
+        },
+        "StudioSecurityGroup": {
+            "Description": "Studio security group.",
+            "Value": { "Ref": "StudioSecurityGroup" },
+            "Export": { "Name": { "Fn::Sub": "${AWS::StackName}:StudioSecurityGroup" } }
         }
     }
 }
