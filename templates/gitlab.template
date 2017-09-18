@@ -275,6 +275,11 @@
         "GitInstance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
+                "InstanceType": { "Ref": "InstanceType" },
+                "KeyName": { "Ref": "KeyPairName" },
+                "SecurityGroupIds": [ { "Ref": "GitSecurityGroup" } ],
+                "SubnetId": { "Ref": "SubnetId" },
+                "Tags": [ { "Key": "Name", "Value": "GitLab CE" } ],
                 "BlockDeviceMappings": [
                     {
                         "DeviceName": "/dev/xvdf",
@@ -313,11 +318,6 @@
                         "AMI"
                     ]
                 },
-                "InstanceType": { "Ref": "InstanceType" },
-                "KeyName": { "Ref": "KeyPairName" },
-                "SecurityGroupIds": [ { "Ref": "GitSecurityGroup" } ],
-                "SubnetId": { "Ref": "SubnetId" },
-                "Tags": [ { "Key": "Name", "Value": "GitLab CE" } ],
                 "UserData": {
                     "Fn::Base64": {
                         "Fn::Join": [
