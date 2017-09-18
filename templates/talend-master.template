@@ -761,7 +761,7 @@
 
 		"StudioStack": {
 			"Type" : "AWS::CloudFormation::Stack",
-            "Condition" : "CreateStudioStackCondition",
+            "Condition" : "CreateStudioCondition",
 			"Properties" : {
                 "TemplateURL": { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}${StudioTemplate}" },
 				"Parameters" : {
