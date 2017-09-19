@@ -74,6 +74,7 @@ function load_repo() {
     local java_filename="${10:-${java_filename:-}}"
     local s3fs_target_dir="${11:-${s3fs_target_dir:-${TALEND_FACTORY_S3FS_TARGET_DIR:-}}}"
     local s3fs_filename="${12:-${s3fs_filename:-}}"
+    local default_user="${13:-${default_user:-${TALEND_FACTORY_DEFAULT_USER:-}}}"
 
     try required license_file_path talend_userid talend_password tui_path tui_profile repo_bucket repo_path repo_mount_dir java_target_dir java_filename
 
@@ -108,7 +109,7 @@ EOF
 
     try s3fs_build
     try s3fs_config
-    try s3fs_mount "${repo_bucket}" "${repo_path}" "${repo_mount_dir}" "${repo_mount_dir}" "037" "none"
+    try s3fs_mount "${repo_bucket}" "${repo_path}" "${repo_mount_dir}" "${repo_mount_dir}" "037" "none" "${default_user}"
 
     infoLog "Load talend binaries to repo mount using tui"
     "${tui_dir}/install" -q -d "${tui_profile}"
@@ -126,7 +127,7 @@ EOF
     cp "${s3fs_target_dir}/${s3fs_filename}" "${repo_mount_dir}/s3fs"
 
     infoLog "Set owner and permissions for s3fs"
-    try s3fs_dir_attrib "ec2-user" "${repo_mount_dir}"
+    try s3fs_dir_attrib "${default_user}" "${repo_mount_dir}"
 }
 
 export -f load_repo
@@ -175,6 +176,7 @@ function build() {
     local quickstart_env="${3:-${quickstart_env:-${TALEND_FACTORY_QUICKSTART_ENV:-}}}"
     local repo_env="${4:-${repo_env:-${TALEND_FACTORY_REPO_ENV:-}}}"
     local java_env="${5:-${java_env:-${TALEND_FACTORY_JAVA_ENV:-}}}"
+    local default_user="${6:-${default_user:-${TALEND_FACTORY_DEFAULT_USER:-}}}"
 
     required license_env baseline_env quickstart_env repo_env
 

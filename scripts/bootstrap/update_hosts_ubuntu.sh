@@ -7,6 +7,7 @@ user_id=$(id -u)
 # requires sudo
 [ "${user_id}" -ne 0 ] && echo "update_hosts must be run as root" && exit 1
 
+user="${1:-ubuntu}"
 
 update_hosts_script_path=$(readlink -e "${BASH_SOURCE[0]}")
 update_hosts_script_dir="${update_hosts_script_path%/*}"
@@ -47,10 +48,10 @@ echo "${private_dns}" > /etc/hostname
 
 /etc/init.d/networking restart
 
-echo "hostname=$(hostname)" | tee -a "/home/ubuntu/update_hosts.log"
-echo "hostname -i=$(hostname -i)" | tee -a "/home/ubuntu/update_hosts.log"
-echo "hostname -I=$(hostname -I)" | tee -a "/home/ubuntu/update_hosts.log"
-echo "hostname -f=$(hostname -f)" | tee -a "/home/ubuntu/update_hosts.log"
-echo "hostname -A=$(hostname -A)" | tee -a "/home/ubuntu/update_hosts.log"
+echo "hostname=$(hostname)" | tee -a "/home/${user}/update_hosts.log"
+echo "hostname -i=$(hostname -i)" | tee -a "/home/${user}/update_hosts.log"
+echo "hostname -I=$(hostname -I)" | tee -a "/home/${user}/update_hosts.log"
+echo "hostname -f=$(hostname -f)" | tee -a "/home/${user}/update_hosts.log"
+echo "hostname -A=$(hostname -A)" | tee -a "/home/${user}/update_hosts.log"
 
 echo "finished update_hosts"

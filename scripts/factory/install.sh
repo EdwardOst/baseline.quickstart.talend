@@ -13,8 +13,8 @@ source "${install_script_dir}/../util/util.sh"
 # shellcheck source=../util/string_util.sh
 source "${install_script_dir}/../util/string_util.sh"
 
-# shellcheck source=../setup/build.sh
-source "${install_script_dir}/../factory/build.sh"
+# shellcheck source=./build.sh
+source "${install_script_dir}/build.sh"
 
 export INFO_LOG=true
 export DEBUG_LOG=true
@@ -23,7 +23,7 @@ export DEBUG_LOG=true
 [ "$(id -u)" -ne 0 ] && echo "install must be run as root" && exit
 
 
-function setup() {
+function get_factory_parms() {
 
     local factory_ref="${1}"
 
@@ -43,6 +43,7 @@ function setup() {
     read -rp "enter aws secret key: " secret_key
     read -rp "enter talend userid: " talend_userid
     read -rp "enter talend password: " talend_password
+    read -rp "enter default user: " default_user
 
     local umask_save
     umask_save=$(umask)
@@ -53,6 +54,7 @@ function setup() {
 	export TALEND_FACTORY_SECRET_KEY="${secret_key}"
 	export TALEND_FACTORY_TALEND_USERID="${talend_userid}"
 	export TALEND_FACTORY_TALEND_PASSWORD="${talend_password}"
+    export TALEND_FACTORY_DEFAULT_USER="${default_user}"
 	EOF
 
    result="${?}"
@@ -88,7 +90,7 @@ declare quickstart_name="${1:-}"
 
 required quickstart_name
 
-setup quickstart_name
+get_factory_parms quickstart_name
 echo "using ${quickstart_name}.properties"
 source "${quickstart_name}.properties"
 

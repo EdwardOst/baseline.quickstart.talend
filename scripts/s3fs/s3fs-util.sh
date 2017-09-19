@@ -84,6 +84,7 @@ function s3fs_mount() {
     local s3_mount_root="${4:-${s3_mount_dir}}"
     local s3fs_umask="${5:-037}"
     local iam_role="${6:-auto}"
+    local target_owner="${7:-${target_owner:-ec2-user}}"
 
     required s3_bucket s3_path s3_mount_dir s3_mount_root s3fs_umask
 
@@ -91,7 +92,7 @@ function s3fs_mount() {
 
     mkdir -p "${s3_mount_dir}"
 
-    chown -R "ec2-user:ec2-user" "${s3_mount_root}"
+    chown -R "${target_owner}:${target_owner}" "${s3_mount_root}"
 
     [ -n "${s3_path}" ] && [ "${s3_path:0:1}" != "/" ] && s3_path="/${s3_path}"
     [ -n "${s3_path}" ] && s3_path=":${s3_path}"
@@ -110,20 +111,20 @@ function s3fs_file_attrib() {
 
     local filepath="${1:-}"
     local perm="${2:-640}"
-    local owner="${3:-ec2-user}"
+    local target_owner="${3:-${target_owner:-ec2-user}}"
 
     required filepath perm owner
 
-    debugLog "s3fs-chmod: ${filepath} ${owner}:${owner} ${perm}"
+    debugLog "s3fs-chmod: ${filepath} ${target_owner}:${target_owner} ${perm}"
 
-    chown "${owner}:${owner}" "${filepath}"
+    chown "${target_owner}:${target_owner}" "${filepath}"
     chmod "${perm}" "${filepath}"
 }
 
 
 function s3fs_dir_attrib() {
 
-    local target_owner="${1:-ec2-user}"
+    local target_owner="${1:-${target_owner:-ec2-user}}"
     local mount_dir="${2:-/opt/repo}"
 
     local mydir_list
