@@ -538,6 +538,7 @@
                                             ". ./server-env.sh; ",
                                             "./install -q ",
                                             { "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
+                                            "chown -R ubuntu:ubuntu /opt/talend/studio",
                                             "\""
                                         ] 
                                     ]
@@ -549,6 +550,23 @@
                                         "tuiTarget"
                                     ]
                                 }
+                            },
+                            "04-install-x2go": {
+                                "command": {
+                                    "Fn::Join": [
+                                        ";",
+                                        [
+                                            "apt-get install -y software-properties-common",
+                                            "add-apt-repository -y ppa:x2go/stable",
+                                            "apt-get update",
+                                            "apt-get install -y x2goserver x2goserver-xsession"
+                                        ]
+                                    ]
+                                }
+                            
+                            },
+                            "05-install-xfce": {
+                                "command": "apt-get install xfce4"
                             }
                         }
                     }
