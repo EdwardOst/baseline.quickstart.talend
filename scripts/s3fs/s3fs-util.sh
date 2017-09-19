@@ -13,6 +13,23 @@ s3fs_util_script_dir="${s3fs_util_script_path%/*}"
 source "${s3fs_util_script_dir}/../util/util.sh"
 
 
+s3fs_builder() {
+    local package_manager="${1}"
+    
+    required package_manager
+
+    [ ! "${package_manager}" == "yum" ] && [ ! "${package_manager}" == "apt" ] && errorMessage "invalid argument: package_manager valid values are yum or apt" && return 1
+    s3fs_packages="s3fs_build_yum"
+}
+
+function s3fs_build_yum() {
+    yum -y install automake fuse fuse-devel gcc-c++ git libcurl-devel libxml2-devel make openssl-devel
+}
+
+function s3fs_build_apt() {
+    apt-get install build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev mime-support automake libtool
+    apt-get install pkg-config libssl-dev
+}
 
 function s3fs_build() {
 
@@ -23,7 +40,7 @@ function s3fs_build() {
         return 0
     fi
 
-    yum -y install automake fuse fuse-devel gcc-c++ git libcurl-devel libxml2-devel make openssl-devel
+    "${s3fs_packages:-s3fs_build_yum}"
 
     local pushed=false
     if [ -n "${s3fs_dir}" ]; then

@@ -489,18 +489,21 @@
                                     "Fn::Join": [
                                         "",
                                         [
+                                            "/bin/bash -c \"",
                                             "set -e",
-                                            "; source ",
+                                            "; . ",
                                             { "Fn::FindInMap": [ "Talend", "baseline", "baselineTarget" ] },
                                             "/s3fs/s3fs-util.sh",
+                                            "; target_owner=ubuntu",
+                                            "; s3fs_builder apt",
                                             "; echo s3fs_build; s3fs_build ",
                                             { "Fn::FindInMap": [ "Talend", "s3fs", "s3fsTarget" ] },
                                             "; echo s3fs_config; s3fs_config",
-                                            "; target_owner=ubuntu;",
                                             "; echo s3fs_mount; s3fs_mount",
                                             " ", { "Ref": "TalendResourceBucket" },
                                             " ", { "Ref": "TalendResourceBucketRepoPath" },
-                                            " ", { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] }
+                                            " ", { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] },
+                                            "\""
                                         ]
                                     ]
                                 },
@@ -511,10 +514,13 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "source ",
+                                            "/bin/bash -c \"",
+                                            "set -e",
+                                            "; . ",
                                             { "Fn::FindInMap": [ "Talend", "baseline", "baselineTarget" ] },
                                             "/java/jre-installer.sh;",
-                                            "jre_installer_install"
+                                            "jre_installer_install",
+                                            "\""
                                         ]
                                     ]
                                 }
@@ -524,12 +530,16 @@
                                     "Fn::Join": [ 
                                         "", 
                                         [
+                                            "/bin/bash -c \"",
+                                            "set -e",
+                                            "; . ",
                                             "source /etc/profile.d/jre.sh; ",
                                             "source ./setenv.sh; ",
                                             "source ./instance-env.sh; ",
                                             "source ./server-env.sh; ",
                                             "./install -q ",
-                                            { "Fn::FindInMap": [ "Talend", "tui", "profile" ] }
+                                            { "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
+                                            "\""
                                         ] 
                                     ]
                                 },
