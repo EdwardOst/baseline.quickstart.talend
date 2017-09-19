@@ -20,6 +20,7 @@ s3fs_builder() {
 
     [ ! "${package_manager}" == "yum" ] && [ ! "${package_manager}" == "apt" ] && errorMessage "invalid argument: package_manager valid values are yum or apt" && return 1
     s3fs_packages="s3fs_build_yum"
+    echo "s3fs_builder: s3fs_packages=${s3fs_packages}"
 }
 
 function s3fs_build_yum() {
@@ -40,6 +41,7 @@ function s3fs_build() {
         return 0
     fi
 
+    echo "s3fs_build: s3fs_packages=${s3fs_packages}"
     "${s3fs_packages:-s3fs_build_yum}"
 
     local pushed=false
