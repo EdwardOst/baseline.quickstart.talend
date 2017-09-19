@@ -43,7 +43,7 @@
         "StudioTemplate": {
             "Description": "Studio template relative path and filename",
             "Type": "String",
-            "Default": "templates/talend-studio.template",
+            "Default": "templates/talend-studio-ubuntu.template",
             "AllowedValues": [ "templates/talend-studio-ubuntu.template" ]
         },
 		"PrivateNexus": {
