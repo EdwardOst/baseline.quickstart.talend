@@ -538,7 +538,8 @@
                                             ". ./server-env.sh; ",
                                             "./install -q ",
                                             { "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
-                                            "; chown -R ubuntu:ubuntu /opt/talend/6.3.1/studio",
+                                            "; chown -R ubuntu:ubuntu /opt/talend",
+                                            "; chmod u+x /opt/talend/6.3.1/studio/studio/Talend-Studio-linux-gtk-x86_64"
                                             "\""
                                         ] 
                                     ]
