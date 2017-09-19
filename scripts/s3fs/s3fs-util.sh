@@ -28,8 +28,8 @@ function s3fs_build_yum() {
 }
 
 function s3fs_build_apt() {
-    apt-get install build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev mime-support automake libtool
-    apt-get install pkg-config libssl-dev
+    apt-get -y install build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev mime-support automake libtool
+    apt-get -y install pkg-config libssl-dev
 }
 
 function s3fs_build() {
