@@ -288,7 +288,7 @@
 				"talendRepoDir": "/opt/repo"
             },
             "s3fs": {
-                "s3fsUrl": "https://s3.amazonaws.com/repo-quickstart-talend/s3fs/s3fs-fuse-1.82.tar.gz",
+                "s3fsUrl": "https://s3.amazonaws.com/repo-quickstart-talend/s3fs/v1.82.tar.gz",
                 "s3fsTarget": "/home/ec2-user/s3fs-fuse-1.82"
             }
         },
