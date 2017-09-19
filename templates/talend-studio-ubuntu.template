@@ -538,7 +538,7 @@
                                             ". ./server-env.sh; ",
                                             "./install -q ",
                                             { "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
-                                            "chown -R ubuntu:ubuntu /opt/talend/studio",
+                                            "; chown -R ubuntu:ubuntu /opt/talend/studio",
                                             "\""
                                         ] 
                                     ]
@@ -566,7 +566,7 @@
                             
                             },
                             "05-install-xfce": {
-                                "command": "apt-get install xfce4"
+                                "command": "apt-get install -y xfce4"
                             }
                         }
                     }
