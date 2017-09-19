@@ -531,14 +531,14 @@
                                         "", 
                                         [
                                             "/bin/bash -c \"",
-                                            "set -e; ",
+                                            "set -e; umask 037;",
                                             ". /etc/profile.d/jre.sh; ",
                                             ". ./setenv.sh; ",
                                             ". ./instance-env.sh; ",
                                             ". ./server-env.sh; ",
                                             "./install -q ",
                                             { "Fn::FindInMap": [ "Talend", "tui", "profile" ] },
-                                            "; chown -R ubuntu:ubuntu /opt/talend/studio",
+                                            "; chown -R ubuntu:ubuntu /opt/talend/6.3.1/studio",
                                             "\""
                                         ] 
                                     ]
