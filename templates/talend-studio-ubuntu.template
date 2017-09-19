@@ -531,8 +531,7 @@
                                         "", 
                                         [
                                             "/bin/bash -c \"",
-                                            "set -e",
-                                            "; . ",
+                                            "set -e; ",
                                             ". /etc/profile.d/jre.sh; ",
                                             ". ./setenv.sh; ",
                                             ". ./instance-env.sh; ",
