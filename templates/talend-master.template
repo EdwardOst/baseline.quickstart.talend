@@ -44,7 +44,7 @@
             "Description": "Studio template relative path and filename",
             "Type": "String",
             "Default": "templates/talend-studio.template",
-            "AllowedValues": [ "templates/talend-studio.template" ]
+            "AllowedValues": [ "templates/talend-studio-ubuntu.template" ]
         },
 		"PrivateNexus": {
             "Description": "Deploy Nexus to private or public subnet.",
