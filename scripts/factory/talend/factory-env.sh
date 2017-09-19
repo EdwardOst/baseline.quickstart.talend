@@ -19,6 +19,7 @@ function factory_env() {
     local talend_userid="${talend_userid:-${TALEND_FACTORY_TALEND_USERID:-}}"
     local talend_password="${talend_password:-${TALEND_FACTORY_TALEND_PASSWORD:-}}"
     local s3fs_url="${s3fs_url:-${TALEND_FACTORY_S3FS_URL:-https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.82.tar.gz}}"
+    local default_user="${default_user:-${TALEND_FACTORY_DEFAULT_USER:-}}"
 
     required access_key secret_key talend_userid talend_password
 

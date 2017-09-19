@@ -496,6 +496,7 @@
                                             "; echo s3fs_build; s3fs_build ",
                                             { "Fn::FindInMap": [ "Talend", "s3fs", "s3fsTarget" ] },
                                             "; echo s3fs_config; s3fs_config",
+                                            "; target_owner=ubuntu;",
                                             "; echo s3fs_mount; s3fs_mount",
                                             " ", { "Ref": "TalendResourceBucket" },
                                             " ", { "Ref": "TalendResourceBucketRepoPath" },
