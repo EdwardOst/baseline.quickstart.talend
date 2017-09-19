@@ -214,45 +214,24 @@
                 "UserData": {
                     "Fn::Base64": {
                         "Fn::Join": [
-                            "",
+                            "\n",
                             [
-                                "#!/bin/bash -xe\n",
-                                "while ! apt-get update -q ; do sleep 10; done\n",
-                                "wget ",
-                                { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/ec2-metadata" },
-                                "\n",
-								"chmod +x ec2-metadata\n",
-                                "wget ",
-                                { "Fn::Sub": "${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/update_hosts_ubuntu.sh" },
-                                "\n",
-								"chmod +x update_hosts_ubuntu.sh\n",
-                                "./update_hosts_ubuntu.sh\n",
-                                "while ! apt-get -y install python-setuptools; do sleep 10; done\n",
-                                "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n",
-                                "# Install the files and packages from the metadata\n",
-                                "cfn-init -v ",
-                                "         --stack ",
-                                {
-                                    "Ref": "AWS::StackName"
-                                },
-                                "         --resource TalendServerInstance ",
-                                "         --configsets All ",
-                                "         --region ",
-                                {
-                                    "Ref": "AWS::Region"
-                                },
-                                "\n",
-                                "/opt/aws/bin/cfn-signal -e $? ",
-                                "         --stack ",
-                                {
-                                    "Ref": "AWS::StackName"
-                                },
-                                "         --resource TalendServerInstance ",
-                                "         --region ",
-                                {
-                                    "Ref": "AWS::Region"
-                                },
-                                "\n"
+                                "#!/bin/bash -xe",
+                                "while ! apt-get update -q ; do sleep 10; done",
+                                { "Fn::Sub": "wget ${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/ec2-metadata" },
+								"chmod +x ec2-metadata",
+                                { "Fn::Sub": "wget ${QSS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}scripts/bootstrap/update_hosts_ubuntu.sh" },
+								"chmod +x update_hosts_ubuntu.sh",
+                                "./update_hosts_ubuntu.sh",
+                                "while ! apt-get -y install python-pip; do sleep 10; done",
+                                "pip install awscli --upgrade --user",
+                                "pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz",
+                                "cp /usr/local/init/ubuntu/cfn-hup /etc/init.d/cfn-hup",
+                                "chmod +x /etc/init.d/cfn-hup",
+                                "update-rc.d cfn-hup defaults",
+                                "service cfn-hup start",
+                                { "Fn::Sub": "cfn-init -v --stack ${AWS::StackName}  --region ${AWS::Region} --resource TalendServerInstance --configsets All" },
+                                { "Fn::Sub": "cfn-signal -e $?  --stack ${AWS::StackName} --region ${AWS::Region} --resource TalendServerInstance" }
                             ]
                         ]
                     }
