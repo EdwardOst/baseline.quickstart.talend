@@ -731,8 +731,9 @@
                                             "; ",
                                             { "Fn::Sub":
                                                 [
-                                                    "./tui-repo.sh '${talendRepoDir}' '${tuiRepo}'",
+                                                    "${tuiTarget}/scripts/tui-repo.sh '${talendRepoDir}' '${tuiRepo}'",
                                                     {
+                                                        "tuiTarget": { "Fn::FindInMap": [ "Talend", "tui", "tuiTarget" ] },
                                                         "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] },
                                                         "talendRepoDir": { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] } 
                                                     }
