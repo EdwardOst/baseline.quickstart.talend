@@ -20,6 +20,11 @@ export UTIL_FLAG=1
 define(){ IFS=$'\n' read -r -d '' "${1}" || true; }
 
 
+function warningLog() {
+    [ -n "${WARNING_LOG:-}" ] && echo "WARNING: ${*} : ${FUNCNAME[*]:1}" 1>&2
+    return 0
+}
+
 function infoLog() {
     [ -n "${INFO_LOG:-}" ] && echo "INFO: ${*} : ${FUNCNAME[*]:1}" 1>&2
     return 0
