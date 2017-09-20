@@ -3,20 +3,13 @@
 set -e
 set -u
 
-[ "${S3FS_UTIL_FLAG:-0}" -gt 0 ] && return 0
-
-export S3FS_UTIL_FLAG=1
-
-tui_repo_util_script_path=$(readlink -e "${BASH_SOURCE[0]}")
-tui_repo_util_script_dir="${tui_repo_util_script_path%/*}"
-
-# shellcheck source=../../util/util.sh
-source "${tui_repo_util_script_dir}/../../util/util.sh"
-
 declare talendRepoDir="${1:-}"
 declare tuiRepo="${2:-}"
 
-required talendRepoDir tuiRepo
+declare usage="./tui-repo.sh <talendRepoDir> <tuiRepo>"
+
+[ -z "${talendRepoDir}" ] && echo "talendRepoDir argument is required: ${usage}" 1>&2 && exit 1
+[ -z "${tuiRepo}" ] && echo "tuiRepo argument is required: ${usage}" 1>&2 && exit 1
 
 [ ! -d "${talendRepoDir}" ] && errorMessage "talendRepoDir ${talendRepoDir} does not exist or is not a directory" && exit 1
 
