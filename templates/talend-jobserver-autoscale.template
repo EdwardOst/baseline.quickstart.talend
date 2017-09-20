@@ -168,7 +168,8 @@
                 "profile": "jobserver",
                 "tuiUrl": "https://s3.amazonaws.com/repo-quickstart-talend/tui/TUI-4.5.2.tar",
                 "tuiTarget": "/home/ec2-user/TUI-4.5.2",
-				"talendRepoDir": "/opt/repo"
+				"talendRepoDir": "/opt/repo",
+                "tuiRepo": "/opt/tui/repo"
             },
             "s3fs": {
                 "s3fsUrl": "https://s3.amazonaws.com/repo-quickstart-talend/s3fs/v1.82.tar.gz",
@@ -735,6 +736,41 @@
                                                 ]
                                             },
 											"/server-env.sh"
+                                        ]
+                                    ]
+                                }
+                            },
+                            "06-create-tui-repo": {
+                                "command": {
+                                    "Fn::Join": [
+                                        ";",
+                                        [
+                                            { "Fn::Sub":
+                                                [
+                                                    "mkdir ${tuiRepo} ${tuiRepo}/6.3.1 ${tuiRepo}/dependencies",
+                                                    {
+                                                        "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] }
+                                                    } 
+                                                ]
+                                            },
+                                            { "Fn::Sub":
+                                                [
+                                                    "ln -s ${talendRepoDir}/6.3.1/* ${tuiRepo}/6.3.1",
+                                                    {
+                                                        "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] },
+                                                        "talendRepoDir": { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] } 
+                                                    }
+                                                ]
+                                            },
+                                            { "Fn::Sub":
+                                                [
+                                                    "ln -s ${talendRepoDir}/dependencies/* ${tuiRepo}/dependencies",
+                                                    {
+                                                        "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] },
+                                                        "talendRepoDir": { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] } 
+                                                    }
+                                                ]
+                                            }
                                         ]
                                     ]
                                 }
