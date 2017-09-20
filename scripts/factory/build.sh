@@ -223,7 +223,7 @@ function build() {
     try download "${s3fs_url}" s3fs_file_path
     local s3fs_filename="${s3fs_file_path##*/}"
     local s3fs_target_dir="${s3fs_file_path%/*}"
-    debugVar s3fs_target_dir; s3fs_filename
+    debugVar s3fs_url; debugVar s3fs_target_dir; debugVar s3fs_filename
 
     infoLog "Create repo-bucket, mount with s3fs, and copy binaries using tui"
     debugLog "load_repo repo_env ${license_file_path}"

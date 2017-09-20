@@ -96,8 +96,13 @@ source "${quickstart_name}.properties"
 
 declare config_dir="${quickstart_name}"
 
-[ ! -d "${config_dir}" ] \
-    && echo "directory ${config_dir} does not exist.  Using ${install_script_dir}/config" 1>&2 \
-    && config_dir="${install_script_dir}/config"
+if [ -d "${config_dir}" ]; then
+    : # do nothing
+elif [ -d "${install_script_dir}/${config_dir}" ]; then
+    config_dir="${install_script_dir}/${config_dir}"
+else
+    config_dir="${install_script_dir}/config"
+fi
+infoLog "using config directory ${config_dir}" 1>&2
 
 factory "${config_dir}"
