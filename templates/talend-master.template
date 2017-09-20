@@ -838,6 +838,16 @@
 				} 
 			}
         },
+        "StudioStack": {
+            "Condition": "CreateStudioCondition",
+            "Value": { "Ref": "StudioStack" },
+            "Description": "Nested Studio stack",
+			"Export": {
+				"Name": {
+					"Fn::Sub": "${AWS::StackName}:StudioStack"
+				} 
+			}
+        },
         "ServersStack": {
             "Value": { "Ref": "ServersStack" },
             "Description": "Nested Talend Servers stack",
