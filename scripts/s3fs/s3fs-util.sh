@@ -117,7 +117,8 @@ function s3fs_mount() {
 
     if [ "${iam_role}" == "none" ]; then
         debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o allow_other -o mp_umask=${s3fs_umask}"
-        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o allow_other -o mp_umask="${s3fs_umask}"
+        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o allow_other 
+        # -o mp_umask="${s3fs_umask}"
     else
         debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o iam_role=auto -o allow_other -o mp_umask=${s3fs_umask}"
         try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o iam_role="${iam_role}" -o allow_other 
