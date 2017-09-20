@@ -488,7 +488,7 @@
                                         [
                                             { "Fn::Sub":
                                                 [
-                                                    "./tui-repo.sh ${talendRepoDir}/6.3.1/* ${tuiRepo}/6.3.1",
+                                                    "./tui-repo.sh \"${talendRepoDir}\" \"${tuiRepo}\"",
                                                     {
                                                         "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] },
                                                         "talendRepoDir": { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] } 

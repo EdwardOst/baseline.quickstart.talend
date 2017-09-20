@@ -16,6 +16,7 @@ source "${install_script_dir}/../util/string_util.sh"
 # shellcheck source=./build.sh
 source "${install_script_dir}/build.sh"
 
+export WARNING_LOG=true
 export INFO_LOG=true
 export DEBUG_LOG=true
 
