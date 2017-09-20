@@ -701,32 +701,6 @@
                                         ]
                                     ]
                                 }
-                            },
-                            "06-create-tui-repo": {
-                                "command": {
-                                    "Fn::Join": [
-                                        ";",
-                                        [
-                                            { "Fn::Sub":
-                                                [
-                                                    "./tui-repo.sh \"${talendRepoDir}\" \"${tuiRepo}\"",
-                                                    {
-                                                        "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] },
-                                                        "talendRepoDir": { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] } 
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    ]
-                                },
-                                "cwd": { "Fn::Sub":
-                                    [
-                                        "${tuiTarget}/scripts",
-                                        {
-                                            "tuiTarget": { "Fn::FindInMap": [ "Talend", "tui", "tuiTarget" ] }
-                                        }
-                                    ]
-                                }
                             }
                         }
                     },
@@ -747,7 +721,17 @@
                                             "; echo s3fs_mount; s3fs_mount",
                                             " ", { "Ref": "TalendResourceBucket" },
                                             " ", { "Ref": "TalendResourceBucketRepoPath" },
-                                            " ", { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] }
+                                            " ", { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] },
+                                            "; ",
+                                            { "Fn::Sub":
+                                                [
+                                                    "./tui-repo.sh '${talendRepoDir}' '${tuiRepo}'",
+                                                    {
+                                                        "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] },
+                                                        "talendRepoDir": { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] } 
+                                                    }
+                                                ]
+                                            }
                                         ]
                                     ]
                                 },
