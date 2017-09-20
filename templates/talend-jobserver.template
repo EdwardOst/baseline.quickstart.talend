@@ -715,7 +715,7 @@
                                         [
                                             { "Fn::Sub":
                                                 [
-                                                    "mkdir ${tuiRepo} ${tuiRepo}/6.3.1 ${tuiRepo}/dependencies",
+                                                    "mkdir -p ${tuiRepo} ${tuiRepo}/6.3.1 ${tuiRepo}/dependencies",
                                                     {
                                                         "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] }
                                                     } 
