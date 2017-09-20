@@ -715,24 +715,7 @@
                                         [
                                             { "Fn::Sub":
                                                 [
-                                                    "mkdir -p ${tuiRepo} ${tuiRepo}/6.3.1 ${tuiRepo}/dependencies",
-                                                    {
-                                                        "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] }
-                                                    } 
-                                                ]
-                                            },
-                                            { "Fn::Sub":
-                                                [
-                                                    "ln -s ${talendRepoDir}/6.3.1/* ${tuiRepo}/6.3.1",
-                                                    {
-                                                        "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] },
-                                                        "talendRepoDir": { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] } 
-                                                    }
-                                                ]
-                                            },
-                                            { "Fn::Sub":
-                                                [
-                                                    "ln -s ${talendRepoDir}/dependencies/* ${tuiRepo}/dependencies",
+                                                    "./tui-repo.sh ${talendRepoDir}/6.3.1/* ${tuiRepo}/6.3.1",
                                                     {
                                                         "tuiRepo": { "Fn::FindInMap": [ "Talend", "tui", "tuiRepo" ] },
                                                         "talendRepoDir": { "Fn::FindInMap": [ "Talend", "tui", "talendRepoDir" ] } 
@@ -740,6 +723,14 @@
                                                 ]
                                             }
                                         ]
+                                    ]
+                                },
+                                "cwd": { "Fn::Sub":
+                                    [
+                                        "${tuiTarget}/scripts",
+                                        {
+                                            "tuiTarget": { "Fn::FindInMap": [ "Talend", "tui", "tuiTarget" ] }
+                                        }
                                     ]
                                 }
                             }
