@@ -15,9 +15,9 @@ source ${script_dir}/../s3fs-util.sh
 declare INFO_LOG="true"
 declare DEBUG_LOG="true"
 
-declare bucket="${1:-}"
+declare target_dir="${1:-}"
 
-required bucket
+required target_dir
 
-echo "## expect bucket ${bucket} mounted to /opt/repo"
-s3fs_mount "${bucket}" "/" "/opt/repo" "/opt/repo" "037" "none" "ec2-user"
+echo "## expect attributes of files and directories to be recursively set in ${target_dir}"
+s3fs_dir_attrib "ec2-user" "${target_dir}"

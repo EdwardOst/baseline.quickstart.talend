@@ -144,6 +144,8 @@ function s3fs_config() {
     local access_key="${1:-${access_key:-${TALEND_FACTORY_ACCESS_KEY:-}}}"
     local secret_key="${2:-${secret_key:-${TALEND_FACTORY_SECRET_KEY:-}}}"
 
+    required access_key secret_key
+
     local credentials_file=~/.passwd-s3fs
     sed -i "s/# user_allow_other/user_allow_other/g" /etc/fuse.conf
 
@@ -177,25 +179,25 @@ function s3fs_mount() {
     local iam_role="${6:-auto}"
     local target_owner="${7:-${target_owner:-ec2-user}}"
 
-    required s3_bucket s3_path s3_mount_dir s3_mount_root s3fs_umask
+    required s3_bucket s3_path s3_mount_dir s3_mount_root s3fs_umask target_owner
 
-    debugVar s3_bucket; debugVar s3_path; debugVar s3_mount_dir; debugVar s3_mount_root; debugVar s3fs_umask; debugVar iam_role
+    debugVar s3_bucket; debugVar s3_path; debugVar s3_mount_dir; debugVar s3_mount_root; debugVar s3fs_umask; debugVar iam_role; debugVar target_owner
 
-    mkdir -p "${s3_mount_dir}"
+    try mkdir -p "${s3_mount_dir}"
 
     chown -R "${target_owner}:${target_owner}" "${s3_mount_root}"
 
     [ -n "${s3_path}" ] && [ "${s3_path:0:1}" != "/" ] && s3_path="/${s3_path}"
     [ -n "${s3_path}" ] && s3_path=":${s3_path}"
 
+    debugVar s3_path
+
     if [ "${iam_role}" == "none" ]; then
-        debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o allow_other -o mp_umask=${s3fs_umask}"
-        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o allow_other 
-        # -o mp_umask="${s3fs_umask}"
+        debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o allow_other -o mp_umask=${s3fs_umask} -ouse_cache=/tmp"
+        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o allow_other -o mp_umask="${s3fs_umask}" -ouse_cache=/tmp
     else
-        debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o iam_role=auto -o allow_other -o mp_umask=${s3fs_umask}"
-        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o iam_role="${iam_role}" -o allow_other 
-        # -o mp_umask="${s3fs_umask}"
+        debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o iam_role=auto -o allow_other -o mp_umask=${s3fs_umask} -ouse_cache=/tmp"
+        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o iam_role="${iam_role}" -o allow_other -o mp_umask="${s3fs_umask}" -ouse_cache=/tmp
     fi
 }
 

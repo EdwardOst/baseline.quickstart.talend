@@ -33,7 +33,7 @@ function infoLog() {
 
 
 function infoVar() {
-    [ -z "${!1+x}" ] && echo "INFO: ${FUNCNAME[*]:1} : undefined variable '${1}'" && return 0
+    [ -n "${INFO_LOG:-}" ] && [ -z "${!1+x}" ] && echo "INFO: ${FUNCNAME[*]:1} : undefined variable '${1}'" && return 0
     [ -n "${INFO_LOG:-}" ] && echo "INFO: ${1}=${!1}" 1>&2 && return 0
 }
 
@@ -45,7 +45,7 @@ function debugLog() {
 
 
 function debugVar() {
-    [ -z "${!1+x}" ] && echo "DEBUG: ${FUNCNAME[*]:1} : undefined variable '${1}'" && return 0
+    [ -n "${DEBUG_LOG:-}" ] && [ -z "${!1+x}" ] && echo "DEBUG: ${FUNCNAME[*]:1} : undefined variable '${1}'" && return 0
     [ -n "${DEBUG_LOG:-}" ] && echo "DEBUG: ${FUNCNAME[*]:1} : ${1}=${!1}" 1>&2 && return 0
 }
 
@@ -127,7 +127,7 @@ function try() {
     done
     [ "${#}" -lt 1 ] && die "empty try statement"
 
-    ! "$@" && echo "$0: ${FUNCNAME[*]:1}: cannot execute: ${*}" 1>&2 && exit 111
+    ! "$@" && echo "ERROR: $0: ${FUNCNAME[*]:1}: cannot execute: ${*}" 1>&2 && exit 111
 
     return 0
 }
