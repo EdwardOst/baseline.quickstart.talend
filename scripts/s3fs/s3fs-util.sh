@@ -55,20 +55,38 @@ function s3fs_build_apt() {
 
 #--------------
 #
+# return true (0) if s3fs is installed, else return false (1)
+#
+#--------------
+
+function is_s3fs_installed() {
+    if [ -f "/usr/local/bin/s3fs" ]; then
+        [ ! -L "/usr/bin/s3fs" ] && ln -s /usr/local/bin/s3fs /usr/bin/s3fs
+        return 0
+    else
+        return 1
+    fi
+}
+
+
+#--------------
+#
 # retrieve specified version of s3fs from git release and unzip
 #
 #--------------
 
 function get_s3fs() {
-    local git_token="${1:-}"
-    local s3fs_version="${2:-1.82}"
+    local tar_file_ref="${1:-}"
+    local git_token="${2:-}"
+    local s3fs_version="${3:-1.82}"
 
-    required git_token s3fs_version
+    required tar_file_ref git_token s3fs_version
 
     local organization="s3fs-fuse"
     local repo_name="s3fs-fuse"
     local branch="v${s3fs_version}"
     local out_file="${branch}.tar.gz"
+    assign "${tar_file_ref}" "${out_file}"
 
     wget -O "${out_file}" \
         --header="Authorization: token ${git_token}" \
@@ -88,38 +106,18 @@ function get_s3fs() {
 function s3fs_build() {
 
     local git_token="${1:-}"
-    local s3fs_dir="${2:-}"
-    local s3fs_version="${3:-}"
+    local s3fs_dir="${2:-s3fs}"
 
     required git_token s3fs_dir
 
-    # if s3fs already installed then exit
-    if [ -f "/usr/local/bin/s3fs" ]; then
-        [ ! -L "/usr/bin/s3fs" ] && ln -s /usr/local/bin/s3fs /usr/bin/s3fs
-        return 0
+    if [ is_s3fs_installed ]; then
+       debugLog "s3fs already installed"
+       return 0
     fi
 
     $(s3fs_builder yum)
 
-    local pushed=false
-    if [ -n "${s3fs_dir}" ]; then
-        pushd "${s3fs_dir}"
-        pushed=true
-    elif [ ! -f autogen.sh ]; then
-        if [ -d s3fs-fuse ]; then
-            pushd s3fs-fuse
-            pushed=true
-        else
-#            git clone https://github.com/s3fs-fuse/s3fs-fuse.git
-#            try pushd s3fs-fuse
-#            pushed=true
-            get_s3fs "${git_token}" "${s3fs_version}"
-            pushd s3fs-fuse
-            pushed=true
-        fi
-    else
-        debugLog "INFO: s3fs found"
-    fi
+    pushd "${s3fs_dir}" || errorMessage "invalid s3fs directory ${s3fs_dir}" && return 1
 
     ./autogen.sh
     ./configure
@@ -128,7 +126,7 @@ function s3fs_build() {
 
     ln -s /usr/local/bin/s3fs /usr/bin/s3fs
 
-    [ "${pushed}" == "true" ] && popd || return 1
+    popd || return 1
     return 0
 }
 
@@ -193,8 +191,8 @@ function s3fs_mount() {
     debugVar s3_path
 
     if [ "${iam_role}" == "none" ]; then
-        debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o allow_other -o mp_umask=${s3fs_umask} -ouse_cache=/tmp"
-        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o allow_other -o mp_umask="${s3fs_umask}" -ouse_cache=/tmp
+        debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o allow_other -o mp_umask=${s3fs_umask}"
+        try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o allow_other -o mp_umask="${s3fs_umask}"
     else
         debugLog "s3fs ${s3_bucket}${s3_path} ${s3_mount_dir} -o iam_role=auto -o allow_other -o mp_umask=${s3fs_umask} -ouse_cache=/tmp"
         try s3fs "${s3_bucket}${s3_path}" "${s3_mount_dir}" -o iam_role="${iam_role}" -o allow_other -o mp_umask="${s3fs_umask}" -ouse_cache=/tmp
